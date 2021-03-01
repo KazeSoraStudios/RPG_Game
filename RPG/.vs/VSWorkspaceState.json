@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Assets",
+    "\\Assets\\Scripts",
+    "\\Assets\\Scripts\\Assets",
+    "\\Assets\\Scripts\\Characters",
+    "\\Assets\\Scripts\\Combat",
+    "\\Assets\\Scripts\\GameData",
+    "\\Assets\\Scripts\\Map",
+    "\\Assets\\Scripts\\Menus",
+    "\\Assets\\Scripts\\UI"
+  ],
+  "SelectedNode": "\\Assets\\Scripts\\UI\\MenuOptionsList.cs",
+  "PreviewInSolutionExplorer": false
+}
