@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Selector { WeakestActor, LowestHP, WeakestEnemy, WeakestPartyMember, LowestEnemyHP, LowestPartyHP, LowestMPParty, LowestMPEnemy, FirstDeadParty, FirstDeadEnemy, Random }
+public enum Selector { WeakestActor, LowestHP, WeakestEnemy, WeakestPartyMember, LowestEnemyHP, LowestPartyHP, LowestMPParty, LowestMPEnemy, FirstDeadParty, FirstDeadEnemy, RandomParty, RandomEnemy}
 
 public sealed class CombatSelector
 {
@@ -107,6 +107,20 @@ public sealed class CombatSelector
         var aliveActors = new Actor[actors.Count];
         int index = 0;
         foreach(var actor in actors)
+        {
+            var hp = actor.Stats.Get(Stat.HP);
+            if (hp > 0)
+                aliveActors[index++] = actor;
+        }
+        return aliveActors[Random.Range(0, index)];
+    }
+
+    public static Actor RandomEnemy(CombatState state)
+    {
+        var actors = state.GetEnemiesActors();
+        var aliveActors = new Actor[actors.Count];
+        int index = 0;
+        foreach (var actor in actors)
         {
             var hp = actor.Stats.Get(Stat.HP);
             if (hp > 0)

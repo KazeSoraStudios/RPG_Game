@@ -1,17 +1,31 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
 public class GameDataHandler : MonoBehaviour
 {
-    protected static int GetIntFromCell(string priceCell)
+    protected static int GetIntFromCell(string intCell)
     {
-        var price = 0;
-        if (priceCell.IsNotEmpty())
-            price = int.Parse(priceCell);
+        int price = 0;
+        if (intCell.IsNotEmpty())
+            price = int.Parse(intCell);
         return price;
+    }
+
+    protected static float GetFloatFromCell(string floatCell)
+    {
+        float price = 0.0f;
+        if (floatCell.IsNotEmpty())
+            price = float.Parse(floatCell);
+        return price;
+    }
+
+    protected static Vector2 GetVector2FromCell(string vec2Cell)
+    {
+        var vars = vec2Cell.Split(':');
+        if (vars.Length != 2)
+            return Vector2.zero;
+        return new Vector2(GetFloatFromCell(vars[0]), GetFloatFromCell(vars[1]));
     }
 
     protected static  T GetEnum<T>(T defaultT, string type) where T : struct, Enum
@@ -36,6 +50,46 @@ public class GameDataHandler : MonoBehaviour
             ts[i] = t;
         }
         return ts;
+    }
+
+    protected static Action<CombatState, bool> GetTarget(string name, string data)
+    {
+        if (data.IsEmpty())
+        {
+            LogManager.LogError($"Empty selecotr data found for item use: {name}. Returning random selector.");
+            return (state, hurt) => CombatSelector.RandomPlayer(state);
+        }
+        var selector = GetEnum(Selector.RandomParty, data);
+        switch (selector)
+        {
+            case Selector.FirstDeadEnemy:
+                // TODO implement
+                return (state, hurt) => CombatSelector.FirstDeadPartyMember(state);
+            case Selector.FirstDeadParty:
+                return (state, hurt) => CombatSelector.FirstDeadPartyMember(state);
+            case Selector.LowestEnemyHP:
+                return (state, hurt) => CombatSelector.FindWeakestHurtEnemy(state);
+            case Selector.LowestHP:
+                return (state, hurt) => CombatSelector.FindWeakestActor(state.GetAllActors(), true);
+            case Selector.LowestMPEnemy:
+                // TODO implement
+                return (state, hurt) => CombatSelector.FindLowestMPPartyMember(state);
+            case Selector.LowestMPParty:
+                return (state, hurt) => CombatSelector.FindLowestMPPartyMember(state);
+            case Selector.LowestPartyHP:
+                return (state, hurt) => CombatSelector.FindWeakestHurtPartyMember(state);
+            case Selector.WeakestActor:
+                return (state, hurt) => CombatSelector.FindWeakestActor(state.GetAllActors(), false);
+            case Selector.WeakestEnemy:
+                return (state, hurt) => CombatSelector.FindWeakestEnemy(state);
+            case Selector.WeakestPartyMember:
+                return (state, hurt) => CombatSelector.FindWeakestPartyMember(state);
+            case Selector.RandomEnemy:
+                return (state, hurt) => CombatSelector.RandomEnemy(state);
+            case Selector.RandomParty:
+            default:
+                return (state, hurt) => CombatSelector.RandomPlayer(state);
+        }
     }
 }
 
