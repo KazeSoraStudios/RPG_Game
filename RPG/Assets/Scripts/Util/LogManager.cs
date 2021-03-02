@@ -1,17 +1,18 @@
 using System;
 using UnityEngine;
 
+public enum LogLevel
+{
+    Debug,
+    Warn,
+    Info,
+    Error,
+    Fatal,
+    Ignore
+};
+
 public class LogManager
 {
-    public enum LogLevel
-    {
-        Debug,
-        Warn,
-        Info,
-        Error,
-        Fatal,
-        Ignore
-    };
 
     private static LogLevel logLevel = LogLevel.Info;
 

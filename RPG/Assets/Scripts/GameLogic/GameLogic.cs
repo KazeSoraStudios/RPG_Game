@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameLogic : MonoBehaviour
 {
+    [SerializeField] LogLevel LogLevel;
     [SerializeField] World world;
     [SerializeField] object GameState;// TODO GetDefaultGameState()
     [SerializeField] public InGameMenu GameMenu;
@@ -15,6 +16,7 @@ public class GameLogic : MonoBehaviour
     private void Awake()
     {
         ServiceManager.Register(this);
+        LogManager.SetLogLevel(LogLevel);
     }
 
     private void OnDestroy()
@@ -38,7 +40,7 @@ public class GameLogic : MonoBehaviour
 
     private void SetUpNewGame()
     {
-        GameDataDownloader.DownLoadGameData(LoadMap);
+        GameDataDownloader.LoadGameData(LoadMap);
     }
 
     private void LoadMap()
