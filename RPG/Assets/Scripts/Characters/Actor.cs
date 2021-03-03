@@ -14,6 +14,7 @@ public class Actor : MonoBehaviour
     [SerializeField] public int Level;
     [SerializeField] public int NextLevelExp;
     [SerializeField] public UseRestriction UseRestriction;
+    [SerializeField] public List<Spell> Spells;
     //[SerializeField] MenuActions MenuActions SerializeObject
     [SerializeField] public Stats Stats;
     [SerializeField] public LevelFunction LevelFunction;
@@ -66,21 +67,12 @@ public class Actor : MonoBehaviour
     end
         
      */
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void DoInitialLeveling()
     {
-        // TODO Check if in party
+        // Only party members need to level up
+        if (!ServiceManager.Get<World>().Party.HasMemeber(Id))
+            return;
 
         for (int i = 1; i < Level; i++)
             Exp += LevelFunction.NextLevel(i);
@@ -125,6 +117,7 @@ public class Actor : MonoBehaviour
         foreach (var growth in StatGrowth.Growths)
             levelUp.Stats.SetStat(growth.Key, growth.Value.RollDice());
         var level = Level + levelUp.Level;
+        //var actions 
         // TODO Get party member and check actions
 
         //local def = gPartyMemberDefs[self.mId]

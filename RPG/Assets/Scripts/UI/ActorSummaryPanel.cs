@@ -32,7 +32,7 @@ public class ActorSummaryPanel : UIMonoBehaviour
         this.config = config;
         var actor = config.Actor;
         CharacterImage.gameObject.SetActive(false);
-        CharacterImage.sprite = AssetManager.Load<Sprite>(Constants.PORTRAIT_PATH + actor.Portrait, () => CharacterImage.gameObject.SetActive(true));
+        CharacterImage.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(Constants.PORTRAIT_PATH + actor.Portrait, () => CharacterImage.gameObject.SetActive(true));
         NameText.SetText(ServiceManager.Get<LocalizationManager>().Localize(actor.Name));
         LevelText.SetText(actor.Level.ToString());
 
@@ -51,7 +51,7 @@ public class ActorSummaryPanel : UIMonoBehaviour
         var mp = stats.Get(Stat.HP);
         var maxMp = stats.Get(Stat.MaxMP);
         HpText.SetText(string.Format(Constants.STAT_FILL_TEXT, hp, maxHp));
-        MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, hp, maxMp));
+        MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, mp, maxMp));
         HpBar.SetTargetFillAmountImmediate(hp / (float)maxHp);
         MpBar.SetTargetFillAmountImmediate(mp / (float)maxMp);
     }

@@ -15,7 +15,7 @@ public class ExploreState : MonoBehaviour, IGameState
     {
         this.Map = map;
         this.stack = stack;
-        var obj = AssetManager.Load<Character>(Constants.HERO_PREFAB_PATH);
+        var obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.HERO_PREFAB_PATH);
         if (obj != null)
         {
             Hero = Instantiate(obj);

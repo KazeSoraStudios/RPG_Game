@@ -5,8 +5,19 @@ using UnityEngine;
 
 public class AssetManager : MonoBehaviour
 {
+    private Dictionary<string, GameObject> prefabs = new Dictionary<string, GameObject>();
 
-    public static GameObject Load(string prefabPath)
+    private void Awake()
+    {
+        ServiceManager.Register(this);
+    }
+
+    private void OnDestroy()
+    {
+        ServiceManager.Unregister(this);
+    }
+
+    public GameObject Load(string prefabPath)
     {
         var asset = Resources.Load<GameObject>(prefabPath);
         if (asset == null)
@@ -14,7 +25,7 @@ public class AssetManager : MonoBehaviour
         return asset;
     }
 
-    public static T Load<T>(string prefabPath, Action callback = null) where T : UnityEngine.Object
+    public T Load<T>(string prefabPath, Action callback = null) where T : UnityEngine.Object
     {
         var asset = Resources.Load<T>(prefabPath);
         if (asset == null)

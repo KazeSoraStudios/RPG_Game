@@ -11,6 +11,16 @@ public class Party : MonoBehaviour
         Members.Clear();
     }
 
+    public bool HasMemeber(Actor actor)
+    {
+        return HasMemeber(actor.Id);
+    }
+
+    public bool HasMemeber(int id)
+    {
+        return Members.ContainsKey(id);
+    }
+
     public void Add(Actor member)
     {
         if (Members.ContainsKey(member.Id))

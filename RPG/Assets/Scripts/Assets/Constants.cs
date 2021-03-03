@@ -3,6 +3,7 @@ public class Constants
     // PREFABS
     public static string HERO_PREFAB_PATH = "Prefabs/Character/Hero";
     public static string TEST_MAP_PREFAB_PATH = "Prefabs/Maps/Grid";
+    public static string ITEM_LIST_CELL_PREFAB_PATH = "Prefabs/UI/ItemCell";
 
     // Portraits
     public static string PORTRAIT_PATH = "Textures/Portraits/";
@@ -24,6 +25,7 @@ public class Constants
     public static float STEAL_MIN_CHANCE = 0.05f;
     public static float STEAL_MAX_CHANCE = 0.95f;
     public static string STAT_FILL_TEXT = "{0}/{1}";
+    public static string EMPTY_ITEM_TEXT = "--";
     
     // Defaults
     public static int EMPTY_EVENT_COUNTDOWN = -999;

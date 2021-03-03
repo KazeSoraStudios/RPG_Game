@@ -16,6 +16,7 @@ public class InGameMenu : UIMonoBehaviour, IGameState
     public StateMachine StateMachine;
     public FrontMenuState.Config FrontConfig;
     public StatusMenuState.Config StatusConfig;
+    public MagicMenuState.Config MagicConfig;
 
 
     void Awake()
@@ -37,6 +38,10 @@ public class InGameMenu : UIMonoBehaviour, IGameState
         {
             Parent = this,
             StateMachine = StateMachine
+        };
+        MagicConfig = new MagicMenuState.Config
+        {
+            Parent = this
         };
     }
 

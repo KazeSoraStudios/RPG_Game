@@ -108,7 +108,8 @@ public class ActorSummaryList : UIMonoBehaviour
         var numberOfMembers = partyMembers.Length;
         var numberOfPanels = ActorSummaries.Length;
 
-        for (int i = 0; i < numberOfMembers && i < numberOfPanels; i++)
+        int i = 0;
+        for (; i < numberOfMembers && i < numberOfPanels; i++)
         {
             var config = new ActorSummaryPanel.Config
             {
@@ -117,5 +118,7 @@ public class ActorSummaryList : UIMonoBehaviour
             };
             ActorSummaries[i].Init(config);
         }
+        for (; i < numberOfPanels; i++)
+            ActorSummaries[i].gameObject.SafeSetActive(false);
     }
 }

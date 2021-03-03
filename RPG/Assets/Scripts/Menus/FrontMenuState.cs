@@ -27,17 +27,12 @@ public class FrontMenuState : UIMonoBehaviour, IGameState
     public bool Execute(float deltaTime)
     {
         framesPassed++;
-        int direction = Input.GetKeyDown(KeyCode.UpArrow) ? -1 :
-            Input.GetKeyDown(KeyCode.DownArrow) ? 1 : 0;
-        if (inActorSummary)
-            SummariesController.HandleInput(direction);
-        else
-            HandleMenuOptionInput(direction);
         if (framesPassed >= updateTimeFrames)
         {
             TimePlayedText.SetText(ServiceManager.Get<World>().TimeAsString());
             framesPassed = 0;
         }
+        HandleInput();
         return true;
     }
 
@@ -73,7 +68,15 @@ public class FrontMenuState : UIMonoBehaviour, IGameState
         MenuList.HideCursor();
     }
 
-    public void HandleInput() { }
+    public void HandleInput()
+    {
+        int direction = Input.GetKeyDown(KeyCode.UpArrow) ? -1 :
+            Input.GetKeyDown(KeyCode.DownArrow) ? 1 : 0;
+        if (inActorSummary)
+            SummariesController.HandleInput(direction);
+        else
+            HandleMenuOptionInput(direction);
+    }
 
     public string GetName()
     {
@@ -130,10 +133,10 @@ public class FrontMenuState : UIMonoBehaviour, IGameState
 
     private void HandleSummarySelection(int selection, int menu)
     {
+        var party = ServiceManager.Get<World>().Party;
         switch (menu)
         {
             case 1:
-                var party = ServiceManager.Get<World>().Party;
                 config.Parent.StatusConfig.Actor = party.Members[selection];
                 stateMachine.Change(Constants.STATUS_MENU_STATE, config.Parent.StatusConfig);
                 break;
@@ -141,7 +144,8 @@ public class FrontMenuState : UIMonoBehaviour, IGameState
                 // open equipment menu
                 break;
             case 3:
-                // open magic menu
+                config.Parent.MagicConfig.Actor = party.Members[selection];
+                stateMachine.Change(Constants.MAGIC_MENU_STATE, config.Parent.MagicConfig);
                 break;
             default:
                 LogManager.LogError($"Unknown selection in front menu state: {selection}");

@@ -30,7 +30,10 @@ public class StatusMenuState : UIMonoBehaviour, IGameState
 
     public void HandleInput()
     {
-        throw new System.NotImplementedException();
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            config.StateMachine.Change(Constants.FRONT_MENU_STATE, config.Parent.FrontConfig);
+        }
     }
 
     public void Enter(object o)
@@ -50,10 +53,7 @@ public class StatusMenuState : UIMonoBehaviour, IGameState
 
     public bool Execute(float deltaTime)
     {
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            config.StateMachine.Change(Constants.FRONT_MENU_STATE, config.Parent.FrontConfig);
-        }
+        HandleInput();
         return true;
     }
 

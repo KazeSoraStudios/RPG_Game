@@ -45,7 +45,7 @@ public class GameLogic : MonoBehaviour
 
     private void LoadMap()
     {
-        var obj = AssetManager.Load<Map>(Constants.TEST_MAP_PREFAB_PATH);
+        var obj = ServiceManager.Get<AssetManager>().Load<Map>(Constants.TEST_MAP_PREFAB_PATH);
         if (obj != null)
         {
             var map = Instantiate(obj);
