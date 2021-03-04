@@ -33,7 +33,7 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
         stateMachine = parent.StateMachine;
         ActorNameText.SetText(config.Actor.Name);
         var stats = config.Actor.Stats;
-        var mp = stats.Get(Stat.HP);
+        var mp = stats.Get(Stat.MP);
         var maxMp = stats.Get(Stat.MaxMP);
         MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, mp, maxMp));
         MpBar.SetTargetFillAmountImmediate(mp / (float)maxMp);
@@ -101,6 +101,11 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
         return Grid.cellSize;
     }
 
+    public int GetNumberOfCells()
+    {
+        return configs.Count;
+    }
+
     private void SetUpMenu(Actor actor)
     {
         //foreach(var spell in actor.Spells)
@@ -134,6 +139,7 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
     private void SetDescription(int index)
     {
         var cell = configs[index];
-        DescriptionText.SetText(ServiceManager.Get<LocalizationManager>().Localize(cell.Spell.Description));
+        var description = cell.Spell?.Description ?? string.Empty;
+        DescriptionText.SetText(ServiceManager.Get<LocalizationManager>().Localize(description));
     }
 }

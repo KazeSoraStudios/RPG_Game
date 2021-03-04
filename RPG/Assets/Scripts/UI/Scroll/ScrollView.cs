@@ -11,10 +11,12 @@ public interface IScrollHandler
     void InitCell(int index, ScrollViewCell cell);
     Vector2 GetCellSize();
     void OnAfterLoad();
+    int GetNumberOfCells();
 }
 
 public class ScrollView : UIMonoBehaviour
 {
+    [Min(1)]
     [SerializeField] int ColumnCount;
     [SerializeField] float XPadding;
     [SerializeField] float YPadding;
@@ -29,6 +31,7 @@ public class ScrollView : UIMonoBehaviour
     private int arrowX = 0;
     private int displayStart = 0;
     private int displayRows;
+    private int displayIndex;
     private int numberOfRows;
     private List<ScrollViewCell> cells = new List<ScrollViewCell>();
     private Action<int> OnChange;
@@ -44,14 +47,15 @@ public class ScrollView : UIMonoBehaviour
         var asset = ServiceManager.Get<AssetManager>().Load<ScrollViewCell>(path);
         var cellSize = ScrollHandler.GetCellSize();
         displayRows = (int)(Content.rect.height / cellSize.y);
-        numberOfRows = displayRows * ColumnCount;
+        numberOfRows = ScrollHandler.GetNumberOfCells() / ColumnCount;
+        var cells = displayRows * ColumnCount;
 
-        for (int i = 0; i < numberOfRows; i++)
+        for (int i = 0; i < cells; i++)
         {
             var cell = Instantiate(asset, Content);
             ScrollHandler.InitCell(i, cell);
             scrollHandler.OnAfterLoad();
-            cells.Add(cell);
+            this.cells.Add(cell);
         }
         LayoutGroup.CalculateLayoutInputHorizontal();
         LayoutGroup.CalculateLayoutInputVertical();
@@ -66,7 +70,7 @@ public class ScrollView : UIMonoBehaviour
         {
             // TODO pooling
             cells[i].OnExit();
-            Destroy(cells[i]);
+            Destroy(cells[i].gameObject);
         }
     }
 
@@ -74,10 +78,11 @@ public class ScrollView : UIMonoBehaviour
     {
         if (!redraw)
             return;
+        redraw = false;
         //currentRowIndex += movement * ColumnCount;
         for(int i = 0; i < cells.Count; i++)
         {
-            int index = i + arrowY;
+            int index = i + displayStart * ColumnCount;
             ScrollHandler.InitCell(index, cells[i]);
         }
     }
@@ -109,16 +114,26 @@ public class ScrollView : UIMonoBehaviour
     private void HandleUpMovement()
     {
         arrowY = Mathf.Max(arrowY - 1, 0);
-        if (arrowY < displayStart)
+        displayIndex = Mathf.Max(displayIndex - 1, 0);
+        if (displayIndex < displayStart)
+        {
             displayStart--;
+            redraw = true;
+           // return;
+        }
         SetSelectionPosition(false, true);
     }
 
     private void HandleDownMovement()
     {
         arrowY = Mathf.Min(arrowY + 1, displayRows - 1);
-        if (arrowY >= displayStart + displayRows)
+        displayIndex = Mathf.Min(displayIndex + 1, numberOfRows - 1);
+        if (displayIndex >= displayStart + displayRows)
+        {
             displayStart++;
+            redraw = true;
+            //return;
+        }
         SetSelectionPosition(false, true);
     }
     public float minus = 1.0f;
@@ -143,7 +158,7 @@ public class ScrollView : UIMonoBehaviour
         var y = cellPosition.y;
         var x = cellPosition.x - cellSize.x * minus;
         SelectionArrow.transform.position = new Vector2(x, y);
-        OnChange?.Invoke(index);
+        OnChange?.Invoke(index + displayStart * ColumnCount);
     }
 
     private void Reset()
@@ -152,6 +167,7 @@ public class ScrollView : UIMonoBehaviour
         arrowY = 0;
         arrowX = 0;
         displayRows = 0;
+        displayIndex = 0;
         redraw = true;
     }
 }
