@@ -43,7 +43,7 @@ public class CombatFormula : MonoBehaviour
             return result;
         }
 
-        // TODO assert
+        DebugAssert.Assert(hitResult == HitResult.Critical, $"HitResult should be critical but is {hitResult}.");
         result.Damage += BaseAttack(state, attacker, target);
         result.Result = HitResult.Critical;
         return result;

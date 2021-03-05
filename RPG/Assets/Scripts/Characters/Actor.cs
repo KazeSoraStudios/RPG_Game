@@ -178,14 +178,14 @@ public class Actor : MonoBehaviour
         if (previousItem != null)
         {
             Stats.RemoveModifier(slot);
-            //TODO gGame.World:AddItem(prevItem)
+            ServiceManager.Get<World>().AddItem(previousItem.ItemInfo);
         }
 
         if (item == null)
             return;
 
-        // TODO assert(item.count > 0)
-        //gGame.World:RemoveItem(item.id)
+        DebugAssert.Assert(item.Count > 0, $"Trying to add {item.ItemInfo.Name} to player slot[{slot}, but count is {item.Count}]");
+        ServiceManager.Get<World>().RemoveItem(item.ItemInfo.Id);
         Equipment[(int)slot] = item; // TODO change to use ids and get from db
         Stats.AddModifier(slot, item.ItemInfo.Modifier);
     }
@@ -264,13 +264,12 @@ public class Actor : MonoBehaviour
         return false;
     }
 
-    public bool CanCast(/*Spell spell*/)
+    public bool CanCast(Spell spell)
     {
-        //return spell.mpCost <= Stats.Get(Stat.MP);
-        return true;
+        return spell.MpCost <= Stats.Get(Stat.MP);
     }
 
-    public void ReduceManaForSpell(/*Spell spell*/)
+    public void ReduceManaForSpell(Spell spell)
     {
         if (!Stats.HasStat(Stat.MP))
         {
@@ -278,7 +277,7 @@ public class Actor : MonoBehaviour
             return;
         }
         var mp = Stats.Get(Stat.MP);
-        var cost = 0;// TODO spell.mpCost;
+        var cost = spell.MpCost;
         mp = Mathf.Max(mp - cost, 0);
         Stats.SetStat(Stat.MP, mp);
     }

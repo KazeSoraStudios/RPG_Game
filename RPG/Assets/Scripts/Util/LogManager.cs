@@ -22,6 +22,11 @@ public class LogManager
         Debug.LogError("LogManager has been initialized!");
     }
 
+    public static LogLevel GetLogLevel()
+    {
+        return logLevel;
+    }
+
     public static void SetLogLevel(LogLevel level)
     {
         logLevel = level;

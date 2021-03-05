@@ -35,13 +35,15 @@ public class ScrollView : UIMonoBehaviour
     private int numberOfRows;
     private List<ScrollViewCell> cells = new List<ScrollViewCell>();
     private Action<int> OnChange;
+    private InGameMenu Menu;
 
-    public void Init(IScrollHandler scrollHandler, Action<int> onChange)
+    public void Init(IScrollHandler scrollHandler, Action<int> onChange, InGameMenu menu)
     {
         if (CheckUIConfigAndLogError(scrollHandler, "Scrollview"))
             return;
         Reset();
         ScrollHandler = scrollHandler;
+        Menu = menu;
         OnChange = onChange;
         var path = ScrollHandler.GetPrefabPath();
         var asset = ServiceManager.Get<AssetManager>().Load<ScrollViewCell>(path);
@@ -52,7 +54,13 @@ public class ScrollView : UIMonoBehaviour
 
         for (int i = 0; i < cells; i++)
         {
-            var cell = Instantiate(asset, Content);
+            ScrollViewCell cell;
+            if (!menu.HasCell())
+                cell = Instantiate(asset);
+            else
+                cell = menu.GetCellFromPool();
+            cell.gameObject.SafeSetActive(true);
+            cell.transform.SetParent(Content, false);
             ScrollHandler.InitCell(i, cell);
             scrollHandler.OnAfterLoad();
             this.cells.Add(cell);
@@ -68,9 +76,8 @@ public class ScrollView : UIMonoBehaviour
     {
         for (int i = cells.Count - 1; i > -1; i--)
         {
-            // TODO pooling
             cells[i].OnExit();
-            Destroy(cells[i].gameObject);
+            Menu.ReturnCellToPool(cells[i]);
         }
     }
 
@@ -79,7 +86,6 @@ public class ScrollView : UIMonoBehaviour
         if (!redraw)
             return;
         redraw = false;
-        //currentRowIndex += movement * ColumnCount;
         for(int i = 0; i < cells.Count; i++)
         {
             int index = i + displayStart * ColumnCount;

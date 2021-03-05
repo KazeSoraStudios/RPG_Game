@@ -82,9 +82,11 @@ public class Storyboard : IGameState
 
     public void PushState(string id, IGameState state)
     {
-        // TODO assert
         if (States.ContainsKey(id))
+        {
+            LogManager.LogError($"Tried to push [{id}. {state}] onto storyboard but {States} does not contain it.");
             return;
+        }
         States.Add(id, state);
         SubStack.Push(state);
     }

@@ -16,8 +16,7 @@ public sealed class GameData : MonoBehaviour
 
     void OnDestroy()
     {
-        // TODO add check for world?
-        LogManager.LogInfo("GameData shutting down. Is game finished?");
+        LogManager.LogWarn("GameData shutting down. Is game finished?");
         ServiceManager.Unregister(this);
     }
 

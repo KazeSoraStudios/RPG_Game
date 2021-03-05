@@ -544,9 +544,9 @@ public class StoryboardEventFunctions
 
     public static Map GetMapReference(Storyboard storyboard, int stateId)
     {
-        var exploreState = storyboard.States[Constants.EXPLORE_STATE];
-        // TODOD assert(exploreState and exploreState.mMap)
-        return ((ExploreState)exploreState).Map;
+        var exploreState = (ExploreState)storyboard.States[Constants.EXPLORE_STATE];
+        DebugAssert.Assert(exploreState != null && exploreState.Map != null, "ExploreState is null or has null map.");
+        return exploreState.Map;
     }
 
     //function SOP.ReplaceScene(name, params)
@@ -688,7 +688,7 @@ public class StoryboardEventFunctions
                 var exploreState = (ExploreState)storyboard.States[state];
                 storyboard.Stack.Pop();
                 storyboard.Stack.Push(exploreState);
-                // TODO exploreState.Stack = gGame.Stack
+                exploreState.stack = ServiceManager.Get<GameLogic>().Stack;
                 return EmptyEvent;
             }
         };

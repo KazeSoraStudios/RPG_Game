@@ -96,9 +96,6 @@ public class ExploreState : MonoBehaviour, IGameState
         }
         if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
-            // TODO ingame menu
-            //local menu = InGameMenuState:Create(self.mStack, self.mMapDef)
-            //return self.mStack:Push(menu)
             var menu = ServiceManager.Get<GameLogic>().GameMenu;
             menu.Init(Map, stack);
             stack.Push(menu);

@@ -10,7 +10,8 @@ public class GameLogic : MonoBehaviour
     [SerializeField] public InGameMenu GameMenu;
     [SerializeField] GameDataDownloader GameDataDownloader;
 
-    private StateStack stack;
+    public StateStack Stack;
+
     private LocalizationManager localizationManager;
 
     private void Awake()
@@ -26,7 +27,7 @@ public class GameLogic : MonoBehaviour
 
     private void Start()
     {
-        stack = new StateStack();
+        Stack = new StateStack();
         world.Reset();
         SetUpNewGame();
     }
@@ -34,7 +35,7 @@ public class GameLogic : MonoBehaviour
     private void Update()
     {
         var deltaTime = Time.deltaTime;
-        stack.Update(deltaTime);
+        Stack.Update(deltaTime);
         world.Execute(deltaTime);
     }
 
@@ -51,8 +52,8 @@ public class GameLogic : MonoBehaviour
             var map = Instantiate(obj);
             map.transform.SetParent(this.transform, false);
             var exploreState = map.gameObject.AddComponent<ExploreState>();
-            exploreState.Init(map, stack, Vector2.zero);
-            stack.Push(exploreState);
+            exploreState.Init(map, Stack, Vector2.zero);
+            Stack.Push(exploreState);
         }
     }
 }

@@ -7,8 +7,8 @@ public sealed class CombatSelector
 {
     public static Actor FindWeakestActor(List<Actor> actors, bool hurtOnly)
     {
-        // TODO empty actor if null/empty
-        Actor target = actors[0];
+        DebugAssert.Assert(actors != null && actors.Count > 0, "Actor List passed to FindWeakestActor but list has no memebers.");
+        var target = actors[0];
         int health = int.MaxValue;
         foreach(var actor in actors)
         {
@@ -27,8 +27,8 @@ public sealed class CombatSelector
 
     public static Actor FindLowestRemainingMP(List<Actor> actors, bool hurtOnly)
     {
-        // TODO empty actor if null/empty
-        Actor target = actors[0];
+        DebugAssert.Assert(actors != null && actors.Count > 0, "Actor List passed to FindLowestRemainingMP but list has no memebers.");
+        var target = actors[0];
         int magic = int.MaxValue;
         foreach (var actor in actors)
         {
@@ -70,6 +70,11 @@ public sealed class CombatSelector
         return FindLowestRemainingMP(state.GetPartyActors(), true);
     }
 
+    public static Actor FindLowestMPEnemy(CombatState state)
+    {
+        return FindLowestRemainingMP(state.GetEnemiesActors(), true);
+    }
+
     public static Actor FirstDeadPartyMember(CombatState state)
     {
         var actors = state.GetPartyActors();
@@ -79,9 +84,21 @@ public sealed class CombatSelector
             if (hp <= 0)
                 return actor;
         }
-        // TODO return empty
         return actors[0];
     }
+
+    public static Actor FirstDeadEnemy(CombatState state)
+    {
+        var actors = state.GetEnemiesActors();
+        foreach (var actor in actors)
+        {
+            var hp = actor.Stats.Get(Stat.HP);
+            if (hp <= 0)
+                return actor;
+        }
+        return actors[0];
+    }
+
 
     public static List<Actor> Party(CombatState state)
     {

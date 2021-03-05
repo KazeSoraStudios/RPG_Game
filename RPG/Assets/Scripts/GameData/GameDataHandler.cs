@@ -63,8 +63,7 @@ public class GameDataHandler : MonoBehaviour
         switch (selector)
         {
             case Selector.FirstDeadEnemy:
-                // TODO implement
-                return (state, hurt) => CombatSelector.FirstDeadPartyMember(state);
+                return (state, hurt) => CombatSelector.FirstDeadEnemy(state);
             case Selector.FirstDeadParty:
                 return (state, hurt) => CombatSelector.FirstDeadPartyMember(state);
             case Selector.LowestEnemyHP:
@@ -72,8 +71,7 @@ public class GameDataHandler : MonoBehaviour
             case Selector.LowestHP:
                 return (state, hurt) => CombatSelector.FindWeakestActor(state.GetAllActors(), true);
             case Selector.LowestMPEnemy:
-                // TODO implement
-                return (state, hurt) => CombatSelector.FindLowestMPPartyMember(state);
+                return (state, hurt) => CombatSelector.FindLowestMPEnemy(state);
             case Selector.LowestMPParty:
                 return (state, hurt) => CombatSelector.FindLowestMPPartyMember(state);
             case Selector.LowestPartyHP:

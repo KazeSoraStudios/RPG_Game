@@ -93,7 +93,6 @@ public class GameDataPartyHandler : GameDataHandler
 
     }
 
-    // TODO find a better place
     private static Dice Slow = new Dice
     {
         _Dice = new List<Die>

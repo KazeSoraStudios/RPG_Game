@@ -63,7 +63,7 @@ public class World : MonoBehaviour
         return $"{hours}:{minutes}:{seconds}";
     }
 
-    public void AddItem(ItemInfo itemInfo, int count)
+    public void AddItem(ItemInfo itemInfo, int count = 1)
     {
         if (count < 1)
             return;
@@ -88,19 +88,15 @@ public class World : MonoBehaviour
     }
 
 
-    public void RemoveItem(string itemId, int amount)
+    public void RemoveItem(string itemId, int amount = 1)
     {
-        // TODO
-        //assert(ItemDB[itemId].type ~= "key")
-        if (amount < 1 || !Items.ContainsKey(itemId))
-            return;
+        DebugAssert.Assert(ServiceManager.Get<GameData>().Items[itemId].Type != ItemType.Key, $"Trying to remove {itemId} from inventory but it is a key item.");
+        DebugAssert.Assert(amount > 0 && Items.ContainsKey(itemId), $"Trying to remove {itemId} from inventory but it is not in the inventory.");
         var item = Items[itemId];
         item.Count -= amount;
         LogManager.LogDebug($"Removing {amount} of item [{item.ItemInfo.Name}] from inventory. Remaining is: {item.Count}");
         if (item.Count < 1)
-        {
             Items.Remove(itemId);
-        }
     }
 
     public List<Item> FilterItems(IComparer<Item> comparer)

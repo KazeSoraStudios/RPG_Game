@@ -133,7 +133,7 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
             ShowIcon = false
         });
 
-        ScrollView.Init(this, SetDescription);
+        ScrollView.Init(this, SetDescription, parent);
     }
 
     private void SetDescription(int index)

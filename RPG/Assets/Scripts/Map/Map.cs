@@ -24,7 +24,7 @@ public class Map : MonoBehaviour
     {
         if (Grid == null)
         {
-            // TODO Log Error
+            LogManager.LogError($"Grid is null for Map[{name}].");
         }
         var background = Grid.transform.Find("Background");
         if (background != null)

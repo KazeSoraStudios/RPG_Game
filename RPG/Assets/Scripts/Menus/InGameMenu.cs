@@ -18,6 +18,7 @@ public class InGameMenu : UIMonoBehaviour, IGameState
     public StatusMenuState.Config StatusConfig;
     public MagicMenuState.Config MagicConfig;
 
+    private List<ScrollViewCell> pool = new List<ScrollViewCell>();
 
     void Awake()
     {
@@ -103,6 +104,31 @@ public class InGameMenu : UIMonoBehaviour, IGameState
     public string GetName()
     {
         return "InGameMenuState";
+    }
+
+    public bool HasCell()
+    {
+        return pool.Count > 0;
+    }
+
+    public ScrollViewCell GetCellFromPool()
+    {
+        if (pool.Count < 1)
+        {
+            LogManager.LogError("Tried to get cell but pool is empty.");
+            return null;
+        }
+        int index = pool.Count - 1;
+        var cell = pool[index];
+        pool.RemoveAt(index);
+        return cell;
+    }
+
+    public void ReturnCellToPool(ScrollViewCell cell)
+    {
+        pool.Add(cell);
+        cell.gameObject.SafeSetActive(false);
+        cell.transform.SetParent(transform, false);
     }
 
     /*
