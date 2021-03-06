@@ -115,7 +115,7 @@ public class CEAttack : CombatEvent
     private bool counter;
     private int speed = 0;
     private Character character;
-    private Storyboard storyboard = new Storyboard();
+    private Storyboard storyboard;// = new Storyboard();
     private List<Actor> targets;
 
     public CEAttack(Config config)

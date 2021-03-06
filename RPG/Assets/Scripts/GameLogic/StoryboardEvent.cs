@@ -10,8 +10,8 @@ public interface IStoryboardEvent
     void Execute(float deltaTime);
     bool IsBlocking();
     bool IsFinished();
-    bool HasRan();
-    void RunFirst();
+    bool HasEventFunction();
+    IStoryboardEvent Transform(Storyboard storyboard);
 }
 
 public struct WaitEvent : IStoryboardEvent
@@ -23,23 +23,23 @@ public struct WaitEvent : IStoryboardEvent
         Seconds = seconds;
     }
 
-    void IStoryboardEvent.Execute(float deltaTime)
+    public void Execute(float deltaTime)
     {
         Seconds -= deltaTime;
     }
 
-    bool IStoryboardEvent.IsBlocking()
+    public bool IsBlocking()
     {
         return true;
     }
 
-    bool IStoryboardEvent.IsFinished()
+    public bool IsFinished()
     {
         return Seconds <= 0;
     }
 
-    void IStoryboardEvent.RunFirst() { }
-    bool IStoryboardEvent.HasRan() { return true; }
+    public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
+    public bool HasEventFunction() { return false; }
 }
 
 
@@ -87,8 +87,8 @@ public struct TweenEvent<T> : IStoryboardEvent
         return true;
     }
 
-    public void RunFirst() { }
-    public bool HasRan() { return true; }
+    public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
+    public bool HasEventFunction() { return false; }
 
     private float TweenLinear()
     {
@@ -118,8 +118,8 @@ public struct BlockUntilEvent : IStoryboardEvent
         return !IsBlocking();
     }
 
-    public bool HasRan() { return true; }
-    public void RunFirst() { }
+    public bool HasEventFunction() { return false; }
+    public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
 public struct AnimateEvent : IStoryboardEvent
@@ -133,25 +133,25 @@ public struct AnimateEvent : IStoryboardEvent
         Animation = animation;
     }
 
-    void IStoryboardEvent.Execute(float deltaTime)
+    public void Execute(float deltaTime)
     {
         /*self.mAnimation:Update(dt)
         local frame = self.mAnimation:Frame()
         self.mEntity:SetFrame(frame)*/
     }
 
-    bool IStoryboardEvent.IsBlocking()
+    public bool IsBlocking()
     {
         return true;
     }
 
-    bool IStoryboardEvent.IsFinished()
+    public bool IsFinished()
     {
         return Character.IsAnimationFinished(Animation);
     }
 
-    bool IStoryboardEvent.HasRan() { return true; }
-    void IStoryboardEvent.RunFirst() { }
+    public bool HasEventFunction() { return false; }
+    public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
 public struct TimedTextBoxEvent : IStoryboardEvent
@@ -165,58 +165,56 @@ public struct TimedTextBoxEvent : IStoryboardEvent
         Time = time;
     }
 
-    void IStoryboardEvent.Execute(float deltaTime)
+    public void Execute(float deltaTime)
     {
         Time -= deltaTime;
         if (Time <= 0)
         { }// TODO click self.mTextbox:OnClick()
     }
 
-    bool IStoryboardEvent.IsBlocking()
+    public bool IsBlocking()
     {
         return false; // TODO not self.mTextbox:IsDead()
     }
 
-    bool IStoryboardEvent.IsFinished()
+    public bool IsFinished()
     {
         return true;// TODO self.mTextbox:IsDead()
     }
 
-    bool IStoryboardEvent.HasRan() { return true; }
-    void IStoryboardEvent.RunFirst() { }
+    public bool HasEventFunction() { return false; }
+    public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
 public struct EmptyStoryboardEvent : IStoryboardEvent
 {
-    void IStoryboardEvent.Execute(float deltaTime) { }
+    public void Execute(float deltaTime) { }
 
-    bool IStoryboardEvent.HasRan() { return true; }
+    public bool HasEventFunction() { return false; }
 
-    bool IStoryboardEvent.IsBlocking() { return false; }
+    public bool IsBlocking() { return false; }
 
-    bool IStoryboardEvent.IsFinished() { return true; }
+    public bool IsFinished() { return true; }
 
-    void IStoryboardEvent.RunFirst() { }
+    public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
 public struct StoryboardFunctionEvent : IStoryboardEvent
 {
-    private bool hasRan;
     public Storyboard storyboard;
     public Func<Storyboard, IStoryboardEvent> Function;
 
     public void Execute(float deltaTime) { }
 
-    public bool HasRan() { return hasRan; }
+    public bool HasEventFunction() { return true; }
 
     public bool IsBlocking() { return true; }
 
     public bool IsFinished() { return IsBlocking(); }
 
-    public void RunFirst()
+    public IStoryboardEvent Transform(Storyboard storyboard)
     {
-        Function?.Invoke(storyboard);
-        hasRan = true;
+        return Function?.Invoke(storyboard);
     }
 }
 
@@ -229,9 +227,9 @@ public struct NonBlockingEvent : IStoryboardEvent
         Event.Execute(deltaTime);
     }
 
-    public bool HasRan()
+    public bool HasEventFunction()
     {
-        return Event.HasRan();
+        return Event.HasEventFunction();
     }
 
     public bool IsBlocking()
@@ -244,9 +242,9 @@ public struct NonBlockingEvent : IStoryboardEvent
         return Event.IsFinished();
     }
 
-    public void RunFirst()
+    public IStoryboardEvent Transform(Storyboard storyboard)
     {
-        Event.RunFirst();
+        return Event.Transform(storyboard);
     }
 }
 
@@ -269,8 +267,9 @@ public class StoryboardEventFunctions
         {
             Function = (storyboard) =>
             {
-                // TODO var screen = new ScreenState(color);
-                // storyboard.PushState(id, screen);
+                var renderer = ServiceManager.Get<GameLogic>().ScreenImage;
+                var screenState = new ScreenState(renderer, Color.black);
+                storyboard.PushState(id, screenState);
                 return EmptyEvent;
             }
         };
@@ -413,16 +412,16 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent FadeScreen(string state, float start, float finish, float duration = 3.0f)
+    public static IStoryboardEvent FadeScreen(float start, float finish, float duration = 3.0f, string state = "")
     {
         return new StoryboardFunctionEvent
         {
             Function = (storyboard) =>
             {
                 var gameState = storyboard.SubStack.Top();
-                if (state != Constants.EMPTY_STATE)
+                if (state != string.Empty)
                     gameState = storyboard.States[state];
-                // TODO assert target and color
+                DebugAssert.Assert(gameState.GetType() == typeof(ScreenState), $"gameState {gameState} from story is not type ScreenState. Cannot fade screen,");
 
                 return new TweenEvent<ScreenState>
                 {
@@ -431,10 +430,10 @@ public class StoryboardEventFunctions
                     Duration = duration,
                     Function = (target, value) =>
                     {
-                        var renderer = target.GetRenderer();
-                        var color = renderer.color;
+                        var image = target.Image;
+                        var color = image.color;
                         color.a = value;
-                        renderer.color = color;
+                        image.color = color;
                     },
                     Target = (ScreenState)gameState
                 };
@@ -442,14 +441,14 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent FadeScreenIn(string state, float duration)
+    public static IStoryboardEvent FadeScreenIn(string state = "", float duration = 3.0f)
     {
-        return FadeScreen(state, 0, 1, duration);
+        return FadeScreen(0, 1, duration, state);
     }
 
-    public static IStoryboardEvent FadeScreenOut(string state, float duration)
+    public static IStoryboardEvent FadeScreenOut(string state = "", float duration = 3.0f)
     {
-        return FadeScreen(state, 1, 0, duration);
+        return FadeScreen(1, 0, duration, state);
     }
 
     //function SOP.Caption(id, style, text)
@@ -678,14 +677,14 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent HandOffToExploreState(string state)
+    public static IStoryboardEvent HandOffToExploreState()
     {
         return new StoryboardFunctionEvent
         {
             Function = (storyboard) =>
             {
                 LogManager.LogDebug($"Handing off to explore state.");
-                var exploreState = (ExploreState)storyboard.States[state];
+                var exploreState = (ExploreState)storyboard.States[Constants.HANDIN_STATE];
                 storyboard.Stack.Pop();
                 storyboard.Stack.Push(exploreState);
                 exploreState.stack = ServiceManager.Get<GameLogic>().Stack;

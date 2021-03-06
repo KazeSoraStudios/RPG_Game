@@ -57,4 +57,7 @@ public class Constants
     public static string OPTION_MENU_STATE = "option";
     public static string TITLE_MENU_STATE = "title";
     public static string GAME_OVER_STATE = "gameover";
+
+    // Storyboard states
+    public static string SCREEN_STATE = "screenstate";
 }

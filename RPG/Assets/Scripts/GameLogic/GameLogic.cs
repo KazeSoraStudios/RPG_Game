@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameLogic : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class GameLogic : MonoBehaviour
     [SerializeField] object GameState;// TODO GetDefaultGameState()
     [SerializeField] public InGameMenu GameMenu;
     [SerializeField] GameDataDownloader GameDataDownloader;
+    [SerializeField] public Image ScreenImage;
 
     public StateStack Stack;
 
@@ -34,6 +36,20 @@ public class GameLogic : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            var events = new List<IStoryboardEvent>
+            {
+                StoryboardEventFunctions.BlackScreen(),
+                StoryboardEventFunctions.FadeScreenOut(),
+                StoryboardEventFunctions.Wait(2.0f),
+                //StoryboardEventFunctions.FadeScreenIn(),
+                StoryboardEventFunctions.HandOffToExploreState()
+            };
+            var storyboard = new Storyboard(Stack, events, true);
+            Stack.Push(storyboard);
+            LogManager.LogInfo("Pushed storyboard");
+        }
         var deltaTime = Time.deltaTime;
         Stack.Update(deltaTime);
         world.Execute(deltaTime);

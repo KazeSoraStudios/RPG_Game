@@ -32,44 +32,6 @@ public class Character : MonoBehaviour
         //Controller.States = states;
         //Controller.CurrentState = states[States.Wait];
     }
-    public Vector2 force;
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            var p = new List<Direction> { Direction.East, Direction.East, Direction.East, Direction.North,
-            Direction.West,Direction.West,Direction.West,Direction.South, Direction.South};
-            FollowPath(p);
-        }
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            Entity.AddKnockback(force);
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            var p = transform.position + (Vector3)force;
-            transform.position = p;
-        }
-
-        Vector3 facing = Vector3.down;
-        if (direction == Direction.East)
-            facing = Vector3.left;
-        else if (direction == Direction.West)
-            facing = Vector3.right;
-        else if (direction == Direction.North)
-            facing = Vector3.up;
-        else if (direction == Direction.South)
-            facing = Vector3.down;
-
-        //Debug.DrawRay(transform.position, 0.5f, Color.red);
-
-        var Grid = GameObject.Find("Collision").GetComponent<TilemapRenderer>();
-        var x = Grid.sortingOrder = 2;
-    }
 
     public bool CanMove(Vector2 targetPosition)
     {

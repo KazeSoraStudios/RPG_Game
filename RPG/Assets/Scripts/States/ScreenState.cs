@@ -1,32 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScreenState : IGameState
 {
-    public SpriteRenderer GetRenderer() { return null; }
+    public Image Image;
 
-    public void Enter(object o)
+    public ScreenState(Image image, Color color)
     {
-        throw new System.NotImplementedException();
+        Image = image;
+        image.color = color;
     }
+    
+    public void Enter(object o) { }
 
-    public bool Execute(float deltaTime)
-    {
-        throw new System.NotImplementedException();
-    }
+    public bool Execute(float deltaTime) { return true; }
 
-    public void Exit()
-    {
-        throw new System.NotImplementedException();
-    }
+    public void Exit() { }
 
     public string GetName()
     {
-        throw new System.NotImplementedException();
+        return "ScreenState";
     }
 
-    public void HandleInput()
-    {
-        throw new System.NotImplementedException();
-    }
+    public void HandleInput() { }
 }

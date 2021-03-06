@@ -141,14 +141,6 @@ public class EventQueue : MonoBehaviour
 #if UNITY_EDITOR
     public bool ShowEvents = false;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            events.Add(new EmptyEvent());
-        }
-    }
-
     public void OnGUI()
     {
         if (!ShowEvents)

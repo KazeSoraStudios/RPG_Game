@@ -125,7 +125,6 @@ public class ScrollView : UIMonoBehaviour
         {
             displayStart--;
             redraw = true;
-           // return;
         }
         SetSelectionPosition(false, true);
     }
@@ -138,11 +137,9 @@ public class ScrollView : UIMonoBehaviour
         {
             displayStart++;
             redraw = true;
-            //return;
         }
         SetSelectionPosition(false, true);
     }
-    public float minus = 1.0f;
 
     private void HandleLeftInput()
     {
@@ -162,7 +159,7 @@ public class ScrollView : UIMonoBehaviour
         var cellPosition = cells[index].transform.position;
         var cellSize = ScrollHandler.GetCellSize();
         var y = cellPosition.y;
-        var x = cellPosition.x - cellSize.x * minus;
+        var x = cellPosition.x - cellSize.x * 0.33f;
         SelectionArrow.transform.position = new Vector2(x, y);
         OnChange?.Invoke(index + displayStart * ColumnCount);
     }

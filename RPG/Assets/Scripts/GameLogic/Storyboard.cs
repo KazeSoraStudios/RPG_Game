@@ -6,10 +6,10 @@ public class Storyboard : IGameState
     public StateStack Stack = new StateStack();
     public StateStack SubStack = new StateStack();
     public Dictionary<string, IGameState> States = new Dictionary<string, IGameState>();
-    public Dictionary<SBEvent, IStoryboardEvent> events = new Dictionary<SBEvent, IStoryboardEvent>();
+    public List<IStoryboardEvent> events = new List<IStoryboardEvent>();
     public Dictionary<string, AudioSource> PlayingSounds = new Dictionary<string, AudioSource>();
 
-    public void Init(StateStack stack, Dictionary<SBEvent, IStoryboardEvent> events, bool handIn)
+    public Storyboard (StateStack stack, List<IStoryboardEvent> events, bool handIn)
     {
         this.Stack = stack;
         this.events = events;
@@ -39,24 +39,25 @@ public class Storyboard : IGameState
 
         if (events.Count == 0)
             Stack.Pop();
-
-        SBEvent removeEvent = SBEvent.None;
-        foreach (var _event in events)
+        
+        int removeIndex = -1;
+        for (int i = 0; i < events.Count; i++)
         {
-            var e = _event.Value;
-            if (!e.HasRan())
-                e.RunFirst();
-            e.Execute(deltaTime);
-            if (e.IsFinished())
+            // If our event is an event to a function, 
+            // call the function and then keep a reference to the new event it creates
+            if (events[i].HasEventFunction())
+                events[i] = events[i].Transform(this);
+            events[i].Execute(deltaTime);
+            if (events[i].IsFinished())
             {
-                removeEvent = _event.Key;
+                removeIndex = i;
                 break;
             }
-            if (e.IsBlocking())
+            if (events[i].IsBlocking())
                 break;
         }
-        if (removeEvent != SBEvent.None)
-            events.Remove(removeEvent);
+        if (removeIndex != -1)
+            events.RemoveAt(removeIndex);
         return true;
     }
 
