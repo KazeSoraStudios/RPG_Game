@@ -7,7 +7,9 @@ public class ItemListCell : ScrollViewCell
     public class Config
     {
         public bool ShowIcon;
-        public Spell Spell;
+        public string Name;
+        public string Amount;
+        public string Description;
         public string Icon;
     }
 
@@ -15,16 +17,20 @@ public class ItemListCell : ScrollViewCell
     [SerializeField] TextMeshProUGUI AmountText;
     [SerializeField] Image Icon;
 
+    public static readonly ItemListCell.Config EmptyConfig = new ItemListCell.Config
+    {
+        Name = "--",
+        Description = string.Empty,
+        Amount = string.Empty,
+        ShowIcon = false
+    };
+
     public void Init(Config config)
     {
         if (CheckUIConfigAndLogError(config, "ItemListCell"))
             return;
-        // TODO generic
-        var name = config.Spell == null ? "--" : config.Spell.LocalizedName();
-        NameText.SetText(name);
-        var amount = config.Spell == null ? string.Empty : config.Spell.MpCost.ToString();
-        AmountText.SetText(amount);
-
+        NameText.SetText(config.Name);
+        AmountText.SetText(config.Amount);
         Icon.gameObject.SafeSetActive(false);
         if (config.ShowIcon)
             Icon.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.Icon, () => Icon.gameObject.SafeSetActive(true));

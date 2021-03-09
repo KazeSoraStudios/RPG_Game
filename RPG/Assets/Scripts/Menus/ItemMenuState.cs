@@ -1,108 +1,217 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
-public class ItemMenuState : UIMonoBehaviour, IGameState
+public class ItemMenuState : UIMonoBehaviour, IGameState, IScrollHandler
 {
     public class Config
     {
         public InGameMenu Parent;
+        public List<Item> Items = new List<Item>();
+        public List<Item> KeyItems = new List<Item>();
     }
 
+    [SerializeField] RectTransform[] Categories;
+    [SerializeField] TextMeshProUGUI DescriptionText;
+    [SerializeField] ScrollView ScrollView;
+    [SerializeField] GridLayoutGroup Grid;
+    [SerializeField] Image SelectionArrow;
+
+    private bool inScrollView;
+    private bool inKeyItems;
+    private int categoryIndex = 0;
     private InGameMenu parent;
     private StateStack stack;
     private StateMachine stateMachine;
-
-    public void Init(Config config)
-    {
-        if (CheckUIConfigAndLogError(config, GetName()))
-            return;
-        parent = config.Parent;
-        stack = parent.Stack;
-        stateMachine = parent.StateMachine;
-    }
+    private List<ItemListCell.Config> useConfigs = new List<ItemListCell.Config>();
+    private List<ItemListCell.Config> keyConfigs = new List<ItemListCell.Config>();
+    private List<ItemListCell.Config> activeConfigs = new List<ItemListCell.Config>();
 
     public void Enter(object o = null)
     {
-        throw new System.NotImplementedException();
+        if (CheckUIConfigAndLogError(o, GetName()) || ConvertConfig<Config>(o, out var config) && config == null)
+            return;
+        gameObject.SafeSetActive(true);
+        parent = config.Parent;
+        stack = parent.Stack;
+        stateMachine = parent.StateMachine;
+        inScrollView = false;
+        inKeyItems = false;
+        ScrollView.HideCursor();
+        useConfigs.Clear();
+        keyConfigs.Clear();
+        activeConfigs.Clear();
+        SetUpMenu(config);
     }
 
     public bool Execute(float deltaTime)
     {
-        throw new System.NotImplementedException();
+        HandleInput();
+        ScrollView.Execute();
+        return true;
     }
 
     public void Exit()
     {
-        throw new System.NotImplementedException();
+        ScrollView.ClearCells();
+        gameObject.SafeSetActive(false);
     }
 
     public string GetName()
     {
-        throw new System.NotImplementedException();
+        return "ItemMenuState";
     }
 
     public void HandleInput()
     {
-        throw new System.NotImplementedException();
+        if (inScrollView)
+            {
+                ScrollView.HandleInput();
+                HandleInScrollInput();
+            }
+        else
+            HandleSelectItemCategoryInput();
+    }
+
+    public string GetPrefabPath()
+    {
+        return Constants.ITEM_LIST_CELL_PREFAB_PATH;
+    }
+
+    public void InitCell(int index, ScrollViewCell cell)
+    {
+        if (index < 0)
+        {
+            LogManager.LogError($"Index[{index}] is out of range for item menu configs.");
+            return;
+        }
+        if (!ConvertConfig<ItemListCell>(cell, out var listCell) || listCell == null)
+        {
+            LogManager.LogError($"Cell {cell.GetType()}, passed to item menu but expected ItemListCell");
+            return;
+        }
+        // If we go past the end return the empty item we added
+        var config = index < activeConfigs.Count - 1 ? activeConfigs[index] : ItemListCell.EmptyConfig;
+        listCell.Init(config);
+    }
+
+    public void OnAfterLoad()
+    {
+
+    }
+
+    public Vector2 GetCellSize()
+    {
+        return Grid.cellSize;
+    }
+
+    public int GetNumberOfCells()
+    {
+        return activeConfigs.Count;
+    }
+
+    private void SetUpMenu(Config config)
+    {
+        // foreach (var use in config.Items)
+        //     useConfigs.Add(new ItemListCell.Config
+        //     {
+        //         Item = use,
+        //         ShowIcon = true
+        //     });
+
+        // foreach (var key in config.KeyItems)
+        //     useConfigs.Add(new ItemListCell.Config
+        //     {
+        //         Item = key,
+        //         ShowIcon = true
+        //     });
+
+        var items = ServiceManager.Get<GameData>().Items;
+        foreach (var entry in items)
+        {
+           var item = entry.Value;
+           var i = new ItemListCell.Config
+           {
+               Name = item.GetName(),
+               Amount = Random.Range(0,9).ToString(),
+               ShowIcon = false
+           };
+           if (item.Type == ItemType.Key)
+                keyConfigs.Add(i);
+           else 
+                useConfigs.Add(i);
+        }
+        activeConfigs = useConfigs;
+        ScrollView.Init(this, SetDescription, parent);
+    }
+
+    private void SetDescription(int index)
+    {
+        var config = index < activeConfigs.Count - 1 ? activeConfigs[index] : ItemListCell.EmptyConfig;
+        var description = config.Description;
+        DescriptionText.SetText(ServiceManager.Get<LocalizationManager>().Localize(description));
     }
 
     private bool CanUseItem(Item item)
     {
         return true;// useDef.can_use_on_map == true
     }
-
-    /*
-
-        mScrollbar = Scrollbar:Create(Texture.Find("scrollbar.png"), 228),
-        mItemMenus =
+    private void HandleSelectItemCategoryInput()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            Selection:Create
-            {
-                data = gGame.World.mItems,
-                spacingX = 256,
-                columns = 2,
-                displayRows = 8,
-                spacingY = 28,
-                rows = 20,
-                RenderItem = function(self, renderer, x, y, item)
-                    gGame.World:DrawItem(self, renderer, x, y, item)
-                end,
-                OnSelection = function(...) this:OnUseItem(...) end,
-            },
-            Selection:Create
-            {
-                data = gGame.World.mKeyItems,
-                spacingX = 256,
-                columns = 2,
-                displayRows = 8,
-                spacingY = 28,
-                rows = 20,
-                RenderItem = function(self, renderer, x, y, item)
-                    gGame.World:DrawKey(self, renderer, x, y, item)
-                end,
-            },
-        },
-
-        mCategoryMenu = Selection:Create
+            categoryIndex = categoryIndex == 0 ? 1 : 0;
+            SetSelectionPosition();
+            activeConfigs = categoryIndex == 0 ? useConfigs : keyConfigs;
+            ScrollView.Refresh();
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            data = {"Use", "Key Items"},
-            OnSelection = function(...) this:OnCategorySelect(...) end,
-            spacingX = 150,
-            columns = 2,
-            rows = 1,
-        },
-        mInCategoryMenu = true
+            categoryIndex = categoryIndex == 0 ? 1 : 0;
+            SetSelectionPosition();
+            activeConfigs = categoryIndex == 0 ? useConfigs : keyConfigs;
+            ScrollView.Refresh();
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            inScrollView = true;
+            ScrollView.ShowCursor();
+        }
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            stateMachine.Change(Constants.FRONT_MENU_STATE, parent.FrontConfig);
+        }
     }
 
-    for k, v in ipairs(this.mItemMenus) do
-        v:HideCursor()
-    end
+    private void HandleInScrollInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            inScrollView = false;
+            ScrollView.HideCursor();
+        }
+    }
 
-    setmetatable(this, self)
-    return this
-end
+    private void SetSelectionPosition()
+    {
+        var categoryPosition = Categories[categoryIndex].position;
+        var position = new Vector2(categoryPosition.x - 50.0f, categoryPosition.y);
+        SelectionArrow.transform.position = position;
+        activeConfigs = categoryIndex == 0 ? useConfigs : keyConfigs;
+    }
 
+    private void OnUseItem(Item item)
+    {
+        var useId = item.ItemInfo.Use;
+        var itemUses = ServiceManager.Get<GameData>().ItemUses;
+        if (!itemUses.ContainsKey(useId) || !itemUses[useId].UseOnMap)
+            return;
+        // TODO item use function
+    }
+
+    /*
 
 
 function ItemMenuState:OnUseItem(index, item)
@@ -138,64 +247,12 @@ function ItemMenuState:OnItemTargetsSelected(itemDef, targets)
     gGame.World:RemoveItem(itemDef.id)
 end
 
-function ItemMenuState:Enter()
-    self:FocusOnCategoryMenu()
-end
-
-function ItemMenuState:Exit() end
 
 function ItemMenuState:OnCategorySelect(index, value)
     self.mCategoryMenu:HideCursor()
     self.mInCategoryMenu = false
     local menu = self.mItemMenus[index]
     menu:ShowCursor()
-end
-
-function ItemMenuState:Render(renderer)
-
-    local font = gGame.Font.default
-
-    for k,v in ipairs(self.mPanels) do
-        v:Render(renderer)
-    end
-
-    local titleX = self.mLayout:MidX("title")
-    local titleY = self.mLayout:MidY("title")
-    font:AlignText("center", "center")
-    font:DrawText2d(renderer, titleX, titleY, "Items")
-
-    font:AlignText("left", "center")
-    local categoryX = self.mLayout:Left("category") + 5
-    local categoryY = self.mLayout:MidY("category")
-    self.mCategoryMenu:SetPosition(categoryX, categoryY)
-    self.mCategoryMenu:Render(renderer)
-
-
-    local descX = self.mLayout:Left("mid") + 10
-    local descY = self.mLayout:MidY("mid")
-
-    local menu = self.mItemMenus[self.mCategoryMenu:GetIndex()]
-
-    if not self.mInCategoryMenu then
-        local description = ""
-        local selectedItem = menu:SelectedItem()
-        if selectedItem then
-            local itemDef = ItemDB[selectedItem.id]
-            description = itemDef.description
-        end
-        font:DrawText2d(renderer, descX, descY, description)
-    end
-
-    local itemX = self.mLayout:Left("inv") - 6
-    local itemY = self.mLayout:Top("inv") - 20
-
-    menu:SetPosition(itemX, itemY)
-    menu:Render(renderer)
-
-    local scrollX = self.mLayout:Right("inv") - 14
-    local scrollY = self.mLayout:MidY("inv")
-    self.mScrollbar:SetPosition(scrollX, scrollY)
-    self.mScrollbar:Render(renderer)
 end
 
 function ItemMenuState:Update(dt)

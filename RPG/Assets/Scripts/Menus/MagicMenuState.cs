@@ -50,7 +50,7 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
 
     public void Exit()
     {
-        ScrollView.CleanUp();
+        ScrollView.ClearCells();
         gameObject.SafeSetActive(false);
     }
 
@@ -86,8 +86,7 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
             LogManager.LogError($"Cell {cell.GetType()}, passed to maigc menu but expected ItemListCell");
             return;
         }
-        // If we go past the end return the empty item we added
-        var config = index < configs.Count - 1 ? configs[index] : configs[configs.Count - 1];
+        var config = index < configs.Count - 1 ? configs[index] : ItemListCell.EmptyConfig;
         listCell.Init(config);
     }
 
@@ -124,22 +123,20 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
             var spell = entry.Value;
             configs.Add(new ItemListCell.Config
             {
-                Spell = spell,
+                Name = spell.LocalizedName(),
+                Amount = spell.MpCost.ToString(),
+                Description = spell.Description,
                 ShowIcon = false
             });
         }
-        configs.Add(new ItemListCell.Config
-        {
-            ShowIcon = false
-        });
 
         ScrollView.Init(this, SetDescription, parent);
     }
 
     private void SetDescription(int index)
     {
-        var cell = configs[index];
-        var description = cell.Spell?.Description ?? string.Empty;
+        var config = index < configs.Count - 1 ? configs[index] : ItemListCell.EmptyConfig;
+        var description = config.Description;
         DescriptionText.SetText(ServiceManager.Get<LocalizationManager>().Localize(description));
     }
 }

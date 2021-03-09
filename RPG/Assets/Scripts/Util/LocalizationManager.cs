@@ -19,7 +19,7 @@ public class LocalizationManager : MonoBehaviour
 
 	public string Localize(string id)
     {
-        if (localization.ContainsKey(id))
+        if (id != null && localization.ContainsKey(id))
             return localization[id];
         return id;
     }

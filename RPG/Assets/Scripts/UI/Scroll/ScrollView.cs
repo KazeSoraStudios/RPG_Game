@@ -41,43 +41,36 @@ public class ScrollView : UIMonoBehaviour
     {
         if (CheckUIConfigAndLogError(scrollHandler, "Scrollview"))
             return;
-        Reset();
+        ResetScrollView();
         ScrollHandler = scrollHandler;
         Menu = menu;
         OnChange = onChange;
-        var path = ScrollHandler.GetPrefabPath();
-        var asset = ServiceManager.Get<AssetManager>().Load<ScrollViewCell>(path);
-        var cellSize = ScrollHandler.GetCellSize();
-        displayRows = (int)(Content.rect.height / cellSize.y);
-        numberOfRows = ScrollHandler.GetNumberOfCells() / ColumnCount;
-        var cells = displayRows * ColumnCount;
-
-        for (int i = 0; i < cells; i++)
-        {
-            ScrollViewCell cell;
-            if (!menu.HasCell())
-                cell = Instantiate(asset);
-            else
-                cell = menu.GetCellFromPool();
-            cell.gameObject.SafeSetActive(true);
-            cell.transform.SetParent(Content, false);
-            ScrollHandler.InitCell(i, cell);
-            scrollHandler.OnAfterLoad();
-            this.cells.Add(cell);
-        }
-        LayoutGroup.CalculateLayoutInputHorizontal();
-        LayoutGroup.CalculateLayoutInputVertical();
-        LayoutGroup.SetLayoutHorizontal();
-        LayoutGroup.SetLayoutVertical();
-        SetSelectionPosition(true, true);
+        Draw();
     }
 
-    public void CleanUp()
+    public void ResetScrollView()
+    {
+        ClearCells();
+        arrowY = 0;
+        arrowX = 0;
+        displayRows = 0;
+        displayIndex = 0;
+        redraw = true;
+    }
+    
+    public void Refresh()
+    {
+        ResetScrollView();
+        Draw();
+    }
+
+    public void ClearCells()
     {
         for (int i = cells.Count - 1; i > -1; i--)
         {
             cells[i].OnExit();
             Menu.ReturnCellToPool(cells[i]);
+            cells.RemoveAt(i);
         }
     }
 
@@ -115,6 +108,45 @@ public class ScrollView : UIMonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
             HandleRightInput();
+    }
+
+    public void HideCursor()
+    {
+        SelectionArrow.gameObject.SafeSetActive(false);
+    }
+
+    public void ShowCursor()
+    {
+        SelectionArrow.gameObject.SafeSetActive(true);
+    }
+
+    private void Draw() 
+    {
+        var path = ScrollHandler.GetPrefabPath();
+        var cellSize = ScrollHandler.GetCellSize();
+        displayRows = (int)(Content.rect.height / cellSize.y);
+        var asset = ServiceManager.Get<AssetManager>().Load<ScrollViewCell>(path);
+        numberOfRows = ScrollHandler.GetNumberOfCells() / ColumnCount;
+        var cells = displayRows * ColumnCount;
+
+        for (int i = 0; i < cells; i++)
+        {
+            ScrollViewCell cell;
+            if (!Menu.HasCell())
+                cell = Instantiate(asset);
+            else
+                cell = Menu.GetCellFromPool();
+            cell.gameObject.SafeSetActive(true);
+            cell.transform.SetParent(Content, false);
+            ScrollHandler.InitCell(i, cell);
+            ScrollHandler.OnAfterLoad();
+            this.cells.Add(cell);
+        }
+        LayoutGroup.CalculateLayoutInputHorizontal();
+        LayoutGroup.CalculateLayoutInputVertical();
+        LayoutGroup.SetLayoutHorizontal();
+        LayoutGroup.SetLayoutVertical();
+        SetSelectionPosition(true, true);
     }
 
     private void HandleUpMovement()
@@ -162,15 +194,5 @@ public class ScrollView : UIMonoBehaviour
         var x = cellPosition.x - cellSize.x * 0.33f;
         SelectionArrow.transform.position = new Vector2(x, y);
         OnChange?.Invoke(index + displayStart * ColumnCount);
-    }
-
-    private void Reset()
-    {
-        cells.Clear();
-        arrowY = 0;
-        arrowX = 0;
-        displayRows = 0;
-        displayIndex = 0;
-        redraw = true;
     }
 }

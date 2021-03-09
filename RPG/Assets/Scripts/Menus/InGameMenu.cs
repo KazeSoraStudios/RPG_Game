@@ -16,6 +16,7 @@ public class InGameMenu : UIMonoBehaviour, IGameState
     public StateMachine StateMachine;
     public FrontMenuState.Config FrontConfig;
     public StatusMenuState.Config StatusConfig;
+    public ItemMenuState.Config ItemMenuConfig;
     public MagicMenuState.Config MagicConfig;
 
     private List<ScrollViewCell> pool = new List<ScrollViewCell>();
@@ -31,6 +32,7 @@ public class InGameMenu : UIMonoBehaviour, IGameState
         states.Add(Constants.EQUIP_MENU_STATE, EquipMenu);
         states.Add(Constants.OPTION_MENU_STATE, OptionMenu);
         StateMachine = new StateMachine(states);
+        var world = ServiceManager.Get<World>();
         FrontConfig = new FrontMenuState.Config
         {
             Parent = this
@@ -43,6 +45,12 @@ public class InGameMenu : UIMonoBehaviour, IGameState
         MagicConfig = new MagicMenuState.Config
         {
             Parent = this
+        };
+        ItemMenuConfig = new ItemMenuState.Config
+        {
+            Parent = this,
+            Items = world.GetUseItemsList(),
+            KeyItems = world.GetKeyItemsList()
         };
     }
 

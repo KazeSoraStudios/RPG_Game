@@ -9,8 +9,8 @@ public class World : MonoBehaviour
     [SerializeField] public int Gold;
     [SerializeField] public float PlayTime = 0;
     [SerializeField] public Party Party;
-    [SerializeField] Dictionary<string, Item> Items = new Dictionary<string, Item>();
-    [SerializeField] Dictionary<string, Item> KeyItems = new Dictionary<string, Item>();
+    Dictionary<string, Item> Items = new Dictionary<string, Item>();
+    Dictionary<string, Item> KeyItems = new Dictionary<string, Item>();
     //mIcons = Icons:Create(Texture.Find("inventory_icons.png")),       string
 
     private void Awake()
@@ -147,5 +147,15 @@ public class World : MonoBehaviour
         if (!Items.ContainsKey(itemId))
             return;
         KeyItems.Remove(itemId);
+    }
+
+    public List<Item> GetUseItemsList()
+    {
+        return Items.Values.ToList<Item>();
+    }
+
+    public List<Item> GetKeyItemsList()
+    {
+        return KeyItems.Values.ToList<Item>();
     }
 }

@@ -111,7 +111,7 @@ public class FrontMenuState : UIMonoBehaviour, IGameState
         switch(selection)
         {
             case 0:
-                // Open item window
+                stateMachine.Change(Constants.ITEM_MENU_STATE, config.Parent.ItemMenuConfig);
                 break;
             case 1:
             case 2:
