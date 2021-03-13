@@ -4,45 +4,45 @@ using UnityEngine;
 
 public class Party : MonoBehaviour
 {
-    public Dictionary<int, Actor> Members = new Dictionary<int, Actor>();
+    private Dictionary<int, Actor> members = new Dictionary<int, Actor>();
 
     public void Reset()
     {
-        Members.Clear();
-    }
-
-    public bool HasMemeber(Actor actor)
-    {
-        return HasMemeber(actor.Id);
+        members.Clear();
     }
 
     public bool HasMemeber(int id)
     {
-        return Members.ContainsKey(id);
+        return members.ContainsKey(id);
+    }
+
+    public Actor GetActor(int id)
+    {
+        if (!HasMemeber(id))
+        {
+            LogManager.LogError($"Actor not found at party slot {id}");
+            return null;
+        }
+        return members[id];
     }
 
     public void Add(Actor member)
     {
-        if (Members.ContainsKey(member.Id))
+        if (members.ContainsKey(member.Id))
             return;
-        Members.Add(member.Id, member);
+        members.Add(member.Id, member);
     }
     
     public void RemoveById(int id)
     {
-        Members.Remove(id);
-    }
-
-    public void Remove(Actor member)
-    {
-        Members.Remove(member.Id);
+        members.Remove(id);
     }
     
     public Actor[] ToArray()
     {
-        var actors = new Actor[Members.Count];
+        var actors = new Actor[members.Count];
         int index = 0;
-        foreach (var member in Members)
+        foreach (var member in members)
             actors[index++] = member.Value;
         return actors;
     }
@@ -50,27 +50,27 @@ public class Party : MonoBehaviour
     public int EquipCount(Item item)
     {
         int count = 0;
-        foreach (var member in Members)
+        foreach (var member in members)
             count += member.Value.EquipCount(item);
         return count;
     }
 
     public void Rest()
     {
-        foreach(var member in Members)
+        foreach(var member in members)
             if (member.Value.Stats.Get(Stat.HP) > 0)
                 member.Value.Stats.ResetHpMp();
     }
 
     public void RestAll()
     {
-        foreach (var member in Members)
+        foreach (var member in members)
             member.Value.Stats.ResetHpMp();
     }
 
     public void DebugPrintParty()
     {
-        foreach (var member in Members)
+        foreach (var member in members)
         {
             var actor = member.Value;
             var name = actor.name;

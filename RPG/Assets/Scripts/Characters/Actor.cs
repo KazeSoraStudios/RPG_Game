@@ -5,6 +5,20 @@ using UnityEngine;
 
 public class Actor : MonoBehaviour
 {
+    public struct LevelUp
+    {
+        public int Exp;
+        public int Level;
+        public Stats Stats;
+        //Actions
+
+        public LevelUp(int exp, int level, Stats stats)
+        {
+            Exp = exp;
+            Level = level;
+            Stats = stats;
+        }
+    }
     public enum EquipSlot { Weapon, Armor, Accessory1, Accessory2 };
 
     [SerializeField] public string Name;
@@ -94,21 +108,6 @@ public class Actor : MonoBehaviour
     {
         Exp += exp;
         return ReadyToLevelUp();
-    }
-
-    public struct LevelUp
-    {
-        public int Exp;
-        public int Level;
-        public Stats Stats;
-        //Actions
-
-        public LevelUp(int exp, int level, Stats stats)
-        {
-            Exp = exp;
-            Level = level;
-            Stats = stats;
-        }
     }
 
     public LevelUp CreateLevelUp()

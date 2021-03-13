@@ -29,6 +29,8 @@ public class Constants
     
     // Defaults
     public static int EMPTY_EVENT_COUNTDOWN = -999;
+    public static int MAX_TEXTBOX_CHARACTERS = 225;
+    public static float TEXTBOX_CHARACTER_SPEED = 0.02f;
     public static float SELECT_MARKER_BOUNCE_SPEED = 5.0f;
 
     // Character States

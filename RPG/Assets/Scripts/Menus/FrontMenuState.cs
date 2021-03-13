@@ -137,14 +137,14 @@ public class FrontMenuState : UIMonoBehaviour, IGameState
         switch (menu)
         {
             case 1:
-                config.Parent.StatusConfig.Actor = party.Members[selection];
+                config.Parent.StatusConfig.Actor = party.GetActor(selection);
                 stateMachine.Change(Constants.STATUS_MENU_STATE, config.Parent.StatusConfig);
                 break;
             case 2:
                 // open equipment menu
                 break;
             case 3:
-                config.Parent.MagicConfig.Actor = party.Members[selection];
+                config.Parent.MagicConfig.Actor = party.GetActor(selection);
                 stateMachine.Change(Constants.MAGIC_MENU_STATE, config.Parent.MagicConfig);
                 break;
             default:

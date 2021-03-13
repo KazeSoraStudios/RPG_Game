@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
+using RPG_UI;
 public class GameLogic : MonoBehaviour
 {
     [SerializeField] LogLevel LogLevel;
@@ -11,6 +12,7 @@ public class GameLogic : MonoBehaviour
     [SerializeField] public InGameMenu GameMenu;
     [SerializeField] GameDataDownloader GameDataDownloader;
     [SerializeField] public Image ScreenImage;
+    [SerializeField] public Textbox Textbox;
 
     public StateStack Stack;
 
@@ -30,6 +32,7 @@ public class GameLogic : MonoBehaviour
     private void Start()
     {
         Stack = new StateStack();
+        Textbox.SetUp(Stack);
         world.Reset();
         SetUpNewGame();
     }
@@ -49,6 +52,11 @@ public class GameLogic : MonoBehaviour
             var storyboard = new Storyboard(Stack, events, true);
             Stack.Push(storyboard);
             LogManager.LogInfo("Pushed storyboard");
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            Stack.PushTextbox("this is a sample text box", Constants.PORTRAIT_PATH + "mage_portrait");
         }
         var deltaTime = Time.deltaTime;
         Stack.Update(deltaTime);

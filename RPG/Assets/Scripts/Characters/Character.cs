@@ -35,8 +35,8 @@ public class Character : MonoBehaviour
 
     public bool CanMove(Vector2 targetPosition)
     {
-        var p = (Vector2)transform.position + targetPosition;
-        var collision = Physics2D.OverlapCircle(p, 0.2f, collisionLayer);
+        var position = (Vector2)transform.position + targetPosition;
+        var collision = Physics2D.OverlapCircle(position, 0.2f, collisionLayer);
         return !collision;
     }
 

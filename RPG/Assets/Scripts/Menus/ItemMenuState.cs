@@ -156,7 +156,8 @@ public class ItemMenuState : UIMonoBehaviour, IGameState, IScrollHandler
 
     private bool CanUseItem(Item item)
     {
-        return true;// useDef.can_use_on_map == true
+        var use = item.ItemInfo.Use;
+        return ServiceManager.Get<GameData>().ItemUses[use].UseOnMap;
     }
     private void HandleSelectItemCategoryInput()
     {

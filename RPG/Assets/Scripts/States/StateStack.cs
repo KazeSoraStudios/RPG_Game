@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_UI;
 
 public class StateStack
 {
@@ -73,6 +74,18 @@ public class StateStack
             }
         }
         LogManager.LogDebug($"Failed to remove {state}");
+    }
+
+    public void PushTextbox(string text, string portrait)
+    {
+        var config = new Textbox.Config
+        {
+            ImagePath = portrait,
+            Text = ServiceManager.Get<LocalizationManager>().Localize(text)
+        };
+        var textbox = ServiceManager.Get<GameLogic>().Textbox;
+        textbox.Init(config);
+        Push(textbox);
     }
 
     //function StateStack: PushFix(renderer, x, y, width, height, text, params)
