@@ -58,6 +58,9 @@ public class GameLogic : MonoBehaviour
         {
             Stack.PushTextbox("this is a sample text box", Constants.PORTRAIT_PATH + "mage_portrait");
         }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+            GiveAllItems();
         var deltaTime = Time.deltaTime;
         Stack.Update(deltaTime);
         world.Execute(deltaTime);
@@ -78,6 +81,15 @@ public class GameLogic : MonoBehaviour
             var exploreState = map.gameObject.AddComponent<ExploreState>();
             exploreState.Init(map, Stack, Vector2.zero);
             Stack.Push(exploreState);
+        }
+    }
+
+    private void GiveAllItems()
+    {
+        var items = ServiceManager.Get<GameData>().Items;
+        foreach(var item in items)
+        {
+            world.AddItem(item.Value, 99);
         }
     }
 }

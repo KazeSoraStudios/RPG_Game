@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using TMPro;
 
 public class StatusMenuState : UIMonoBehaviour, IGameState
@@ -14,17 +11,9 @@ public class StatusMenuState : UIMonoBehaviour, IGameState
         public StateStack StateStack;
     }
 
-    [SerializeField] TextMeshProUGUI StrengthText;
-    [SerializeField] TextMeshProUGUI SpeedText;
-    [SerializeField] TextMeshProUGUI IntelligenceText;
-    [SerializeField] TextMeshProUGUI AttackText;
-    [SerializeField] TextMeshProUGUI DefenseText;
-    [SerializeField] TextMeshProUGUI MagicText;
-    [SerializeField] TextMeshProUGUI ResistText;
-    [SerializeField] TextMeshProUGUI WeaponText;
-    [SerializeField] TextMeshProUGUI ArmorText;
-    [SerializeField] TextMeshProUGUI AccesoryText;
     [SerializeField] ActorSummaryPanel ActorSummary;
+    [SerializeField] ItemInfoWidget ItemInfo;
+    [SerializeField] StatsWidget StatsWidget;
 
     private Config config;
 
@@ -40,6 +29,7 @@ public class StatusMenuState : UIMonoBehaviour, IGameState
     {
         if (CheckUIConfigAndLogError(o, GetName()) || ConvertConfig<Config>(o, out var config) && config == null)
         {
+            LogManager.LogError("Config is null or not of type Config in StatsMenuState");
             return;
         }
         gameObject.SafeSetActive(true);
@@ -48,7 +38,8 @@ public class StatusMenuState : UIMonoBehaviour, IGameState
             Actor = config.Actor,
             ShowExp = true
         });
-        SetStatsText();
+        InitStatsWidget(config.Actor.Stats);
+        InitItemInfo(config.Actor);
     }
 
     public bool Execute(float deltaTime)
@@ -67,19 +58,23 @@ public class StatusMenuState : UIMonoBehaviour, IGameState
         return "StatusMenuState";
     }
 
-    private void SetStatsText()
+    private void InitStatsWidget(Stats stats)
     {
-        var actor = config.Actor;
-        var stats = actor.Stats;
-        StrengthText.SetText(stats.Get(Stat.Strength).ToString());
-        SpeedText.SetText(stats.Get(Stat.Speed).ToString());
-        IntelligenceText.SetText(stats.Get(Stat.Intelligence).ToString());
-        AttackText.SetText(stats.Get(Stat.Attack).ToString());
-        DefenseText.SetText(stats.Get(Stat.Defense).ToString());
-        MagicText.SetText(stats.Get(Stat.Magic).ToString());
-        ResistText.SetText(stats.Get(Stat.Resist).ToString());
-        WeaponText.SetText(actor.GetEquipmentName(Actor.EquipSlot.Weapon).ToString());
-        ArmorText.SetText(actor.GetEquipmentName(Actor.EquipSlot.Armor).ToString());
-        AccesoryText.SetText(actor.GetEquipmentName(Actor.EquipSlot.Accessory1).ToString());
+        if (StatsWidget == null)
+        {
+            LogManager.LogError("StatsWidget is null in StatusMenuState");
+            return;
+        }
+        StatsWidget.Init(new StatsWidget.Config{ Stats = stats });
+    }
+
+    private void InitItemInfo(Actor actor)
+    {
+        if (ItemInfo == null)
+        {
+            LogManager.LogError("ItemInfoWidget is null in StatusMenuState");
+            return;
+        }
+        ItemInfo.Init(new ItemInfoWidget.Config{ Actor = actor });
     }
 }

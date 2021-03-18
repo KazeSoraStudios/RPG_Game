@@ -33,7 +33,7 @@ public class Actor : MonoBehaviour
     [SerializeField] public Stats Stats;
     [SerializeField] public LevelFunction LevelFunction;
     [SerializeField] public StatGrowth StatGrowth = new StatGrowth();
-    [SerializeField] public Item[] Equipment = new Item[4];
+    [SerializeField] public ItemInfo[] Equipment = new ItemInfo[3];
     [SerializeField] public List<Item> Loot = new List<Item>();
 
     public void Init(PartyMemeberDefintion partyMemeber)
@@ -170,23 +170,22 @@ public class Actor : MonoBehaviour
         Stats.ResetHpMp();
     }
 
-    public void Equip(EquipSlot slot, Item item = null)
+    public void Equip(EquipSlot slot, ItemInfo item = null)
     {
         var previousItem = Equipment[(int)slot];
         Equipment[(int)slot] = null;
         if (previousItem != null)
         {
             Stats.RemoveModifier(slot);
-            ServiceManager.Get<World>().AddItem(previousItem.ItemInfo);
+            ServiceManager.Get<World>().AddItem(previousItem);
         }
 
         if (item == null)
             return;
 
-        DebugAssert.Assert(item.Count > 0, $"Trying to add {item.ItemInfo.Name} to player slot[{slot}, but count is {item.Count}]");
-        ServiceManager.Get<World>().RemoveItem(item.ItemInfo.Id);
+        ServiceManager.Get<World>().RemoveItem(item.Id);
         Equipment[(int)slot] = item; // TODO change to use ids and get from db
-        Stats.AddModifier(slot, item.ItemInfo.Modifier);
+        Stats.AddModifier(slot, item.Modifier);
     }
 
     public void Unequip(EquipSlot slot)
@@ -194,11 +193,11 @@ public class Actor : MonoBehaviour
         Equip(slot);
     }
 
-    public int EquipCount(Item item)
+    public int EquipCount(ItemInfo item)
     {
         int count = 0;
         foreach (var _item in Equipment)
-            if (_item.ItemInfo.Id == item.ItemInfo.Id)
+            if (_item.Id == item.Id)
                 count++;
         return count;
     }
@@ -206,7 +205,13 @@ public class Actor : MonoBehaviour
     public string GetEquipmentName(EquipSlot slot)
     {
         var slotNumber = (int)slot;
-        return Equipment[slotNumber] == null ? "--" : Equipment[slotNumber].ItemInfo.GetName();
+        return Equipment[slotNumber] == null ? "--" : Equipment[slotNumber].GetName();
+    }
+
+    public ItemInfo GetEquipmentAtSlot(EquipSlot slot)
+    {
+        var slotNumber = (int)slot;
+        return Equipment[slotNumber] != null ? Equipment[slotNumber] : null;
     }
 
 //function Actor:CreateStatNameList()
@@ -247,17 +252,17 @@ public class Actor : MonoBehaviour
     //    return list
     //end
 
-    public List<int> PredictStats(EquipSlot slot, Item item)
+    public List<int> PredictStats(EquipSlot slot, ItemInfo item)
     {
         var stats = new List<int>();
         foreach (var stat in (Stat[])Enum.GetValues(typeof(Stat)))
-            stats.Add(Stats.GetStatDiffForNewItem(stat, slot, item.ItemInfo.Modifier));
+            stats.Add(Stats.GetStatDiffForNewItem(stat, slot, item.Modifier));
         return stats;
     }
 
-    public bool CanUse(Item item)
+    public bool CanUse(ItemInfo item)
     {
-        foreach (var use in item.ItemInfo.UseRestriction)
+        foreach (var use in item.UseRestriction)
             if (use == UseRestriction.None || use == UseRestriction)
                 return true;
         return false;

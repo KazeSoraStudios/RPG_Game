@@ -35,9 +35,10 @@ public class ScrollView : UIMonoBehaviour
     private int numberOfRows;
     private List<ScrollViewCell> cells = new List<ScrollViewCell>();
     private Action<int> OnChange;
+    private Action<int> OnSelect;
     private InGameMenu Menu;
 
-    public void Init(IScrollHandler scrollHandler, Action<int> onChange, InGameMenu menu)
+    public void Init(IScrollHandler scrollHandler, InGameMenu menu, Action<int> onChange = null, Action<int> onSelect = null)
     {
         if (CheckUIConfigAndLogError(scrollHandler, "Scrollview"))
             return;
@@ -45,6 +46,7 @@ public class ScrollView : UIMonoBehaviour
         ScrollHandler = scrollHandler;
         Menu = menu;
         OnChange = onChange;
+        OnSelect = onSelect;
         Draw();
     }
 
@@ -99,6 +101,9 @@ public class ScrollView : UIMonoBehaviour
         else
             redraw = false;
 
+        if (Input.GetKeyDown(KeyCode.Space))
+            OnSelect?.Invoke(GetCurrentSelection());
+
         if (ColumnCount < 2)
             return;
 
@@ -120,13 +125,18 @@ public class ScrollView : UIMonoBehaviour
         SelectionArrow.gameObject.SafeSetActive(true);
     }
 
+    public int GetCurrentSelection()
+    {
+        return (arrowY * ColumnCount + arrowX) + displayStart * ColumnCount;
+    }
+
     private void Draw() 
     {
         var path = ScrollHandler.GetPrefabPath();
         var cellSize = ScrollHandler.GetCellSize();
         displayRows = (int)(Content.rect.height / cellSize.y);
         var asset = ServiceManager.Get<AssetManager>().Load<ScrollViewCell>(path);
-        numberOfRows = ScrollHandler.GetNumberOfCells() / ColumnCount;
+        numberOfRows = Mathf.Max(ScrollHandler.GetNumberOfCells() / ColumnCount, 1);
         var cells = displayRows * ColumnCount;
 
         for (int i = 0; i < cells; i++)
@@ -187,7 +197,7 @@ public class ScrollView : UIMonoBehaviour
 
     private void SetSelectionPosition(bool xAxis, bool yAxis)
     {
-        int index = arrowY * 2 + arrowX;
+        int index = arrowY * ColumnCount + arrowX;
         var cellPosition = cells[index].transform.position;
         var cellSize = ScrollHandler.GetCellSize();
         var y = cellPosition.y;

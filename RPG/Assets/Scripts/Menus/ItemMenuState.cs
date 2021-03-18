@@ -93,7 +93,7 @@ public class ItemMenuState : UIMonoBehaviour, IGameState, IScrollHandler
             return;
         }
         // If we go past the end return the empty item we added
-        var config = index < activeConfigs.Count - 1 ? activeConfigs[index] : ItemListCell.EmptyConfig;
+        var config = index < activeConfigs.Count ? activeConfigs[index] : ItemListCell.EmptyConfig;
         listCell.Init(config);
     }
 
@@ -114,37 +114,23 @@ public class ItemMenuState : UIMonoBehaviour, IGameState, IScrollHandler
 
     private void SetUpMenu(Config config)
     {
-        // foreach (var use in config.Items)
-        //     useConfigs.Add(new ItemListCell.Config
-        //     {
-        //         Item = use,
-        //         ShowIcon = true
-        //     });
+        foreach (var use in config.Items)
+            useConfigs.Add(new ItemListCell.Config
+            {
+                ShowIcon = true,
+                Name = use.ItemInfo.GetName(),
+                Amount = use.Count.ToString()
+            });
 
-        // foreach (var key in config.KeyItems)
-        //     useConfigs.Add(new ItemListCell.Config
-        //     {
-        //         Item = key,
-        //         ShowIcon = true
-        //     });
-
-        var items = ServiceManager.Get<GameData>().Items;
-        foreach (var entry in items)
-        {
-           var item = entry.Value;
-           var i = new ItemListCell.Config
-           {
-               Name = item.GetName(),
-               Amount = Random.Range(0,9).ToString(),
-               ShowIcon = false
-           };
-           if (item.Type == ItemType.Key)
-                keyConfigs.Add(i);
-           else 
-                useConfigs.Add(i);
-        }
+        foreach (var key in config.KeyItems)
+            useConfigs.Add(new ItemListCell.Config
+            {
+                ShowIcon = true,
+                Name = key.ItemInfo.GetName(),
+                Amount = key.Count.ToString()
+            });
         activeConfigs = useConfigs;
-        ScrollView.Init(this, SetDescription, parent);
+        ScrollView.Init(this, parent, SetDescription);
     }
 
     private void SetDescription(int index)

@@ -18,6 +18,7 @@ public class InGameMenu : UIMonoBehaviour, IGameState
     public StatusMenuState.Config StatusConfig;
     public ItemMenuState.Config ItemMenuConfig;
     public MagicMenuState.Config MagicConfig;
+    public EquipMenuState.Config EquipConfig;
 
     private List<ScrollViewCell> pool = new List<ScrollViewCell>();
 
@@ -51,6 +52,10 @@ public class InGameMenu : UIMonoBehaviour, IGameState
             Parent = this,
             Items = world.GetUseItemsList(),
             KeyItems = world.GetKeyItemsList()
+        };
+        EquipConfig = new EquipMenuState.Config
+        {
+            Parent = this
         };
     }
 

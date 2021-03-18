@@ -7,6 +7,7 @@ public class ItemListCell : ScrollViewCell
     public class Config
     {
         public bool ShowIcon;
+        public string Id;
         public string Name;
         public string Amount;
         public string Description;
@@ -14,6 +15,7 @@ public class ItemListCell : ScrollViewCell
     }
 
     [SerializeField] TextMeshProUGUI NameText;
+    [SerializeField] TextMeshProUGUI ItemNameText;
     [SerializeField] TextMeshProUGUI AmountText;
     [SerializeField] Image Icon;
 
@@ -25,14 +27,23 @@ public class ItemListCell : ScrollViewCell
         ShowIcon = false
     };
 
-    public void Init(Config config)
+    public void Init(Config config, bool itemMenu = false)
     {
         if (CheckUIConfigAndLogError(config, "ItemListCell"))
             return;
-        NameText.SetText(config.Name);
+        if (itemMenu)
+        {
+            NameText.SetText(string.Empty);
+            ItemNameText.SetText(config.Name);
+        }
+        else
+        {
+            NameText.SetText(config.Name);
+            ItemNameText.SetText(string.Empty);
+        }
         AmountText.SetText(config.Amount);
         Icon.gameObject.SafeSetActive(false);
-        if (config.ShowIcon)
+        if (config.ShowIcon && !config.Icon.IsEmptyOrWhiteSpace())
             Icon.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.Icon, () => Icon.gameObject.SafeSetActive(true));
     }
 }

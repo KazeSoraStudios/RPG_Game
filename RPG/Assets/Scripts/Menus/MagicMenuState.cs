@@ -86,7 +86,7 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
             LogManager.LogError($"Cell {cell.GetType()}, passed to maigc menu but expected ItemListCell");
             return;
         }
-        var config = index < configs.Count - 1 ? configs[index] : ItemListCell.EmptyConfig;
+        var config = index < configs.Count ? configs[index] : ItemListCell.EmptyConfig;
         listCell.Init(config);
     }
 
@@ -130,7 +130,7 @@ public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
             });
         }
 
-        ScrollView.Init(this, SetDescription, parent);
+        ScrollView.Init(this, parent, SetDescription);
     }
 
     private void SetDescription(int index)

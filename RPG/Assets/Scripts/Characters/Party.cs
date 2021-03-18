@@ -51,7 +51,7 @@ public class Party : MonoBehaviour
     {
         int count = 0;
         foreach (var member in members)
-            count += member.Value.EquipCount(item);
+            count += member.Value.EquipCount(item.ItemInfo);
         return count;
     }
 
