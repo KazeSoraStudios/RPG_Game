@@ -83,7 +83,7 @@ public class StateStack
             ImagePath = portrait,
             Text = ServiceManager.Get<LocalizationManager>().Localize(text)
         };
-        var textbox = ServiceManager.Get<GameLogic>().Textbox;
+        var textbox = ServiceManager.Get<UIController>().GetTextbox();
         textbox.Init(config);
         Push(textbox);
     }

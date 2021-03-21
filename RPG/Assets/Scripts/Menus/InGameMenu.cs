@@ -1,157 +1,185 @@
-﻿using System.Collections;
+﻿using RPG_UI;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InGameMenu : UIMonoBehaviour, IGameState
+namespace RPG_UI
 {
-    [SerializeField] FrontMenuState FrontMenu;
-    [SerializeField] ItemMenuState ItemMenu;
-    [SerializeField] StatusMenuState StatusMenu;
-    [SerializeField] MagicMenuState MagicMenu;
-    [SerializeField] EquipMenuState EquipMenu;
-    [SerializeField] FrontMenuState OptionMenu;
-
-    public Map Map;
-    public StateStack Stack;
-    public StateMachine StateMachine;
-    public FrontMenuState.Config FrontConfig;
-    public StatusMenuState.Config StatusConfig;
-    public ItemMenuState.Config ItemMenuConfig;
-    public MagicMenuState.Config MagicConfig;
-    public EquipMenuState.Config EquipConfig;
-
-    private List<ScrollViewCell> pool = new List<ScrollViewCell>();
-
-    void Awake()
+    public class InGameMenu : UIMonoBehaviour, IGameState
     {
-        ServiceManager.Register(this);
-        var states = new Dictionary<string, IState>();
-        states.Add(Constants.FRONT_MENU_STATE, FrontMenu);
-        states.Add(Constants.ITEM_MENU_STATE, ItemMenu);
-        states.Add(Constants.STATUS_MENU_STATE, StatusMenu);
-        states.Add(Constants.MAGIC_MENU_STATE, MagicMenu);
-        states.Add(Constants.EQUIP_MENU_STATE, EquipMenu);
-        states.Add(Constants.OPTION_MENU_STATE, OptionMenu);
-        StateMachine = new StateMachine(states);
-        var world = ServiceManager.Get<World>();
-        FrontConfig = new FrontMenuState.Config
+        public StateStack Stack;
+        public StateMachine StateMachine;
+
+        private Map Map;
+        private FrontMenuState frontMenu;
+        private ItemMenuState itemMenu;
+        private StatusMenuState statusMenu;
+        private MagicMenuState magicMenu;
+        private EquipMenuState equipMenu;
+        private FrontMenuState optionMenu;
+
+        private UIController uiController;
+
+        public FrontMenuState.Config FrontConfig;
+        public StatusMenuState.Config StatusConfig;
+        public ItemMenuState.Config ItemMenuConfig;
+        public MagicMenuState.Config MagicConfig;
+        public EquipMenuState.Config EquipConfig;
+
+        void Awake()
         {
-            Parent = this
-        };
-        StatusConfig = new StatusMenuState.Config
-        {
-            Parent = this,
-            StateMachine = StateMachine
-        };
-        MagicConfig = new MagicMenuState.Config
-        {
-            Parent = this
-        };
-        ItemMenuConfig = new ItemMenuState.Config
-        {
-            Parent = this,
-            Items = world.GetUseItemsList(),
-            KeyItems = world.GetKeyItemsList()
-        };
-        EquipConfig = new EquipMenuState.Config
-        {
-            Parent = this
-        };
-    }
-
-    void OnDestroy()
-    {
-        ServiceManager.Unregister(this);
-    }
-
-    public void Init(Map map, StateStack stack)
-    {
-        gameObject.SafeSetActive(true);
-        Map = map;
-        Stack = stack;
-        StateMachine.Change(Constants.FRONT_MENU_STATE, FrontConfig);
-
-    //    this.mStateMachine = StateMachine:Create
-    //{
-    //    ["frontmenu"] =
-    //    function()
-    //        return FrontMenuState:Create(this)
-    //    end,
-    //    ["items"] =
-    //    function()
-    //        return ItemMenuState:Create(this)
-    //    end,
-    //    ["magic"] =
-    //    function()
-    //        return MagicMenuState:Create(this)
-    //    end,
-    //    ["equip"] =
-    //    function()
-    //        return EquipMenuState:Create(this)
-    //    end,
-    //    ['status'] =
-    //    function()
-    //        return StatusMenuState:Create(this)
-    //    end
-    //}
-    //this.mStateMachine:Change("frontmenu")
-    }
-
-    public bool Execute(float deltaTime)
-    {
-        if (Stack.Top().GetHashCode() == GetHashCode())
-            StateMachine.Update(deltaTime);
-        return true;
-    }
-
-    public void Enter(object o) { }
-
-    public void Exit()
-    {
-        StateMachine.Stop();
-        gameObject.SafeSetActive(false);
-    }
-
-    public void HandleInput() { }
-
-    public string GetName()
-    {
-        return "InGameMenuState";
-    }
-
-    public bool HasCell()
-    {
-        return pool.Count > 0;
-    }
-
-    public ScrollViewCell GetCellFromPool()
-    {
-        if (pool.Count < 1)
-        {
-            LogManager.LogError("Tried to get cell but pool is empty.");
-            return null;
+            ServiceManager.Register(this);
+            var states = new Dictionary<string, IState>();
+            states.Add(Constants.FRONT_MENU_STATE, GetFrontMenu());
+            states.Add(Constants.ITEM_MENU_STATE, GetItemMenu());
+            states.Add(Constants.STATUS_MENU_STATE, GetStatusMenu());
+            states.Add(Constants.MAGIC_MENU_STATE, GetMagicMenu());
+            states.Add(Constants.EQUIP_MENU_STATE, GetEquipMenu());
+            states.Add(Constants.OPTION_MENU_STATE, optionMenu);
+            StateMachine = new StateMachine(states);
+            var world = ServiceManager.Get<World>();
+            FrontConfig = new FrontMenuState.Config
+            {
+                Parent = this
+            };
+            StatusConfig = new StatusMenuState.Config
+            {
+                Parent = this,
+                StateMachine = StateMachine
+            };
+            MagicConfig = new MagicMenuState.Config
+            {
+                Parent = this
+            };
+            ItemMenuConfig = new ItemMenuState.Config
+            {
+                Parent = this
+            };
+            EquipConfig = new EquipMenuState.Config
+            {
+                Parent = this
+            };
         }
-        int index = pool.Count - 1;
-        var cell = pool[index];
-        pool.RemoveAt(index);
-        return cell;
-    }
 
-    public void ReturnCellToPool(ScrollViewCell cell)
-    {
-        pool.Add(cell);
-        cell.gameObject.SafeSetActive(false);
-        cell.transform.SetParent(transform, false);
-    }
+        void OnDestroy()
+        {
+            ServiceManager.Unregister(this);
+        }
 
-    /*
-      local this =
-    {
-        mMapDef = mapDef,
-        mStack = stack,
-        mTitleSize = 1.2,
-        mLabelSize = 0.88,
-        mTextSize = 1,
-    }     
-     */
+        public void Init(Map map, StateStack stack)
+        {
+            Map = map;
+            Stack = stack;
+            RefreshConfigs(map.MapName);
+            gameObject.SafeSetActive(true);
+            StateMachine.Change(Constants.FRONT_MENU_STATE, FrontConfig);
+        }
+
+        public void SetUIController(UIController controller)
+        {
+            uiController = controller;
+        }
+
+        public bool Execute(float deltaTime)
+        {
+            if (Stack.Top().GetHashCode() == GetHashCode())
+                StateMachine.Update(deltaTime);
+            return true;
+        }
+
+        public void Enter(object o) { }
+
+        public void Exit()
+        {
+            StateMachine.Stop();
+            gameObject.SafeSetActive(false);
+            short layers = 0x3;
+            uiController.ClearChildren(layers);
+        }
+
+        public void HandleInput() { }
+
+        public string GetName()
+        {
+            return "InGameMenuState";
+        }
+
+        private FrontMenuState GetFrontMenu()
+        {
+            if (frontMenu == null)
+            {
+                var asset = ServiceManager.Get<AssetManager>().Load<FrontMenuState>(Constants.FRONT_MENU_PREFAB);
+                frontMenu = Instantiate(asset);
+                uiController.AddMenuScreen(frontMenu.transform);
+                frontMenu.gameObject.SafeSetActive(false);
+            }
+            return frontMenu;
+        }
+
+        private ItemMenuState GetItemMenu()
+        {
+            if (itemMenu == null)
+            {
+                var asset = ServiceManager.Get<AssetManager>().Load<ItemMenuState>(Constants.ITEM_MENU_PREFAB);
+                itemMenu = Instantiate(asset);
+                uiController.AddMenuScreen(itemMenu.transform);
+                itemMenu.gameObject.SafeSetActive(false);
+            }
+            return itemMenu;
+        }
+
+        private StatusMenuState GetStatusMenu()
+        {
+            if (statusMenu == null)
+            {
+                var asset = ServiceManager.Get<AssetManager>().Load<StatusMenuState>(Constants.STATUS_MENU_PREFAB);
+                statusMenu = Instantiate(asset);
+                uiController.AddMenuScreen(statusMenu.transform);
+                statusMenu.gameObject.SafeSetActive(false);
+            }
+            return statusMenu;
+        }
+
+        private MagicMenuState GetMagicMenu()
+        {
+            if (magicMenu == null)
+            {
+                var asset = ServiceManager.Get<AssetManager>().Load<MagicMenuState>(Constants.MAGIC_MENU_PREFAB);
+                magicMenu = Instantiate(asset);
+                uiController.AddMenuScreen(magicMenu.transform);
+                magicMenu.gameObject.SafeSetActive(false);
+            }
+            return magicMenu;
+        }
+
+        private EquipMenuState GetEquipMenu()
+        {
+            if (equipMenu == null)
+            {
+                var asset = ServiceManager.Get<AssetManager>().Load<EquipMenuState>(Constants.EQUIP_MENU_PREFAB);
+                equipMenu = Instantiate(asset);
+                uiController.AddMenuScreen(equipMenu.transform);
+                equipMenu.gameObject.SafeSetActive(false);
+            }
+            return equipMenu;
+        }
+
+        //private FrontMenuState GetOptionMenu()
+        //{
+        //    if (optionMenu == null)
+        //    {
+        //        optionMenu = ServiceManager.Get<AssetManager>().Load<FrontMenuState>(Constants.OPTION_MENU_PREFAB);
+        //         uiController.AddMenuScreen(optionMenu.transform);
+        //optionMenu.gameObject.SafeSetActive(false);
+        //    }
+        //    return optionMenu;
+        //}
+
+        private void RefreshConfigs(string mapName)
+        {
+            FrontConfig.MapName = mapName;
+            var world = ServiceManager.Get<World>();
+            ItemMenuConfig.Items = world.GetUseItemsList();
+            ItemMenuConfig.KeyItems = world.GetKeyItemsList();
+        }
+    }
 }

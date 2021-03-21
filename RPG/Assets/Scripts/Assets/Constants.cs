@@ -4,6 +4,15 @@ public class Constants
     public static string HERO_PREFAB_PATH = "Prefabs/Character/Hero";
     public static string TEST_MAP_PREFAB_PATH = "Prefabs/Maps/Grid";
     public static string ITEM_LIST_CELL_PREFAB_PATH = "Prefabs/UI/ItemCell";
+    public static string FRONT_MENU_PREFAB = "Prefabs/UI/FrontMenu";
+    public static string ITEM_MENU_PREFAB = "Prefabs/UI/ItemMenu";
+    public static string STATUS_MENU_PREFAB = "Prefabs/UI/StatusMenu";
+    public static string EQUIP_MENU_PREFAB = "Prefabs/UI/EquipmentMenu";
+    public static string MAGIC_MENU_PREFAB = "Prefabs/UI/MagicMenu";
+    public static string OPTION_MENU_PREFAB = "Prefabs/UI/OptionsMenu";
+    public static string TITLE_MENU_PREFAB = "Prefabs/UI/TitleScreen";
+    public static string GAME_OVER_PREFAB = "Prefabs/UI/GameOverScreen";
+    public static string TEXTBOX_PREFAB = "Prefabs/UI/Textbox";
 
     // Portraits
     public static string PORTRAIT_PATH = "Textures/Portraits/";

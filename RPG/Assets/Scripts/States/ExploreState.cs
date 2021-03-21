@@ -1,5 +1,5 @@
-using System.Collections;
 using UnityEngine;
+using RPG_UI;
 
 public class ExploreState : MonoBehaviour, IGameState
 {
@@ -91,14 +91,20 @@ public class ExploreState : MonoBehaviour, IGameState
             var facingTile = Hero.GetFacingTilePosition();
             var x = (int)facingTile.x;
             var y = (int)facingTile.y;
-            if (Map.GetTrigger(x, y) is var trigger && trigger != null)
-                trigger.OnUse(new TriggerParams(x,y,Hero));
+            //if (Map.GetTrigger(x, y) is var trigger && trigger != null)
+            //    trigger.OnUse(new TriggerParams(x,y,Hero));
+            var targetPosition = new Vector2(x,y);
+            var position = (Vector2)transform.position + targetPosition;
+            var collision = Physics2D.OverlapCircle(position, 0.2f, Hero.collisionLayer);
+            //var trigger = collision.GetComponent<Trigger>();// != null
+            if (collision != null && collision.isTrigger && collision.GetComponent<Trigger>() is var trigger && trigger != null)
+            {
+                trigger.OnUse(new TriggerParams(x,y,Hero.GetComponent<Character>()));
+            }
         }
         if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
-            var menu = ServiceManager.Get<GameLogic>().GameMenu;
-            menu.Init(Map, stack);
-            stack.Push(menu);
+            ServiceManager.Get<UIController>().OpenMenu(Map, stack);
         }
     }
 

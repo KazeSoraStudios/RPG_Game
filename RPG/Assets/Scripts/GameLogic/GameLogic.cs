@@ -9,10 +9,9 @@ public class GameLogic : MonoBehaviour
     [SerializeField] LogLevel LogLevel;
     [SerializeField] World world;
     [SerializeField] object GameState;// TODO GetDefaultGameState()
-    [SerializeField] public InGameMenu GameMenu;
+    [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
     [SerializeField] public Image ScreenImage;
-    [SerializeField] public Textbox Textbox;
 
     public StateStack Stack;
 
@@ -32,8 +31,8 @@ public class GameLogic : MonoBehaviour
     private void Start()
     {
         Stack = new StateStack();
-        Textbox.SetUp(Stack);
         world.Reset();
+        UIController.InitUI();
         SetUpNewGame();
     }
 

@@ -11,7 +11,7 @@ public class Character : MonoBehaviour
     [SerializeField] public StateMachine Controller { get; private set; }
     [SerializeField] public string defaultState = Constants.WAIT_STATE;
     [SerializeField] public string previousDefaultState = Constants.WAIT_STATE;
-    [SerializeField] LayerMask collisionLayer;
+    [SerializeField] public LayerMask collisionLayer;
     [SerializeField] public Entity Entity;
     [SerializeField] public List<Direction> PathToMove = new List<Direction>();
 

@@ -4,65 +4,68 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class MenuOptionsList : UIMonoBehaviour
+namespace RPG_UI
 {
-    public class Config
+    public class MenuOptionsList : UIMonoBehaviour
     {
-    }
-
-    [SerializeField] float SelectionPadding;
-    [SerializeField] Image SelectionArrow;
-    [SerializeField] TextMeshProUGUI[] Options;
-
-    private int numberOfOptions;
-    public int currentSelection = 0;
-    private Config config;
-
-    public void Init(Config config)
-    {
-        if (CheckUIConfigAndLogError(config, name))
+        public class Config
         {
-            return;
         }
 
-        this.config = config;
-        numberOfOptions = Options.Length - 1;
-        ShowCursor();
-    }
+        [SerializeField] float SelectionPadding;
+        [SerializeField] Image SelectionArrow;
+        [SerializeField] TextMeshProUGUI[] Options;
 
-    public void HideCursor()
-    {
-        SelectionArrow.gameObject.SetActive(false);
-    }
+        private int numberOfOptions;
+        public int currentSelection = 0;
+        private Config config;
 
-    public void ShowCursor()
-    {
-        SelectionArrow.gameObject.SetActive(true);
-    }
+        public void Init(Config config)
+        {
+            if (CheckUIConfigAndLogError(config, name))
+            {
+                return;
+            }
 
-    public int GetSelection()
-    {
-        return currentSelection;
-    }
+            this.config = config;
+            numberOfOptions = Options.Length - 1;
+            ShowCursor();
+        }
 
-    public void IncreaseSelection()
-    {
-        currentSelection++;
-        if (currentSelection > numberOfOptions)
-            currentSelection = 0;
-        var y = Options[currentSelection].transform.position.y;
-        var position = new Vector2(SelectionArrow.transform.position.x, y);
-        SelectionArrow.transform.position = position;
-    }
+        public void HideCursor()
+        {
+            SelectionArrow.gameObject.SetActive(false);
+        }
 
-    public void DecreaseSelection()
-    {
-        currentSelection--;
-        if (currentSelection < 0)
-            currentSelection = numberOfOptions;
-        var selectPosition = Options[currentSelection].transform.position;
-        var y = Options[currentSelection].transform.position.y;
-        var position = new Vector2(SelectionArrow.transform.position.x, y);
-        SelectionArrow.transform.position = position;
+        public void ShowCursor()
+        {
+            SelectionArrow.gameObject.SetActive(true);
+        }
+
+        public int GetSelection()
+        {
+            return currentSelection;
+        }
+
+        public void IncreaseSelection()
+        {
+            currentSelection++;
+            if (currentSelection > numberOfOptions)
+                currentSelection = 0;
+            var y = Options[currentSelection].transform.position.y;
+            var position = new Vector2(SelectionArrow.transform.position.x, y);
+            SelectionArrow.transform.position = position;
+        }
+
+        public void DecreaseSelection()
+        {
+            currentSelection--;
+            if (currentSelection < 0)
+                currentSelection = numberOfOptions;
+            var selectPosition = Options[currentSelection].transform.position;
+            var y = Options[currentSelection].transform.position.y;
+            var position = new Vector2(SelectionArrow.transform.position.x, y);
+            SelectionArrow.transform.position = position;
+        }
     }
 }

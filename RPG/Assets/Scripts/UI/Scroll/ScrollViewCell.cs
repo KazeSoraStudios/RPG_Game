@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScrollViewCell : UIMonoBehaviour
+namespace RPG_UI
 {
-    public virtual void OnLoad() { }
-    public virtual void OnExit() { }
+    public class ScrollViewCell : UIMonoBehaviour
+    {
+        public virtual void OnLoad() { }
+        public virtual void OnExit() { }
+    }
 }

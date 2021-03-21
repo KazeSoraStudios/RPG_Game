@@ -1,27 +1,29 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
-public class UIMonoBehaviour : MonoBehaviour
+namespace RPG_UI
 {
-    protected bool CheckUIConfigAndLogError(object o, string name)
+    public class UIMonoBehaviour : MonoBehaviour
     {
-        if (o == null)
+        protected bool CheckUIConfigAndLogError(object o, string name)
         {
-            LogManager.LogError($"{name} passed null config.");
-            return true;
-        }
-        return false;
-    }
-
-    protected bool ConvertConfig<T>(object o, out T t) 
-    {
-        t = (T)o;
-        if (t == null)
-        {
-            LogManager.LogError($"{o} cannot be converted to IStateParam.");
+            if (o == null)
+            {
+                LogManager.LogError($"{name} passed null config.");
+                return true;
+            }
             return false;
         }
-        return true;
+
+        protected bool ConvertConfig<T>(object o, out T t)
+        {
+            t = (T)o;
+            if (t == null)
+            {
+                LogManager.LogError($"{o} cannot be converted to IStateParam.");
+                return false;
+            }
+            return true;
+        }
     }
 }
 

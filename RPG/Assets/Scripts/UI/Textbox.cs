@@ -6,124 +6,139 @@ using TMPro;
 
 namespace RPG_UI
 {
-public class Textbox : UIMonoBehaviour, IGameState
-{
-    public class Config
+    public class Textbox : UIMonoBehaviour, IGameState
     {
-        public string ImagePath;
-        public string Text;
-        public Action OnFinish;
-        public Action OnSelect;
-    }
-
-    [SerializeField] Image Image;
-    [SerializeField] Image ContinueCaret;
-    [SerializeField] TextMeshProUGUI Text;
-    [SerializeField] MenuOptionsList OptionsList;
-
-    private bool turnOff;
-    private int currentPage = 0;
-    private int characterIndex = 0;
-    private int pageStart = 0;
-    private int pageEnd = 0;
-    private float time;
-    private string text;
-    private TMP_TextInfo textInfo;
-    private Action onFinish;
-    private Action onSelect;
-    private StateStack stack;
-
-    public void SetUp(StateStack stack)
-    {
-        this.stack = stack;
-    }
-
-    public void Init(Config config) 
-    {
-        if (config == null)
-            return;
-        gameObject.SafeSetActive(true);
-        text = config.Text;
-        Text.maxVisibleCharacters = 0;
-        Text.SetText(config.Text);
-        Text.ForceMeshUpdate();
-        textInfo = Text.textInfo;
-        onFinish = config.OnFinish;
-        onSelect = config.OnSelect;
-        Image.gameObject.SafeSetActive(false);
-        if (config.ImagePath != null)
-            Image.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.ImagePath, () => Image.gameObject.SafeSetActive(true));
-    }
-
-    public void Enter(object o) 
-    {
-        time = 0.0f;
-        turnOff = false;
-        currentPage = 0;
-        Text.pageToDisplay = 0;
-        currentPage = 0;
-        characterIndex = 0;
-        pageEnd = textInfo.pageInfo[currentPage].lastCharacterIndex + 1;
-    }
-
-    public bool Execute(float deltaTime)
-    {
-        time += deltaTime;
-        if (time >= Constants.TEXTBOX_CHARACTER_SPEED)
+        public class Config
         {
-            time = 0.0f;
-            characterIndex++;
-            if (characterIndex >= pageEnd)
-                characterIndex = pageEnd;
-            Text.maxVisibleCharacters = characterIndex;
+            public string ImagePath;
+            public string Text;
+            public float AdvanceTime = 2.0f;
+            public Action OnFinish;
+            public Action OnSelect;
         }
-        if (turnOff)
-            stack.Pop();
-        return true;
-    }
 
-    public void HandleInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-            OnClick();
-        else
-           {}// SelectionMenu.HandleInput();
-    }
+        [SerializeField] Image Image;
+        [SerializeField] Image ContinueCaret;
+        [SerializeField] TextMeshProUGUI Text;
+        [SerializeField] MenuOptionsList OptionsList;
 
-    public void Exit()
-    {
-        onFinish?.Invoke();
-        onSelect = null;
-        onFinish = null;
-        Text.SetText(string.Empty);
-        gameObject.SafeSetActive(false);
-    }
+        private bool turnOff;
+        private int currentPage = 0;
+        private int characterIndex = 0;
+        private int pageStart = 0;
+        private int pageEnd = 0;
+        private float nextCharTime;
+        private float totalTime;
+        private float advanceTime = 0.0f;
+        private string text;
+        private TMP_TextInfo textInfo;
+        private Action onFinish;
+        private Action onSelect;
+        private StateStack stack;
 
-    public void OnClick()
-    {
-         if (characterIndex < pageEnd)
-         {
-            characterIndex = pageEnd;
-            Text.maxVisibleCharacters = characterIndex;
-            return;
-         }
-         if (currentPage < textInfo.pageInfo.Length && textInfo.pageInfo[currentPage + 1].lastCharacterIndex != 0)
-         {
+        public void SetUp(StateStack stack)
+        {
+            this.stack = stack;
+        }
+
+        public void Init(Config config)
+        {
+            if (config == null)
+                return;
+            gameObject.SafeSetActive(true);
+            advanceTime = config.AdvanceTime;
+            text = config.Text;
+            Text.maxVisibleCharacters = 0;
+            Text.SetText(config.Text);
+            Text.ForceMeshUpdate();
+            textInfo = Text.textInfo;
+            onFinish = config.OnFinish;
+            onSelect = config.OnSelect;
+            Image.gameObject.SafeSetActive(false);
+            if (config.ImagePath != null)
+                Image.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.ImagePath, () => Image.gameObject.SafeSetActive(true));
+        }
+
+        public void Enter(object o)
+        {
+            nextCharTime = 0.0f;
+            totalTime = 0.0f;
+            turnOff = false;
+            currentPage = 0;
+            Text.pageToDisplay = 0;
+            currentPage = 0;
             characterIndex = 0;
-            currentPage++;
-            pageStart = textInfo.pageInfo[currentPage].firstCharacterIndex;
-            pageEnd = textInfo.pageInfo[currentPage].lastCharacterIndex;
-            Text.pageToDisplay = currentPage + 1;
-         }
-         else
-         {
-            turnOff = true;
-         }
-    }
+            pageEnd = textInfo.pageInfo[currentPage].lastCharacterIndex + 1;
+        }
 
-    public string GetName()
-    {
-        return "Textbox";
+        public bool Execute(float deltaTime)
+        {
+            totalTime += deltaTime;
+            nextCharTime += deltaTime;
+            if (nextCharTime >= Constants.TEXTBOX_CHARACTER_SPEED)
+            {
+                nextCharTime = 0.0f;
+                characterIndex++;
+                if (characterIndex >= pageEnd)
+                    characterIndex = pageEnd;
+                Text.maxVisibleCharacters = characterIndex;
+            }
+            if (totalTime >= advanceTime)
+                AdvanceOrTurnOff();
+            if (turnOff)
+                stack.Pop();
+            return true;
+        }
+
+        public void HandleInput()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+                OnClick();
+            else
+            { }// SelectionMenu.HandleInput();
+        }
+
+        public void Exit()
+        {
+            onFinish?.Invoke();
+            onSelect = null;
+            onFinish = null;
+            Text.SetText(string.Empty);
+            gameObject.SafeSetActive(false);
+        }
+
+        public void OnClick()
+        {
+            if (characterIndex < pageEnd)
+            {
+                characterIndex = pageEnd;
+                Text.maxVisibleCharacters = characterIndex;
+                return;
+            }
+            AdvanceOrTurnOff();
+        }
+
+        private void AdvanceOrTurnOff()
+        {
+            if (currentPage < textInfo.pageInfo.Length && textInfo.pageInfo[currentPage + 1].lastCharacterIndex != 0)
+            {
+                totalTime = 0.0f;
+                characterIndex = 0;
+                currentPage++;
+                pageStart = textInfo.pageInfo[currentPage].firstCharacterIndex;
+                pageEnd = textInfo.pageInfo[currentPage].lastCharacterIndex;
+                Text.pageToDisplay = currentPage + 1;
+            }
+            else
+            {
+                turnOff = true;
+            }
+        }
+
+        public string GetName()
+        {
+            return "Textbox";
+        }
     }
 }
 
@@ -203,4 +218,3 @@ function Textbox:Render(renderer)
     end
 end
     */
-}

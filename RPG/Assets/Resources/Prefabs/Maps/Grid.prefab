@@ -784,6 +784,7 @@ GameObject:
   - component: {fileID: 2576458421547887095}
   - component: {fileID: 2576458421547887096}
   - component: {fileID: 2576458421547887094}
+  - component: {fileID: -6566101196698937864}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -839,8 +840,27 @@ MonoBehaviour:
   TileHeight: 0
   camX: 0
   camY: 0
+  MapName: 
   Grid: {fileID: 2576458421547887096}
   collision: {fileID: 2576458422664248954}
+--- !u!114 &-6566101196698937864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2576458421547887097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 883e119d2682a6d498e6706f3ba865b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followCamera: 1
+  manualCameraX: 0
+  manualCameraY: 0
+  followCharacter: {fileID: 0}
+  Hero: {fileID: 0}
+  Map: {fileID: 2576458421547887094}
 --- !u!1 &2576458422083968750
 GameObject:
   m_ObjectHideFlags: 0

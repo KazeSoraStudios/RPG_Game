@@ -3,36 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProgressBar : MonoBehaviour
+namespace RPG_UI
 {
-    [SerializeField] float FillSpeed = 1.0f;
-    [SerializeField] float TargetProgress;
-    [SerializeField] Slider Slider;
-
-    private bool filling = false;
-
-    public void SetTargetFillAmountImmediate(float target)
+    public class ProgressBar : MonoBehaviour
     {
-        filling = false;
-        TargetProgress = target;
-        Slider.value = TargetProgress;
-    }
+        [SerializeField] float FillSpeed = 1.0f;
+        [SerializeField] float TargetProgress;
+        [SerializeField] Slider Slider;
 
-    public void SetTargetFillAmount(float target)
-    {
-        TargetProgress = target;
-        if (!filling)
-            StartCoroutine(Fill());
-    }
+        private bool filling = false;
 
-    private IEnumerator Fill()
-    {
-        filling = true;
-        while (Slider.value < TargetProgress)
+        public void SetTargetFillAmountImmediate(float target)
         {
-            Slider.value += FillSpeed * Time.deltaTime;
-            yield return null;
+            filling = false;
+            TargetProgress = target;
+            Slider.value = TargetProgress;
         }
-        filling = false;
+
+        public void SetTargetFillAmount(float target)
+        {
+            TargetProgress = target;
+            if (!filling)
+                StartCoroutine(Fill());
+        }
+
+        private IEnumerator Fill()
+        {
+            filling = true;
+            while (Slider.value < TargetProgress)
+            {
+                Slider.value += FillSpeed * Time.deltaTime;
+                yield return null;
+            }
+            filling = false;
+        }
     }
 }

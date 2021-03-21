@@ -129,7 +129,7 @@ public class MoveState : CharacterState
     {
         if (!(stateParams is MoveParams moveParams))
         {
-            Character.Controller.Change(Character.defaultState, null);
+            Character.Controller.Change(Character.defaultState);
             return;
         }
         var triggerPosition = Character.transform.position;
@@ -158,7 +158,7 @@ public class MoveState : CharacterState
             var position = Character.transform.position;
             Trigger = Map.GetTrigger((int)position.x, (int)position.y);
             Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
-            Character.Controller.Change(Character.defaultState, null);
+            Character.Controller.Change(Character.defaultState);
         }
         return true;
     }

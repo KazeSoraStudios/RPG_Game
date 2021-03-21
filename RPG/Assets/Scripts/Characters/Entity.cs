@@ -9,11 +9,7 @@ public class Entity : MonoBehaviour
     [SerializeField] int selectPadding;
     [SerializeField] float speed = 1.0f;
     [SerializeField] Vector2 movement;
-    [SerializeField] Texture2D texture;
-    [SerializeField] Sprite sprite;
-    [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Rigidbody2D rigidbody;
-    public float m = 1.0f;
     
     public void UpdateMovement(Vector2 movement, Map map)
     {
@@ -31,24 +27,6 @@ public class Entity : MonoBehaviour
         var y = transform.position.y + movement.y;
         var newPosition = new Vector2Int((int)x, (int)y);
         map.AddEntity(this, newPosition);
-    }
-
-    public void AddKnockback(Vector2 force)
-    {
-        var target = new Vector3(transform.position.x + force.x * m, transform.position.y + force.y * m);
-        StartCoroutine(mov(target));
-    }
-
-    public float time = 1.0f;
-    private IEnumerator mov(Vector3 target)
-    {
-        float t = 0.0f;
-        while (t < time)
-        {
-            t += Time.deltaTime;
-            transform.position = Vector3.Lerp(transform.position, target, t / time);
-            yield return null;
-        }
     }
 
     private void FixedUpdate()
@@ -111,43 +89,11 @@ public class Entity : MonoBehaviour
 
     public void Hide()
     {
-        spriteRenderer.sortingOrder = -1;
+        gameObject.SafeSetActive(false);
     }
 
     public void Show()
     {
-        spriteRenderer.sortingOrder = 2;
-    }
-
-    //function Entity:AddChild(id, entity)
-    //    assert(self.mChildren [id] == nil)
-    //    self.mChildren [id] = entity
-    //end
-
-    //function Entity:RemoveChild(id)
-    //    self.mChildren [id] = nil
-    //end
-
-    //function Entity:Render(renderer)
-    //    renderer:DrawSprite(self.mSprite)
-
-    //    for k, v in pairs(self.mChildren) do
-    //        local sprite = v.mSprite
-    //        sprite:SetPosition(self.mX + v.mX, self.mY + v.mY)
-    //        renderer:DrawSprite(sprite)
-    //    end
-
-    //end
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        gameObject.SafeSetActive(true);
     }
 }

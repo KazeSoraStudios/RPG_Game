@@ -114,7 +114,6 @@ public class Map : MonoBehaviour
 
     public void GoToTile(int x, int y)
     {
-        //print("Goto tile:", x, y)
         var _x = (int)(x * TileWidth + TileWidth * 0.5f);
         var _y = (int)(y * TileHeight + TileHeight * 0.5f);
         GoTo(_x, _y);
