@@ -92,7 +92,7 @@ public class GameDataDownloader : MonoBehaviour
         GameData.Items = items;
         GameData.ItemUses = itemUses;
         GameData.PartyDefs = party;
-        GameData.Stats= stats;
+        GameData.Stats = stats;
         GameData.Spells = spells;
         ServiceManager.Get<LocalizationManager>().SetLocalization(loc);
         enabled = false;

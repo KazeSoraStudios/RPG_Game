@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using RPG_Character;
 
 namespace RPG_UI
 {

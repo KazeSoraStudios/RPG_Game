@@ -1,5 +1,6 @@
 using UnityEngine;
 using RPG_UI;
+using RPG_Character;
 
 public class ExploreState : MonoBehaviour, IGameState
 {
@@ -23,10 +24,20 @@ public class ExploreState : MonoBehaviour, IGameState
             Hero.transform.rotation = Quaternion.identity;
             followCharacter = Hero;
             Hero.gameObject.transform.SetParent(transform, true);
-            Hero.Init(map);
+            Hero.Init(map, Constants.PARTY_STATES, Constants.WAIT_STATE);
             var actor = Hero.GetComponent<Actor>();
             actor.Init(ServiceManager.Get<GameData>().PartyDefs["hero"]);
             ServiceManager.Get<World>().Party.Add(actor);
+        }
+        obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.TEST_NPC_PREFAB_PATH);
+        if (obj != null)
+        {
+            var npc = Instantiate(obj);
+            npc.transform.position = new Vector2(-4.0f, 0.0f);
+            npc.transform.rotation = Quaternion.identity;
+            npc.gameObject.transform.SetParent(transform, true);
+            npc.Init(map, Constants.NPC_STATES, Constants.STROLL_STATE);
+            ServiceManager.Get<NPCManager>().AddNPC(npc);
         }
         map.GoToTile((int)startPosition.x, (int)startPosition.y);
     }
@@ -72,8 +83,7 @@ public class ExploreState : MonoBehaviour, IGameState
     public bool Execute(float deltaTime)
     {
         UpdateCamera(Map);
-        foreach (var npc in Map.NpcsById.Values)
-            npc.Controller.Update(deltaTime);
+        ServiceManager.Get<NPCManager>().UpdateAllNPCs(deltaTime);
         return true;
     }
 
@@ -97,7 +107,7 @@ public class ExploreState : MonoBehaviour, IGameState
             var position = (Vector2)transform.position + targetPosition;
             var collision = Physics2D.OverlapCircle(position, 0.2f, Hero.collisionLayer);
             //var trigger = collision.GetComponent<Trigger>();// != null
-            if (collision != null && collision.isTrigger && collision.GetComponent<Trigger>() is var trigger && trigger != null)
+            if (collision?.GetComponent<Trigger>() is var trigger && trigger != null)
             {
                 trigger.OnUse(new TriggerParams(x,y,Hero.GetComponent<Character>()));
             }

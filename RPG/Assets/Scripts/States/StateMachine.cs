@@ -26,7 +26,6 @@ public class StateMachine
 
     public void Change(string state, object stateParams = null)
     {
-        // TODO assert(self.mStates [stateName]) -- state must exist!
         CurrentState.Exit();
         CurrentState = States.ContainsKey(state) ? States[state] : EmptyState;
         CurrentState.Enter(stateParams);

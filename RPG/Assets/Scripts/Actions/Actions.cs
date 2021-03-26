@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using RPG_Character;
 
 public delegate void RunAction(params object[] args);
 
@@ -72,7 +70,7 @@ public class Actions
             // TODO get character info and populate information
             var character = entity.gameObject.GetComponent<Character>();
             entity.SetTilePosition(tX, tY, tLayer, map);
-            map.NpcsById[character.name] = character;
+            ServiceManager.Get<NPCManager>().AddNPC(character);
         };
     }
 
@@ -80,7 +78,7 @@ public class Actions
     {
         return (trigger, entity) =>
         {
-            var character = map.NpcsById[npcId];
+            var character = ServiceManager.Get<NPCManager>().RemoveNPC(npcId);
             map.RemoveEntity(character.GetComponent<Entity>());
         };
     }

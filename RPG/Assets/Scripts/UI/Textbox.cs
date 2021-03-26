@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using RPG_Character;
 
 namespace RPG_UI
 {
@@ -61,6 +61,8 @@ namespace RPG_UI
 
         public void Enter(object o)
         {
+            ServiceManager.Get<Party>().PrepareForTextboxState();
+            ServiceManager.Get<NPCManager>().PrepareForTextboxState();
             nextCharTime = 0.0f;
             totalTime = 0.0f;
             turnOff = false;
@@ -87,7 +89,7 @@ namespace RPG_UI
                 AdvanceOrTurnOff();
             if (turnOff)
                 stack.Pop();
-            return true;
+            return false;
         }
 
         public void HandleInput()
@@ -105,6 +107,8 @@ namespace RPG_UI
             onFinish = null;
             Text.SetText(string.Empty);
             gameObject.SafeSetActive(false);
+            ServiceManager.Get<Party>().ReturnFromTextboxState();
+            ServiceManager.Get<NPCManager>().ReturnFromTextboxState();
         }
 
         public void OnClick()
