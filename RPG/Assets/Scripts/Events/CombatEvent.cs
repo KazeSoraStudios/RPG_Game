@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UnityEngine;
+using RPG_Character;
 
 public abstract class CombatEvent : IEvent
 {

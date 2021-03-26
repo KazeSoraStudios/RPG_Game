@@ -1,9 +1,10 @@
 using UnityEngine;
+using RPG_Character;
 
 public abstract class CharacterState : IState
 {
-    protected Map Map;
-    protected Character Character;
+    public Map Map;
+    public Character Character;
 
     public CharacterState() { }
 

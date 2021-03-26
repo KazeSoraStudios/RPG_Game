@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using RPG_Character;
 
 namespace RPG_UI
 {
@@ -265,27 +265,27 @@ namespace RPG_UI
             return false;
         }
 
-        private Actor.EquipSlot GetSlotFromIndex(int index)
+        private EquipSlot GetSlotFromIndex(int index)
         {
-            return index == 0 ? Actor.EquipSlot.Weapon :
-                index == 1 ? Actor.EquipSlot.Armor :
-                Actor.EquipSlot.Accessory1;
+            return index == 0 ? EquipSlot.Weapon :
+                index == 1 ? EquipSlot.Armor :
+                EquipSlot.Accessory1;
         }
 
         private void SetEquippedItemNames()
         {
-            SetItemName(Actor.EquipSlot.Weapon, actor.GetEquipmentName(Actor.EquipSlot.Weapon));
-            SetItemName(Actor.EquipSlot.Armor, actor.GetEquipmentName(Actor.EquipSlot.Armor));
-            SetItemName(Actor.EquipSlot.Accessory1, actor.GetEquipmentName(Actor.EquipSlot.Accessory1));
+            SetItemName(EquipSlot.Weapon, actor.GetEquipmentName(EquipSlot.Weapon));
+            SetItemName(EquipSlot.Armor, actor.GetEquipmentName(EquipSlot.Armor));
+            SetItemName(EquipSlot.Accessory1, actor.GetEquipmentName(EquipSlot.Accessory1));
         }
 
-        private void SetItemName(Actor.EquipSlot slot, string name)
+        private void SetItemName(EquipSlot slot, string name)
         {
-            if (slot == Actor.EquipSlot.Weapon)
+            if (slot == EquipSlot.Weapon)
                 ItemInfo.ChangeWeaponText(name);
-            else if (slot == Actor.EquipSlot.Armor)
+            else if (slot == EquipSlot.Armor)
                 ItemInfo.ChangeArmorText(name);
-            else if (slot == Actor.EquipSlot.Accessory1)
+            else if (slot == EquipSlot.Accessory1)
                 ItemInfo.ChangeAccessoryText(name);
         }
 

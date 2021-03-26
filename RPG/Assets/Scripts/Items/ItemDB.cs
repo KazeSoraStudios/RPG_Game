@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using RPG_Character;
 
 public enum ItemType { Useable, Key, Accessory, Weapon, Armor, None };
 public enum UseRestriction { None, Hero, Thief, Mage };

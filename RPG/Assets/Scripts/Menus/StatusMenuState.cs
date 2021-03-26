@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using RPG_Character;
 
 namespace RPG_UI
 {

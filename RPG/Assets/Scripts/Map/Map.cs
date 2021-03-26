@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using RPG_Character;
 
 public class Map : MonoBehaviour
 {
@@ -15,7 +16,6 @@ public class Map : MonoBehaviour
     [SerializeField] public Grid Grid;
     [SerializeField] Dictionary<Vector2Int, Trigger> Triggers = new Dictionary<Vector2Int, Trigger>();
     [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
-    [SerializeField] public Dictionary<string, Character> NpcsById = new Dictionary<string, Character>();
     [SerializeField] Tilemap collision;
 
     private EmptyTrigger emptyTrigger = new EmptyTrigger();

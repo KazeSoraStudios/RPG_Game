@@ -76,12 +76,13 @@ public class StateStack
         LogManager.LogDebug($"Failed to remove {state}");
     }
 
-    public void PushTextbox(string text, string portrait)
+    public void PushTextbox(string text, string portrait, float advanceTime = 99999)
     {
         var config = new Textbox.Config
         {
             ImagePath = portrait,
-            Text = ServiceManager.Get<LocalizationManager>().Localize(text)
+            Text = ServiceManager.Get<LocalizationManager>().Localize(text),
+            AdvanceTime = advanceTime
         };
         var textbox = ServiceManager.Get<UIController>().GetTextbox();
         textbox.Init(config);

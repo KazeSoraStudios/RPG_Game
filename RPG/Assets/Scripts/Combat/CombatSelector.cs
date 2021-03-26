@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_Character;
 
 public enum Selector { WeakestActor, LowestHP, WeakestEnemy, WeakestPartyMember, LowestEnemyHP, LowestPartyHP, LowestMPParty, LowestMPEnemy, FirstDeadParty, FirstDeadEnemy, RandomParty, RandomEnemy}
 

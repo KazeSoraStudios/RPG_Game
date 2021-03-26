@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-
+using RPG_Character;
 public class Path
 {
     public List<Character.Direction> pathToMove;

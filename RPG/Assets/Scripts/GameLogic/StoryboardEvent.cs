@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using RPG_Character;
 
 public enum SBEvent { None, HandIn }
 
@@ -315,12 +316,13 @@ public class StoryboardEventFunctions
             Function = (storyboard) =>
             {
                 var map = GetMapReference(storyboard, mapId);
-                if (!map.NpcsById.ContainsKey(npcId))
+                var npcs = ServiceManager.Get<NPCManager>();
+                if (!npcs.HasNPC(npcId))
                 {
                     LogManager.LogError($"Map [{map.name}] does not contain npc [{npcId}]. Returning from FadeOutCharacterEvent.");
                     return EmptyEvent;
                 }
-                var npc = map.NpcsById[npcId];
+                var npc = npcs.GetNPC(npcId);
                 if (npc.IsHero())
                     npc = ((ExploreState)storyboard.States[Constants.EXPLORE_STATE]).Hero;
                 return new TweenEvent<Character>
@@ -664,7 +666,7 @@ public class StoryboardEventFunctions
             Function = (storyboard) =>
             {
                 var map = GetMapReference(storyboard, mapId);
-                var npc = map.NpcsById[npcId];
+                var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
                 npc.FollowPath(path);
                 return new BlockUntilEvent
                 {

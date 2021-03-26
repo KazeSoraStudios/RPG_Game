@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using TMPro;
+using RPG_Character;
 
 namespace RPG_UI
 {
@@ -34,9 +35,9 @@ namespace RPG_UI
             onSelect = config.OnSelect;
             var actor = config.Actor;
             OnSelectionChange();
-            ChangeWeaponText(actor.GetEquipmentName(Actor.EquipSlot.Weapon));
-            ChangeArmorText(actor.GetEquipmentName(Actor.EquipSlot.Armor));
-            ChangeAccessoryText(actor.GetEquipmentName(Actor.EquipSlot.Accessory1));
+            ChangeWeaponText(actor.GetEquipmentName(EquipSlot.Weapon));
+            ChangeArmorText(actor.GetEquipmentName(EquipSlot.Armor));
+            ChangeAccessoryText(actor.GetEquipmentName(EquipSlot.Accessory1));
         }
 
         public void ChangeWeaponText(string text)

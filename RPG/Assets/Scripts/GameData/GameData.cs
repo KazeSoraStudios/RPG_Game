@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_Character;
 
 public sealed class GameData : MonoBehaviour
 {
@@ -34,12 +35,18 @@ public class PartyMemeberDefintion
     public string Portrait;
     public string StatsId;
     public StatGrowth StatGrowth;
-    public string ActionGrowth;
+    public ActionGrowth ActionGrowth;
 
     public string LocalizedName()
     {
         return ServiceManager.Get<LocalizationManager>().Localize(Name);
     }
+}
+
+public class ActionGrowth
+{
+    public Dictionary<int, List<string>> Spells = new Dictionary<int, List<string>>();
+    public Dictionary<int, List<string>> Special = new Dictionary<int,List<string>>();
 }
 
 public enum SpellElement { Fire, Ice, Electric, Heal }

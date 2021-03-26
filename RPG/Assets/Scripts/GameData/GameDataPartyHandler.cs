@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using RPG_Character;
 
 public class GameDataPartyHandler : GameDataHandler
 {
@@ -20,7 +19,7 @@ public class GameDataPartyHandler : GameDataHandler
                 Id = data[index++],
                 StatsId = data[index++],
                 StatGrowth = GetStatGrowth(data[index++]),
-                ActionGrowth = data[index++],
+                ActionGrowth = GetActionGrowth(data[index++]),
                 Portrait = data[index++],
                 Name = data[index++],
                 Level = int.Parse(data[index++])
@@ -32,7 +31,45 @@ public class GameDataPartyHandler : GameDataHandler
         return items;
     }
 
-    public static StatGrowth GetStatGrowth(string data)
+    private static ActionGrowth GetActionGrowth(string data)
+    {
+        var actionGrowth = new ActionGrowth();
+        if (data.IsEmpty())
+        {
+            LogManager.LogError($"Action Growth is empty skipping.");
+            return actionGrowth;
+        }
+        var growths = data.Split('/');
+        foreach (var growth in growths)
+        {
+            var growthData = growth.Split(':');
+            if (growthData.Length > 3)
+            {
+                LogManager.LogError($"Invalid Action data for {growth}");
+                continue;
+            }
+            if (!int.TryParse(growthData[0], out var level))
+            {
+                LogManager.LogError($"Invalid format for growth {growth}. Level is expected first.");
+                continue;
+            }
+            if (growth[1].Equals("magic"))
+            {
+                if (!actionGrowth.Spells.ContainsKey(level))
+                    actionGrowth.Spells.Add(level, new List<string>());
+                actionGrowth.Spells[level].Add(growthData[2]);
+            }
+            else
+            {
+                if (!actionGrowth.Special.ContainsKey(level))
+                    actionGrowth.Special.Add(level, new List<string>());
+                actionGrowth.Special[level].Add(growthData[2]);
+            }
+        }
+        return actionGrowth;
+    }
+
+    private static StatGrowth GetStatGrowth(string data)
     {
         var statGrowth = new StatGrowth();
         if (data.IsEmpty())
