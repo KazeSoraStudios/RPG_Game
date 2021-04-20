@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 9091877173033026570}
   - component: {fileID: 3057305007961802950}
   - component: {fileID: 8102941967106615182}
+  - component: {fileID: 6918768904403121363}
+  - component: {fileID: 1375352564297740012}
   m_Layer: 4
   m_Name: TestNPC
   m_TagString: Untagged
@@ -208,3 +210,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: test
+--- !u!114 &6918768904403121363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3057305007961802813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dd55fdc747b2044e94b122cecb3d7bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: NPC
+  Portrait: 
+  Id: 0
+  PartyId: 
+  Exp: 0
+  Level: 0
+  NextLevelExp: 0
+  UseRestriction: 0
+  Stats: {fileID: 1375352564297740012}
+  LevelFunction: {fileID: 0}
+--- !u!114 &1375352564297740012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3057305007961802813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad465f575cbf33f4a9a169b9babba7ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

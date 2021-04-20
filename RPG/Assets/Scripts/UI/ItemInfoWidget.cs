@@ -5,7 +5,7 @@ using RPG_Character;
 
 namespace RPG_UI
 {
-    public class ItemInfoWidget : UIMonoBehaviour
+    public class ItemInfoWidget : ConfigMonoBehaviour
     {
         public struct Config
         {

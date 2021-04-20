@@ -6,7 +6,7 @@ using RPG_Character;
 
 namespace RPG_UI
 {
-    public class Textbox : UIMonoBehaviour, IGameState
+    public class Textbox : ConfigMonoBehaviour, IGameState
     {
         public class Config
         {
@@ -22,6 +22,7 @@ namespace RPG_UI
         [SerializeField] TextMeshProUGUI Text;
         [SerializeField] MenuOptionsList OptionsList;
 
+        private bool isDead = true;
         private bool turnOff;
         private int currentPage = 0;
         private int characterIndex = 0;
@@ -55,6 +56,7 @@ namespace RPG_UI
             onFinish = config.OnFinish;
             onSelect = config.OnSelect;
             Image.gameObject.SafeSetActive(false);
+            isDead = false;
             if (config.ImagePath != null)
                 Image.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.ImagePath, () => Image.gameObject.SafeSetActive(true));
         }
@@ -109,6 +111,7 @@ namespace RPG_UI
             gameObject.SafeSetActive(false);
             ServiceManager.Get<Party>().ReturnFromTextboxState();
             ServiceManager.Get<NPCManager>().ReturnFromTextboxState();
+            isDead = true;
         }
 
         public void OnClick()
@@ -120,6 +123,16 @@ namespace RPG_UI
                 return;
             }
             AdvanceOrTurnOff();
+        }
+
+        public bool IsDead()
+        {
+            return isDead;
+        }
+
+        public bool IsTurningOff()
+        {
+            return turnOff;
         }
 
         private void AdvanceOrTurnOff()

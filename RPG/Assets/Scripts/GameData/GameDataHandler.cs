@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-
+using RPG_Combat;
+using RPG_Character;
 
 public class GameDataHandler : MonoBehaviour
 {
@@ -28,6 +30,14 @@ public class GameDataHandler : MonoBehaviour
         return new Vector2(GetFloatFromCell(vars[0]), GetFloatFromCell(vars[1]));
     }
 
+    protected static Vector3 GetVector3FromCell(string vec2Cell)
+    {
+        var vars = vec2Cell.Split(':');
+        if (vars.Length != 3)
+            return Vector3.zero;
+        return new Vector3(GetFloatFromCell(vars[0]), GetFloatFromCell(vars[1]), GetFloatFromCell(vars[2]));
+    }
+
     protected static  T GetEnum<T>(T defaultT, string type) where T : struct, Enum
     {
         var t = defaultT;
@@ -52,7 +62,7 @@ public class GameDataHandler : MonoBehaviour
         return ts;
     }
 
-    protected static Action<CombatState, bool> GetTarget(string name, string data)
+    protected static Func<CombatGameState, bool, List<Actor>> GetTarget(string name, string data)
     {
         if (data.IsEmpty())
         {

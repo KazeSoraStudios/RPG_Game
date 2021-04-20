@@ -13,7 +13,7 @@ namespace RPG_Character
             public int Level;
             public Stats Stats;
             public List<Spell> Spells;
-            //public List<Special> Specials;
+            public List<Spell> Specials;
 
             public LevelUp(int exp, int level, Stats stats)
             {
@@ -21,7 +21,7 @@ namespace RPG_Character
                 Level = level;
                 Stats = stats;
                 Spells = new List<Spell>();
-                //Special = new List<Special>();
+                Specials = new List<Spell>();
             }
         }
 
@@ -32,14 +32,16 @@ namespace RPG_Character
         [SerializeField] public int Exp;
         [SerializeField] public int Level;
         [SerializeField] public int NextLevelExp;
+        [SerializeField] public int StealItem;
         [SerializeField] public UseRestriction UseRestriction;
-        [SerializeField] public List<Spell> Spells;
+        [SerializeField] public List<Spell> Spells = new List<Spell>();
+        [SerializeField] public List<Spell> Specials = new List<Spell>();
         //[SerializeField] MenuActions MenuActions SerializeObject
         [SerializeField] public Stats Stats;
         [SerializeField] public LevelFunction LevelFunction;
         [SerializeField] public StatGrowth StatGrowth = new StatGrowth();
         [SerializeField] public ItemInfo[] Equipment = new ItemInfo[3];
-        [SerializeField] public List<Item> Loot = new List<Item>();
+        [SerializeField] public Drop Loot = new Drop();
 
         public void Init(PartyMemeberDefintion partyMemeber)
         {
@@ -48,6 +50,8 @@ namespace RPG_Character
                 LogManager.LogError($"Null party member passed to Actor[{name}]");
                 return;
             }
+            Spells.Clear();
+            Specials.Clear();
             var gameData = ServiceManager.Get<GameData>();
             Stats.FromStatsDefinition(gameData.Stats[partyMemeber.StatsId]);
             StatGrowth = partyMemeber.StatGrowth;
@@ -65,18 +69,38 @@ namespace RPG_Character
                 }
             }
             var specials = partyMemeber.ActionGrowth.Special;
-            // TODO add special object
-            //foreach (var special in specials)
-            //{
-            //    if (Level >= special.Key)
-            //    {
-            //        var list = GetSpecialForLevelUp(special.Value);
-            //        Specials.AddRange(list);
-            //    }
-            //}
+            foreach (var special in specials)
+            {
+                if (Level >= special.Key)
+                {
+                    var list = GetSpecialsForLevelUp(special.Value);
+                    Specials.AddRange(list);
+                }
+            }
+
+            // TODO drops
 
             NextLevelExp = LevelFunction.NextLevel(Level);
             DoInitialLeveling();
+        }
+
+        public void Init(Enemy enemy)
+        {
+            if (enemy == null)
+            {
+                LogManager.LogError($"Null enemy passed to Actor[{name}]");
+                return;
+            }
+            Spells.Clear();
+            Specials.Clear();
+            //Id = enemy.Id;
+            Name = ServiceManager.Get<LocalizationManager>().Localize(enemy.Name);
+            Portrait = enemy.Portrait;
+            Spells.AddRange(GetSpellsForLevelUp(enemy.Spells));
+            Specials.AddRange(GetSpecialsForLevelUp(enemy.Specials));
+            StealItem = enemy.StealItem;
+            Loot = CreateLoot(enemy);
+            Stats.FromStatsDefinition(enemy.Stats);
         }
 
         /*
@@ -141,61 +165,24 @@ namespace RPG_Character
             foreach (var growth in StatGrowth.Growths)
                 levelUp.Stats.SetStat(growth.Key, growth.Value.RollDice());
             var level = Level + levelUp.Level;
-            //var actions 
-            // TODO Get party member and check actions
-
-            //local def = gPartyMemberDefs[self.mId]
-            //levelup.actions = def.actionGrowth[level] or { }
             var partyDefinition = ServiceManager.Get<GameData>().PartyDefs[PartyId];
             var actionGrow = partyDefinition.ActionGrowth;
             if (actionGrow.Spells.ContainsKey(level))
                 levelUp.Spells = GetSpellsForLevelUp(actionGrow.Spells[level]);
+            if (actionGrow.Special.ContainsKey(level))
+                levelUp.Specials = GetSpecialsForLevelUp(actionGrow.Special[level]);
 
             return levelUp;
         }
-
-        //function Actor:UnlockMenuAction(id)
-
-        //print('menu action', tostring(id))
-
-        //for _, v in ipairs(self.mActions) do
-        //    if v == id then
-        //        return
-        //    end
-        //end
-        //table.insert(self.mActions, id)
-        //end
-
-        //function Actor:AddAction(action, entry)
-
-        //    local t = self.mSpecial
-        //    if action == 'magic' then
-        //        t = self.mMagic
-        //    end
-
-        //    for _, v in ipairs(entry) do
-        //        table.insert(t, v)
-        //    end
-        //end
 
         public void ApplyLevel(LevelUp levelUp)
         {
             Exp += levelUp.Exp;
             Level += levelUp.Level;
             NextLevelExp = LevelFunction.NextLevel(Level);
-
-            //assert(self.mXP >= 0)
-
             foreach (var stat in (Stat[])Enum.GetValues(typeof(Stat)))
                 if (Stats.HasStat(stat))
                     Stats.IncreaseStat(stat, levelUp.Stats.Get(stat));
-
-
-            // TODO
-            //for action, v in pairs(levelup.actions) do
-            //    self:UnlockMenuAction(action)
-            //    self:AddAction(action, v)
-            //end
             Stats.ResetHpMp();
         }
 
@@ -292,20 +279,60 @@ namespace RPG_Character
             }
             return list;
         }
-        //private List<Spell> GetSpecialsForLevelUp(List<string> specials)
-        //{
-        //    var gamedata = ServiceManager.Get<GameData>().Specials;
-        //    var list = new List<Spell>();
-        //    foreach (var special in specials)
-        //    {
-        //        if (!gamedata.ContainsKey(special))
-        //        {
-        //            LogManager.LogError($"Gamedata does not contain Special {special}. Not adding to level up.");
-        //            continue;
-        //        }
-        //        list.Add(gamedata[special]);
-        //    }
-        //    return list;
-        //}
+
+        private List<Spell> GetSpecialsForLevelUp(List<string> specials)
+        {
+            var gamedata = ServiceManager.Get<GameData>().Specials;
+            var list = new List<Spell>();
+            foreach (var special in specials)
+            {
+                if (!gamedata.ContainsKey(special))
+                {
+                    LogManager.LogError($"Gamedata does not contain Special {special}. Not adding to level up.");
+                    continue;
+                }
+                list.Add(gamedata[special]);
+            }
+            return list;
+        }
+
+        private Drop CreateLoot(Enemy enemy)
+        {
+            var gold = (int)UnityEngine.Random.Range(enemy.Gold.x, enemy.Gold.y);
+            var always = new List<Item>();
+            var oddments = new List<Oddment>();
+            var items = ServiceManager.Get<GameData>().Items;
+            foreach (var itemDrop in enemy.ItemDrops)
+            {
+                if (itemDrop.x < 0 || itemDrop.x > items.Count)
+                {
+                    LogManager.LogError($"ItemDrop has invalid item id: {itemDrop.x}.");
+                    continue;
+                }
+                var item = items[(int)itemDrop.x] as ItemInfo;
+                if (itemDrop.y < 0)
+                    always.Add(new Item { ItemInfo = item, Count = (int)itemDrop.z });
+                else
+                {
+                    var oddment = new Oddment
+                    {
+                        Item = item.Id,
+                        Chance = (int)itemDrop.y,
+                        Count = (int)itemDrop.z
+                    };
+                    oddments.Add(oddment);
+                }
+            }
+            var chance = new OddmentTable();
+            chance.SetOddments(oddments);
+            var drop = new Drop
+            { 
+                Exp = enemy.Exp,
+                Gold = gold,
+                AlwaysDrop = always,
+                ChanceDrop = chance
+            };
+            return drop;
+        }
     }
 }

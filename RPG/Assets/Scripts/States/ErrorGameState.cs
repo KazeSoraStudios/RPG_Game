@@ -22,7 +22,7 @@ public class ErrorGameState : IGameState
         LogManager.LogError("Error game state handle input.");
     }
 
-    public string GetName() { return "ErrorGameState"; }  // TODO change to int
+    public string GetName() { return "ErrorGameState"; }
 
     public ErrorGameState() { }
 }

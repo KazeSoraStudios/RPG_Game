@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using RPG_Character;
+using RPG_Combat;
+using RPG_UI;
 
 public enum SBEvent { None, HandIn }
 
@@ -15,7 +17,7 @@ public interface IStoryboardEvent
     IStoryboardEvent Transform(Storyboard storyboard);
 }
 
-public struct WaitEvent : IStoryboardEvent
+public class WaitEvent : IStoryboardEvent
 {
     public float Seconds;
 
@@ -44,7 +46,7 @@ public struct WaitEvent : IStoryboardEvent
 }
 
 
-public struct TweenEvent<T> : IStoryboardEvent
+public class TweenEvent<T> : IStoryboardEvent
 {
     public float Start;
     public float Distance;
@@ -98,7 +100,7 @@ public struct TweenEvent<T> : IStoryboardEvent
     }
 }
 
-public struct BlockUntilEvent : IStoryboardEvent
+public class BlockUntilEvent : IStoryboardEvent
 {
     public Func<bool> UntilFunction;
 
@@ -123,22 +125,24 @@ public struct BlockUntilEvent : IStoryboardEvent
     public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
-public struct AnimateEvent : IStoryboardEvent
+public class AnimateEvent : IStoryboardEvent
 {
-    public Character Character;
-    public string Animation;
+    private bool startedAnimating;
+    private string animation;
+    private Character character;
 
     public AnimateEvent(Character character, string animation)
     {
-        Character = character;
-        Animation = animation;
+        this.character = character;
+        this.animation = animation;
     }
 
     public void Execute(float deltaTime)
     {
-        /*self.mAnimation:Update(dt)
-        local frame = self.mAnimation:Frame()
-        self.mEntity:SetFrame(frame)*/
+        if (startedAnimating)
+            return;
+        character.PlayAnimation(animation);
+        startedAnimating = true;
     }
 
     public bool IsBlocking()
@@ -148,46 +152,54 @@ public struct AnimateEvent : IStoryboardEvent
 
     public bool IsFinished()
     {
-        return Character.IsAnimationFinished(Animation);
+        return character.IsAnimationFinished(animation);
     }
 
     public bool HasEventFunction() { return false; }
     public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
-public struct TimedTextBoxEvent : IStoryboardEvent
+public class TimedTextBoxEvent : IStoryboardEvent
 {
-    public float Time;
-    // TODO Textbox
+    private float time;
+    private float countDown;
+    private Textbox textbox;
 
-    public void Init(/*Textbox,*/float time)
+    public TimedTextBoxEvent(Textbox.Config config, float time)
     {
-        //mTextbox = box,
-        Time = time;
+        textbox = ServiceManager.Get<UIController>().GetTextbox();
+        textbox.Init(config);
+        this.time = time;
+        countDown = time;
     }
 
     public void Execute(float deltaTime)
     {
-        Time -= deltaTime;
-        if (Time <= 0)
-        { }// TODO click self.mTextbox:OnClick()
+        countDown -= deltaTime;
+        if (countDown <= 0)
+        {
+            textbox.OnClick();
+            // If the textbox advances the text, reset our countdown
+            if (!textbox.IsDead() && !textbox.IsTurningOff())
+                countDown = time;
+        }
     }
 
     public bool IsBlocking()
     {
-        return false; // TODO not self.mTextbox:IsDead()
+        return !textbox.IsDead();
     }
 
     public bool IsFinished()
     {
-        return true;// TODO self.mTextbox:IsDead()
+        return textbox.IsDead();
     }
 
     public bool HasEventFunction() { return false; }
     public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
-public struct EmptyStoryboardEvent : IStoryboardEvent
+public class EmptyStoryboardEvent : IStoryboardEvent
 {
     public void Execute(float deltaTime) { }
 
@@ -200,7 +212,7 @@ public struct EmptyStoryboardEvent : IStoryboardEvent
     public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
-public struct StoryboardFunctionEvent : IStoryboardEvent
+public class StoryboardFunctionEvent : IStoryboardEvent
 {
     public Storyboard storyboard;
     public Func<Storyboard, IStoryboardEvent> Function;
@@ -219,7 +231,7 @@ public struct StoryboardFunctionEvent : IStoryboardEvent
     }
 }
 
-public struct NonBlockingEvent : IStoryboardEvent
+public class NonBlockingEvent : IStoryboardEvent
 {
     public IStoryboardEvent Event;
 
@@ -309,17 +321,16 @@ public class StoryboardEventFunctions
     }
 
 
-    public static IStoryboardEvent FadeOutChararcter(int mapId, string npcId, float duration = 1)
+    public static IStoryboardEvent FadeOutChararcter(string npcId, float duration = 1)
     {
         return new StoryboardFunctionEvent
         {
             Function = (storyboard) =>
             {
-                var map = GetMapReference(storyboard, mapId);
                 var npcs = ServiceManager.Get<NPCManager>();
                 if (!npcs.HasNPC(npcId))
                 {
-                    LogManager.LogError($"Map [{map.name}] does not contain npc [{npcId}]. Returning from FadeOutCharacterEvent.");
+                    LogManager.LogError($"NPC Manager does not contain npc [{npcId}]. Returning from FadeOutCharacterEvent.");
                     return EmptyEvent;
                 }
                 var npc = npcs.GetNPC(npcId);
@@ -536,7 +547,7 @@ public class StoryboardEventFunctions
     //        end
     //        storyboard:PushState(id, state)
 
-    //        -- Allows the following instruction to be carried out
+    //        -- Allows the following inclassion to be carried out
     //        -- on the same frame.
     //        return SOP.NoBlock(SOP.Wait(0.1))()
     //    end
@@ -624,28 +635,45 @@ public class StoryboardEventFunctions
         };
     }
 
-    //function SOP.Say(mapId, npcId, text, time, params)
+    public static IStoryboardEvent Say(string mapId, string npcId, string text, Textbox.Config config, float time = 1.0f)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (storyboard) =>
+            {
+                var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
+                if (npcId.Equals("hero"))
+                {
+                    if (!storyboard.States.ContainsKey(mapId))
+                    {
+                        LogManager.LogError($"Storyboard States [{storyboard.States}] does not contain map id: {mapId}");
+                        return EmptyEvent;
+                    }
+                    npc = ((ExploreState)storyboard.States[mapId]).Hero;
+                }
+                return new TimedTextBoxEvent(config, time);
+            }
+            /*
+                         local map = GetMapRef(storyboard, mapId)
+            local npc = map.mNPCbyId[npcId]
+if npcId == "hero" then
+   npc = storyboard.mStates[mapId].mHero
+            end
+            local pos = npc.mEntity.mSprite:GetPosition()
+            storyboard.mStack:PushFit(
+                gRenderer,
+                -map.mCamX + pos:X(), -map.mCamY + pos:Y() + 32,
+                text, -1, params)
+            local box = storyboard.mStack:Top()
+            return TimedTextboxEvent:Create(box, time)
+        end
+    end
+             */
+        };
+    }
 
-    //    time = time or 1
-    //    params = params or {textScale = 0.8}
 
-    //    return function(storyboard)
-    //        local map = GetMapRef(storyboard, mapId)
-    //        local npc = map.mNPCbyId[npcId]
-    //        if npcId == "hero" then
-    //           npc = storyboard.mStates[mapId].mHero
-    //        end
-    //        local pos = npc.mEntity.mSprite:GetPosition()
-    //        storyboard.mStack:PushFit(
-    //            gRenderer,
-    //            -map.mCamX + pos:X(), -map.mCamY + pos:Y() + 32,
-    //            text, -1, params)
-    //        local box = storyboard.mStack:Top()
-    //        return TimedTextboxEvent:Create(box, time)
-    //    end
-    //end
 
-    
     public static IStoryboardEvent RunAction(RunAction action, List<object> def)
     {
         return new StoryboardFunctionEvent
@@ -659,13 +687,12 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent MoveNPC(string npcId, int mapId, List<Character.Direction> path)
+    public static IStoryboardEvent MoveNPC(string npcId, List<Direction> path)
     {
         return new StoryboardFunctionEvent
         {
             Function = (storyboard) =>
             {
-                var map = GetMapReference(storyboard, mapId);
                 var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
                 npc.FollowPath(path);
                 return new BlockUntilEvent

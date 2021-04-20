@@ -17,19 +17,19 @@ public class FollowPathState : CharacterState
         var direction = Character.GetNextPathDirection();
         switch (direction)
         {
-            case Character.Direction.North:
+            case Direction.North:
                 Character.Controller.Change(Constants.MOVE_STATE, new MoveParams(Vector2.up));
                 break;
-            case Character.Direction.South:
+            case Direction.South:
                 Character.Controller.Change(Constants.MOVE_STATE, new MoveParams(Vector2.down));
                 break;
-            case Character.Direction.East:
+            case Direction.East:
                 Character.Controller.Change(Constants.MOVE_STATE, new MoveParams(Vector2.left));
                 break;
-            case Character.Direction.West:
+            case Direction.West:
                 Character.Controller.Change(Constants.MOVE_STATE, new MoveParams(Vector2.right));
                 break;
-            case Character.Direction.NoWhere:
+            case Direction.NoWhere:
             default:
                 Character.ResetDefaultState();
                 Character.Controller.Change(Character.defaultState, null);

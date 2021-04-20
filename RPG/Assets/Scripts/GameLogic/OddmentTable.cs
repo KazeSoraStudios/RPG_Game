@@ -4,8 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Oddment", menuName = "RPG/Stats/Oddment")]
 public class Oddment : ScriptableObject
 {
-    public int oddment;
-    public OddmentItem item;
+    public int Chance;
+    public int Count = 1;
+    public string Item;
 }
 
 public class OddmentItem : ScriptableObject
@@ -26,14 +27,21 @@ public class OddmentEnemyEncounter : OddmentItem
     public List<int> enemyIds = new List<int>();
 }
 
-public class OddmentTable : MonoBehaviour
+public class OddmentTable
 {
     private int oddmentTotal = 0;
     private Oddment empty = new Oddment();
     private List<Oddment> oddments = new List<Oddment>();
 
-    private void Start()
+    public void SetOddments(List<Oddment> oddments)
     {
+        oddments.Clear();
+        if (oddments == null)
+        {
+            LogManager.LogError("Null oddments passed to SetOddments.");
+            return;
+        }
+        oddments.AddRange(oddments);
         oddmentTotal = CalcOddment();
     }
 
@@ -41,21 +49,21 @@ public class OddmentTable : MonoBehaviour
     {
         int total = 0;
         foreach (var oddment in oddments)
-            total += oddment.oddment;
+            total += oddment.Chance;
         return total;
     }
 
-    public OddmentItem Pick()
+    public Oddment Pick()
     {
         int pick = Random.Range(0, oddmentTotal);
         int total = 0;
         foreach(var oddment in oddments)
         {
-            total += oddment.oddment;
+            total += oddment.Chance;
             if (total >= pick)
-                return oddment.item;
+                return oddment;
         }
         var last = oddments.Count - 1;
-        return last < 0 ? empty.item : oddments[last].item;
+        return last < 0 ? empty : oddments[last];
     }
 }

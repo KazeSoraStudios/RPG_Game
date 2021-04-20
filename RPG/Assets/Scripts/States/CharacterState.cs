@@ -17,7 +17,7 @@ public abstract class CharacterState : IState
     public virtual bool Execute(float deltaTime) { return true; }
     public virtual void Enter(object stateParams) { }
     public virtual void Exit() { }
-    public abstract string GetName(); // TODO change to int
+    public abstract string GetName();
 }
 
 public class NpcStandState : CharacterState

@@ -4,7 +4,7 @@ using RPG_Character;
 
 namespace RPG_UI
 {
-    public class StatusMenuState : UIMonoBehaviour, IGameState
+    public class StatusMenuState : ConfigMonoBehaviour, IGameState
     {
         public class Config
         {

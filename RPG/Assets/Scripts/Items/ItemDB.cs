@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using RPG_Character;
+using RPG_Combat;
 
 public enum ItemType { Useable, Key, Accessory, Weapon, Armor, None };
 public enum UseRestriction { None, Hero, Thief, Mage };
@@ -40,24 +42,16 @@ public class Item
 
 public class ItemInfo
 {
-    public string Id;
-
-    public string Name;
-
-    public ItemType Type;
-
-    public string Description;
-
-    public string Icon;
-
+    public int Index;
     public int Price;
-
+    public ItemType Type;
+    public string Id;
+    public string Name;
+    public string Description;
+    public string Icon;
     public string Use;
-
     public UseRestriction[] UseRestriction;
-
     public ItemStats Stats;
-
     public StatModifier Modifier = new StatModifier();
     // use Action
 
@@ -75,18 +69,22 @@ public class ItemUse
 
     public string Hint;
 
+    public string Action;
+
     public bool UseOnMap;
+
+    public bool SwitchSides;
 
     public ItemTarget Target;
 }
 
 public class ItemTarget
 {
-    public Action<CombatState, bool> Selector;
+    public Func<CombatGameState, bool, List<Actor>> Selector;
 
     public bool SwitchSides;
 
-    public string Type;
+    public CombatTargetType Type;
 }
 
 public class ItemStats

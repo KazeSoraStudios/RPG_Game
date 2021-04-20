@@ -90,7 +90,7 @@ public class World : MonoBehaviour
 
     public void RemoveItem(string itemId, int amount = 1)
     {
-        DebugAssert.Assert(ServiceManager.Get<GameData>().Items[itemId].Type != ItemType.Key, $"Trying to remove {itemId} from inventory but it is a key item.");
+        DebugAssert.Assert(((ItemInfo)ServiceManager.Get<GameData>().Items[itemId]).Type != ItemType.Key, $"Trying to remove {itemId} from inventory but it is a key item.");
         DebugAssert.Assert(amount > 0 && Items.ContainsKey(itemId), $"Trying to remove {itemId} from inventory but it is not in the inventory.");
         var item = Items[itemId];
         item.Count -= amount;
@@ -157,5 +157,14 @@ public class World : MonoBehaviour
     public List<Item> GetKeyItemsList()
     {
         return KeyItems.Values.ToList<Item>();
+    }
+
+    public List<Item> GetUseItemsByType(ItemType type)
+    {
+        var items = new List<Item>();
+        foreach (var item in Items)
+            if (item.Value.ItemInfo.Type == type)
+                items.Add(item.Value);
+        return items;
     }
 }

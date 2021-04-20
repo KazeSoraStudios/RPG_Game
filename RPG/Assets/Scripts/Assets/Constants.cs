@@ -16,6 +16,9 @@ public class Constants
     public const string TITLE_MENU_PREFAB = "Prefabs/UI/TitleScreen";
     public const string GAME_OVER_PREFAB = "Prefabs/UI/GameOverScreen";
     public const string TEXTBOX_PREFAB = "Prefabs/UI/Textbox";
+    public const string COMBAT_PREFAB_PATH = "prefabs/Combat/Combat";
+    public const string COMBAT_MENU_PREFAB_PATH = "prefabs/UI/CombatMenu";
+    public const string XP_SUMMARY_MENU_PREFAB_PATH = "prefabs/UI/XPSummaryMenu";
 
     // Portraits
     public const string PORTRAIT_PATH = "Textures/Portraits/";
@@ -23,9 +26,10 @@ public class Constants
     // Animations
     public const string HURT_ANIMATION = "hurt";
     public const string DEATH_ANIMATION = "death";
+    public const string ATTACK_ANIMATION = "attack";
 
     // Stats
-    public const int MAX_SPEED = 255;
+    public const int MAX_STAT_VALUE = 255;
     public const float CHANCE_TO_HIT = 0.7f;
     public const float CHANCE_TO_CRIT = 0.1f;
     public const float CHANCE_TO_DODGE = 0.03f;
@@ -53,12 +57,15 @@ public class Constants
     public const string STROLL_STATE = "stroll";
     public const string STAND_STATE = "stand";
     public const string FOLLOW_PATH_STATE = "follow";
-    public const string HURT_STATE = "hurt";
+    public const string HURT_STATE = "cs_hurt";
     public const string DIE_STATE = "death";
-    public const string HURT_ENEMY_STATE = "enemy_hurt";
+    public const string HURT_ENEMY_STATE = "cs_hurt";
     public const string DIE_ENEMY_STATE = "enemy_death";
-    public static List<string> PARTY_STATES = new List<string> { WAIT_STATE, MOVE_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_STATE, DIE_STATE };
-    public static List<string> ENEMY_STATES = new List<string> { COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_ENEMY_STATE, DIE_ENEMY_STATE };
+    public const string USE_STATE = "use";
+    public const string RUN_ANIMATION_STATE = "run_anim";
+    public const string CAST_ANIMATION_STATE = "cast";
+    public static List<string> PARTY_STATES = new List<string> { WAIT_STATE, MOVE_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_STATE, USE_STATE, RUN_ANIMATION_STATE };
+    public static List<string> ENEMY_STATES = new List<string> { COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_ENEMY_STATE, DIE_ENEMY_STATE, RUN_ANIMATION_STATE };
     public static List<string> NPC_STATES = new List<string> { STAND_STATE, MOVE_STATE, FOLLOW_PATH_STATE, STROLL_STATE};
 
     // Game states
@@ -80,4 +87,9 @@ public class Constants
     // Storyboard states
     public const string SCREEN_STATE = "screenstate";
 
+    // Combat Actions
+    public const string HP_RESTORE_COMBAT_ACTION = "hp_restore";
+    public const string MP_RESTORE_COMBAT_ACTION = "mp_restore";
+    public const string REVIVE_COMBAT_ACTION = "revive";
+    public const string SPELL_COMBAT_ACTION = "element_spell";
 }

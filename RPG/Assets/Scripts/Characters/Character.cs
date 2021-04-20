@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using RPG_Combat;
 
 namespace RPG_Character
 {
     public enum CharacterType { Party, Enemy, NPC };
+    public enum Direction { North, South, East, West, NoWhere };
     public class Character : MonoBehaviour
     {
         [SerializeField] public int PathIndex = 0;
@@ -16,7 +18,6 @@ namespace RPG_Character
         [SerializeField] public Entity Entity;
         [SerializeField] public List<Direction> PathToMove = new List<Direction>();
 
-        public enum Direction { North, South, East, West, NoWhere };
         public Direction direction;
 
         private bool hasSpeedBeforeText = false;
@@ -35,6 +36,13 @@ namespace RPG_Character
             var position = (Vector2)transform.position + targetPosition;
             var collision = Physics2D.OverlapCircle(position, 0.2f, collisionLayer);
             return !collision;
+        }
+
+        public void CombatMovement(Vector2 movement, Direction direction)
+        {
+            Entity.UpdateMovement(movement, null);
+            var directionMovement = direction == Direction.West ? Vector2.right : Vector2.left;
+            UpdateAnimation(directionMovement);
         }
 
         public void UpdateMovement(Vector2 movement)
@@ -135,7 +143,7 @@ namespace RPG_Character
 
         public bool IsAnimationFinished(string animation)
         {
-            return animator.GetCurrentAnimatorStateInfo(0).IsName(animation);
+            return !animator.GetCurrentAnimatorStateInfo(0).IsName(animation);
         }
 
         public bool IsAnimationPlaying(string animation)
@@ -171,7 +179,7 @@ namespace RPG_Character
                 case Constants.MOVE_STATE:
                     return new MoveState(Map, this);
                 case Constants.COMBAT_MOVE_STATE:
-                    return new MoveState(Map, this);
+                    return new CSMove(this);
                 case Constants.STROLL_STATE:
                     return new PlanStrollState(Map, this);
                 case Constants.STAND_STATE:
@@ -180,10 +188,14 @@ namespace RPG_Character
                     return new FollowPathState(Map, this);
                 case Constants.HURT_STATE:
                     return new CSHurt(this);
-                case Constants.HURT_ENEMY_STATE:
-                    return new CSEnemyHurt(this);
+                // Constants.HURT_ENEMY_STATE: // TODO fix
+                  //  return new CSEnemyHurt(this);
                 case Constants.DIE_ENEMY_STATE:
                     return new CSEnemyDie(this);
+                case Constants.USE_STATE:
+                    return new CSEnemyDie(this);
+                case Constants.RUN_ANIMATION_STATE:
+                    return new CSRunAnimation(this);
                 default:
                     LogManager.LogError($"Unkown CharacterState {state}, cannot build state.");
                     return null;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RPG_UI
 {
-    public class InGameMenu : UIMonoBehaviour, IGameState
+    public class InGameMenu : ConfigMonoBehaviour, IGameState
     {
         public StateStack Stack;
         public StateMachine StateMachine;
@@ -69,8 +69,8 @@ namespace RPG_UI
         {
             Map = map;
             Stack = stack;
-            RefreshConfigs(map.MapName);
             gameObject.SafeSetActive(true);
+            RefreshConfigs(map.MapName);
             StateMachine.Change(Constants.FRONT_MENU_STATE, FrontConfig);
         }
 

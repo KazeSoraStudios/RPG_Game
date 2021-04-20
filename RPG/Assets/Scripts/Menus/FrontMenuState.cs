@@ -5,7 +5,7 @@ using TMPro;
 
 namespace RPG_UI
 {
-    public class FrontMenuState : UIMonoBehaviour, IGameState
+    public class FrontMenuState : ConfigMonoBehaviour, IGameState
     {
         public class Config
         {
@@ -25,7 +25,6 @@ namespace RPG_UI
         private Config config;
         private StateStack stack;
         private StateMachine stateMachine;
-        private MenuOptionsList.Config menuConfig = new MenuOptionsList.Config();
 
         public bool Execute(float deltaTime)
         {
@@ -54,6 +53,7 @@ namespace RPG_UI
             MenuNameText.SetText(ServiceManager.Get<LocalizationManager>().Localize(config.MapName));
             GoldText.SetText(ServiceManager.Get<World>().Gold.ToString());
             TimePlayedText.SetText(ServiceManager.Get<World>().TimeAsString());
+            var menuConfig = new MenuOptionsList.Config { OnClick = HandleOptionSelection };
             MenuList.Init(menuConfig);
             SummariesController.Init(new ActorSummaryList.Config
             {
@@ -73,12 +73,10 @@ namespace RPG_UI
 
         public void HandleInput()
         {
-            int direction = Input.GetKeyDown(KeyCode.UpArrow) ? -1 :
-                Input.GetKeyDown(KeyCode.DownArrow) ? 1 : 0;
             if (inActorSummary)
-                SummariesController.HandleInput(direction);
+                SummariesController.HandleInput();
             else
-                HandleMenuOptionInput(direction);
+                HandleMenuOptionInput();
         }
 
         public string GetName()
@@ -86,27 +84,11 @@ namespace RPG_UI
             return "Front Menu State";
         }
 
-        private void HandleMenuOptionInput(float direction)
+        private void HandleMenuOptionInput()
         {
-            if (direction > 0)
-            {
-                MenuList.IncreaseSelection();
-            }
-            else if (direction < 0)
-            {
-                MenuList.DecreaseSelection();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                var selection = MenuList.GetSelection();
-                HandleOptionSelection(selection);
-
-            }
-            else if (Input.GetKeyDown(KeyCode.Backspace))
-            {
+            MenuList.HandleInput();
+            if (Input.GetKeyDown(KeyCode.Backspace))
                 stack.Pop();
-            }
         }
 
         private void HandleOptionSelection(int selection)

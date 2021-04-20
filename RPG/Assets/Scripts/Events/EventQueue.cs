@@ -17,18 +17,18 @@ public interface IEvent
 public class EmptyEvent : IEvent
 {
     private int priority;
-    private Actor actor;
+    private int id;
 
     public EmptyEvent()
     {
         priority = 0;
-        actor = new Actor();
+        id = -1;
     }
 
     void IEvent.Execute(EventQueue queue) { }
     void IEvent.Update() { }
     bool IEvent.IsFinished() { return true;  }
-    Actor IEvent.GetActor() { return actor; }
+    Actor IEvent.GetActor() { return null; }
     string IEvent.GetName() { return "EmptyEvent"; }
     int IEvent.GetPriority() { return priority; }
     void IEvent.SetPriority(int value) { }
@@ -66,8 +66,8 @@ public class EventQueue : MonoBehaviour
 
     public int SpeedToPoints(int speed)
     {
-        speed = Mathf.Min(speed, Constants.MAX_SPEED);
-        return (int)Mathf.Floor(Constants.MAX_SPEED - speed);
+        speed = Mathf.Min(speed, Constants.MAX_STAT_VALUE);
+        return (int)Mathf.Floor(Constants.MAX_STAT_VALUE - speed);
     }
 
     public void Execute()
@@ -108,7 +108,7 @@ public class EventQueue : MonoBehaviour
 
     public bool ActorHasEvent(int actorId)
     {
-        if (actorId == currentEvent.GetActor().Id)
+        if (currentEvent.GetActor() != null && actorId == currentEvent.GetActor().Id)
             return true;
         foreach (var e in events)
             if (actorId == e.GetActor().Id)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RPG_UI
 {
-    public class ScrollViewCell : UIMonoBehaviour
+    public class ScrollViewCell : ConfigMonoBehaviour
     {
         public virtual void OnLoad() { }
         public virtual void OnExit() { }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RPG_Character
@@ -58,6 +59,10 @@ namespace RPG_Character
             return actors;
         }
 
+        public List<Actor> ToList()
+        {
+            return members.Values.ToList();
+        }
         public int EquipCount(Item item)
         {
             int count = 0;

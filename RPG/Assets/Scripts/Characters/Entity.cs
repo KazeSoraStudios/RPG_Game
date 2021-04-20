@@ -26,7 +26,7 @@ namespace RPG_Character
             if (movement != Vector2.zero)
                 return;
 
-            if (map.GetEntity(transform.position) is var entity && entity == null)
+            if (map == null || map.GetEntity(transform.position) is var entity && entity == null)
                 return;
             if (entity.GetInstanceID() == GetInstanceID())
                 map.RemoveEntity(this);
@@ -34,6 +34,11 @@ namespace RPG_Character
             var y = transform.position.y + movement.y;
             var newPosition = new Vector2Int((int)x, (int)y);
             map.AddEntity(this, newPosition);
+        }
+
+        public void CombatMovement(Vector3 movement)
+        {
+            transform.position = movement;
         }
 
         private void FixedUpdate()

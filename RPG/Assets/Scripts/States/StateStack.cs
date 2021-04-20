@@ -6,7 +6,7 @@ using RPG_UI;
 
 public class StateStack
 {
-    private static ErrorGameState emptyState = new ErrorGameState();
+    public static ErrorGameState emptyState = new ErrorGameState();
     private List<IGameState> states = new List<IGameState>();
 
     public StateStack()

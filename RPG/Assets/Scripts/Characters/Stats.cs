@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_Combat;
 
 namespace RPG_Character
 {
@@ -20,7 +21,6 @@ namespace RPG_Character
             modifiers = new StatModifier[slots.Length];
             for (int i = 0; i < slots.Length; i++)
                 modifiers[i] = EmptyModifier;
-
         }
 
         public bool HasStat(Stat stat)
@@ -95,6 +95,14 @@ namespace RPG_Character
             return (int)(total + (total * multiplier));
         }
 
+        public float GetSpellElementModifer(SpellElement element)
+        {
+            float modifier = 0.0f;
+            foreach(var m in modifiers)
+                modifier += m.GetSpellElementValue(element);
+            return modifier;
+        }
+
         public int GetStatDiffForNewItem(Stat stat, EquipSlot slot, StatModifier newModifier)
         {
             if (!stats.ContainsKey(stat))
@@ -142,6 +150,7 @@ namespace RPG_Character
     {
         public Dictionary<Stat, int> AddModifiers = new Dictionary<Stat, int>();
         public Dictionary<Stat, float> MultiplyModifiers = new Dictionary<Stat, float>();
+        public Dictionary<SpellElement, float> SpellElementModifiers = new Dictionary<SpellElement, float>();
 
         public int GetAddValue(Stat stat)
         {
@@ -151,6 +160,11 @@ namespace RPG_Character
         public float GetMultiplyValue(Stat stat)
         {
             return MultiplyModifiers.ContainsKey(stat) ? MultiplyModifiers[stat] : 0;
+        }
+
+        public float GetSpellElementValue(SpellElement element)
+        {
+            return SpellElementModifiers.ContainsKey(element) ? SpellElementModifiers[element] : 0;
         }
     }
 

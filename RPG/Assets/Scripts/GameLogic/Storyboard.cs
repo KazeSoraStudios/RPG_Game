@@ -9,7 +9,7 @@ public class Storyboard : IGameState
     public List<IStoryboardEvent> events = new List<IStoryboardEvent>();
     public Dictionary<string, AudioSource> PlayingSounds = new Dictionary<string, AudioSource>();
 
-    public Storyboard (StateStack stack, List<IStoryboardEvent> events, bool handIn)
+    public Storyboard (StateStack stack, List<IStoryboardEvent> events, bool handIn = false)
     {
         this.Stack = stack;
         this.events = events;

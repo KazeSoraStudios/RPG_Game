@@ -6,7 +6,7 @@ using RPG_Character;
 
 namespace RPG_UI
 {
-    public class EquipMenuState : UIMonoBehaviour, IGameState, IScrollHandler
+    public class EquipMenuState : ConfigMonoBehaviour, IGameState, IScrollHandler
     {
         public class Config
         {
@@ -215,7 +215,7 @@ namespace RPG_UI
             }
             else
             {
-                var item = ServiceManager.Get<GameData>().Items[config.Id];
+                var item = ServiceManager.Get<GameData>().Items[config.Id] as ItemInfo;
                 actor.Equip(slot, item);
             }
             SetItemName(slot, actor.GetEquipmentName(slot));
@@ -306,7 +306,7 @@ namespace RPG_UI
                 Stats.TurnOffPredicitionStats();
                 return;
             }
-            var item = ServiceManager.Get<GameData>().Items[config.Id];
+            var item = ServiceManager.Get<GameData>().Items[config.Id] as ItemInfo;
             var predictedStats = actor.PredictStats(slot, item);
             for (int i = 0; i < predictedStats.Count; i++)
                 predictedStats[i] = Random.Range(-5, 7);

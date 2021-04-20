@@ -87,13 +87,21 @@ public class GameDataDownloader : MonoBehaviour
         cellsProcessed += numberOfColumns;
         index = cellsProcessed;
         var spells = GameDataSpellHandler.ProcessSpells(index, numberOfCells, numberOfColumns, data);
+        cellsProcessed += numberOfColumns * numberOfCells;
+        // Get the new number of cells to process and skip the row
+        numberOfCells = int.Parse(data[cellsProcessed + 1]);
+        cellsProcessed += numberOfColumns;
+        index = cellsProcessed;
+        var enemies = GameDataEnemyHandler.PrcoessEnemies(index, numberOfCells, numberOfColumns, data);
 
 
         GameData.Items = items;
         GameData.ItemUses = itemUses;
         GameData.PartyDefs = party;
         GameData.Stats = stats;
-        GameData.Spells = spells;
+        GameData.Spells = spells.spells;
+        GameData.Specials = spells.specials;
+        GameData.Enemies = enemies;
         ServiceManager.Get<LocalizationManager>().SetLocalization(loc);
         enabled = false;
         OnComplete?.Invoke();

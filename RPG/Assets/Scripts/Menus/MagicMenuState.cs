@@ -6,7 +6,7 @@ using RPG_Character;
 
 namespace RPG_UI
 {
-    public class MagicMenuState : UIMonoBehaviour, IGameState, IScrollHandler
+    public class MagicMenuState : ConfigMonoBehaviour, IGameState, IScrollHandler
     {
         public class Config
         {

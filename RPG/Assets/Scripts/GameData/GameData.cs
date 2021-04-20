@@ -4,11 +4,13 @@ using RPG_Character;
 
 public sealed class GameData : MonoBehaviour
 {
-    public Dictionary<string, ItemInfo> Items = new Dictionary<string, ItemInfo>();
+    public DictionaryList<string, ItemInfo> Items = new DictionaryList<string, ItemInfo>();
     public Dictionary<string, ItemUse> ItemUses = new Dictionary<string, ItemUse>();
     public Dictionary<string, PartyMemeberDefintion> PartyDefs = new Dictionary<string, PartyMemeberDefintion>();
     public Dictionary<string, Dictionary<Stat, int>> Stats = new Dictionary<string, Dictionary<Stat, int>>();
     public Dictionary<string, Spell> Spells = new Dictionary<string, Spell>();
+    public Dictionary<string, Spell> Specials = new Dictionary<string, Spell>();
+    public Dictionary<string, Enemy> Enemies = new Dictionary<string, Enemy>();
 
     void Awake()
     {
@@ -49,7 +51,7 @@ public class ActionGrowth
     public Dictionary<int, List<string>> Special = new Dictionary<int,List<string>>();
 }
 
-public enum SpellElement { Fire, Ice, Electric, Heal }
+public enum SpellElement { Fire, Ice, Electric, Heal, Special, None }
 
 public class Spell
 {
@@ -64,6 +66,25 @@ public class Spell
     public ItemTarget ItemTarget;
 
     public string LocalizedName()
+    {
+        return ServiceManager.Get<LocalizationManager>().Localize(Name);
+    }
+}
+
+public class Enemy
+{
+    public int StealItem;
+    public int Exp;
+    public Vector2 Gold;
+    public string Id;
+    public string Name;
+    public string Portrait;
+    public List<string> Spells = new List<string>();
+    public List<string> Specials = new List<string>();
+    public List<Vector3> ItemDrops = new List<Vector3>();
+    public Dictionary<Stat, int> Stats;
+
+    public string GetName()
     {
         return ServiceManager.Get<LocalizationManager>().Localize(Name);
     }

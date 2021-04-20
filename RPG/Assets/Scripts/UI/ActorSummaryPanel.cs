@@ -5,7 +5,7 @@ using RPG_Character;
 
 namespace RPG_UI
 {
-    public class ActorSummaryPanel : UIMonoBehaviour
+    public class ActorSummaryPanel : ConfigMonoBehaviour
     {
         public class Config
         {

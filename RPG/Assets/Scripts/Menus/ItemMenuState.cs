@@ -6,7 +6,7 @@ using TMPro;
 
 namespace RPG_UI
 {
-    public class ItemMenuState : UIMonoBehaviour, IGameState, IScrollHandler
+    public class ItemMenuState : ConfigMonoBehaviour, IGameState, IScrollHandler
     {
         public class Config
         {

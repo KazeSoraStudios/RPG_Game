@@ -6,7 +6,7 @@ using RPG_Character;
 
 namespace RPG_UI
 {
-    public class StatsWidget : UIMonoBehaviour
+    public class StatsWidget : ConfigMonoBehaviour
     {
         public struct Config
         {

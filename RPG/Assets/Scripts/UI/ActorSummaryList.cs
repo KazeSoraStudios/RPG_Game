@@ -5,7 +5,7 @@ using RPG_Character;
 
 namespace RPG_UI
 {
-    public class ActorSummaryList : UIMonoBehaviour
+    public class ActorSummaryList : ConfigMonoBehaviour
     {
         public class Config
         {
@@ -32,7 +32,7 @@ namespace RPG_UI
             InitPanels();
         }
 
-        public void HandleInput(float direction)
+        public void HandleInput()
         {
             //local item = self.mSelections:SelectedItem()
 
@@ -42,12 +42,11 @@ namespace RPG_UI
             //    end
             //    return
             //end
-
-            if (direction > 0.01)
+            if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 IncreaseSelection();
             }
-            else if (direction < -0.01)
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 DecreaseSelection();
             }

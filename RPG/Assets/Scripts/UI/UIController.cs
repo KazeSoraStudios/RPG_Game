@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace RPG_UI
 {
-    public class UIController : UIMonoBehaviour
+    public class UIController : ConfigMonoBehaviour
     {
-        [SerializeField] Transform MenuLayer;
-        [SerializeField] Transform PoolLayer;
-        [SerializeField] Transform BlockingLayer;
-        [SerializeField] Transform TextLayer;
+        [SerializeField] public Transform MenuLayer;
+        [SerializeField] public Transform PoolLayer;
+        [SerializeField] public Transform BlockingLayer;
+        [SerializeField] public Transform TextLayer;
+        [SerializeField] public Transform CombatLayer;
         [SerializeField] InGameMenu GameMenu;
 
         private Textbox textbox;
@@ -30,8 +31,8 @@ namespace RPG_UI
         {
             // have awake run
             GameMenu.SetUIController(this);
-            MenuLayer.gameObject.SafeSetActive(true);
-            MenuLayer.gameObject.SafeSetActive(false);
+            gameObject.SafeSetActive(true);
+            gameObject.SafeSetActive(false);
         }
 
         public bool HasCell()
@@ -61,6 +62,7 @@ namespace RPG_UI
 
         public void OpenMenu(Map map, StateStack stack)
         {
+            Show();
             GameMenu.Init(map, stack);
             stack.Push(GameMenu);
         }
@@ -117,6 +119,16 @@ namespace RPG_UI
             if ((layers & 0x8) == 0x8)
                 for (int i = BlockingLayer.childCount - 1; i > -1; i--)
                     Destroy(BlockingLayer.GetChild(i).gameObject);
+        }
+
+        public void Show()
+        { 
+            gameObject.SafeSetActive(true);
+        }
+
+        public void Hide()
+        {
+            gameObject.SafeSetActive(false);
         }
     }
 }

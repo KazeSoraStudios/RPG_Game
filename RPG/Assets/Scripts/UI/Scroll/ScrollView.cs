@@ -16,7 +16,7 @@ namespace RPG_UI
         int GetNumberOfCells();
     }
 
-    public class ScrollView : UIMonoBehaviour
+    public class ScrollView : ConfigMonoBehaviour
     {
         [Min(1)]
         [SerializeField] int ColumnCount;
