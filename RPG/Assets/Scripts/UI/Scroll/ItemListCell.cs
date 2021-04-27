@@ -46,7 +46,7 @@ namespace RPG_UI
             AmountText.SetText(config.Amount);
             Icon.gameObject.SafeSetActive(false);
             if (config.ShowIcon && !config.Icon.IsEmptyOrWhiteSpace())
-                Icon.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.Icon, () => Icon.gameObject.SafeSetActive(true));
+                Icon.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.Icon, (_) => Icon.gameObject.SafeSetActive(true));
         }
     }
 }

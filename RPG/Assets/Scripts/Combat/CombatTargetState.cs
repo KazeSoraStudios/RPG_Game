@@ -19,7 +19,7 @@ namespace RPG_Combat
             public Action OnExit;
         }
 
-        [SerializeField] RectTransform SelectionArrow;
+        private RectTransform[] SelectionArrows = new RectTransform[Constants.MAX_ENEMIES];
 
         private Config config;
         private List<Actor> party = new List<Actor>();
@@ -55,6 +55,9 @@ namespace RPG_Combat
             if (config.GameState.PartyActors.Count > 0)
                 party.AddRange(config.GameState.PartyActors);
             targets = config.DefaultSelector(config.GameState, false);
+            if (targets.Count < 0)
+                return;
+            SetArrowPositionsForAllTargets();
         }
 
         public bool Execute(float deltaTime)
@@ -69,6 +72,10 @@ namespace RPG_Combat
             targets.Clear();
             config.OnExit?.Invoke();
             gameObject.SafeSetActive(false);
+
+            for (int i = 0; i < SelectionArrows.Length; i++)
+                if (SelectionArrows[i] != null)
+                    SelectionArrows[i].gameObject.SafeSetActive(false);
         }
 
         public string GetName()
@@ -112,6 +119,7 @@ namespace RPG_Combat
                 index = side.Count - 1;
             targets.Clear();
             targets.Add(side[index]);
+            SetArrowPosition(index);
         }
 
         private void Down()
@@ -128,6 +136,7 @@ namespace RPG_Combat
                 index = 0;
             targets.Clear();
             targets.Add(side[index]);
+            SetArrowPosition(index);
         }
 
         private void Left()
@@ -140,9 +149,16 @@ namespace RPG_Combat
                 return;
             targets.Clear();
             if (config.CombatTargetType == CombatTargetType.One)
+            {
                 targets.Add(enemies[0]);
+                SetArrowPosition(0);
+            }
             else if (config.CombatTargetType == CombatTargetType.Side)
+            {
                 targets.AddRange(enemies);
+                SetArrowPositionsForAllTargets();
+            }
+            
         }
 
         private void Right()
@@ -155,9 +171,15 @@ namespace RPG_Combat
                 return;
             targets.Clear();
             if (config.CombatTargetType == CombatTargetType.One)
+            {
                 targets.Add(party[0]);
+                SetArrowPosition(0);
+            }
             else if (config.CombatTargetType == CombatTargetType.Side)
+            {
                 targets.AddRange(party);
+                SetArrowPositionsForAllTargets();
+            }
         }
 
         public int GetActorIndex(List<Actor> actors, Actor actor)
@@ -178,19 +200,45 @@ namespace RPG_Combat
             return true;
         }
 
-    /*
-function CombatTargetState:Render(renderer)
-for k, v in ipairs(self.mTargets) do
-    local char = self.mCombatState.mActorCharMap[v]
+        private void SetArrowPosition(int target, int arrow = 0)
+        {
+            var actor = targets[target];
+            if (!config.GameState.ActorToCharacterMap.ContainsKey(actor.Id))
+            {
+                LogManager.LogError($"CombatGameState does not contain Character for Actor: {actor.Id}");
+                return;
+            }
+            var position = config.GameState.ActorToCharacterMap[actor.Id].Entity.GetTargetPosition();
+            position = Camera.main.WorldToScreenPoint(position);
+            SelectionArrows[arrow].position = position;
+        }
 
-    --
-    -- GetTargetPosition is new!
-    --
-    local pos = char.mEntity:GetTargetPosition()
-    pos:SetX(pos:X() + self.mMarkerWidth/2)
-    self.mMarker:SetPosition(pos)
-    renderer:DrawSprite(self.mMarker)
-end
-end     */
-}
+        private void SetArrowPositionsForAllTargets()
+        {
+            var assetManager = ServiceManager.Get<AssetManager>();
+            int i = 0;
+            for (; i < targets.Count; i++)
+            {
+                if (SelectionArrows[i] == null)
+                {
+                    assetManager.Load<RectTransform>(Constants.UI_SELECTION_CARET_PREFAB, (asset) =>
+                    {
+                        var arrow = Instantiate(asset);
+                        SelectionArrows[i] = arrow;
+                        arrow.SetParent(transform, false);
+                        arrow.gameObject.SafeSetActive(true);
+                        SetArrowPosition(i, i);
+                    });
+                }
+                else
+                {
+                    SelectionArrows[i].gameObject.SafeSetActive(true);
+                    SetArrowPosition(i, i);
+                }
+            }
+            for (; i < SelectionArrows.Length; i++)
+                if (SelectionArrows[i] != null)
+                    SelectionArrows[i].gameObject.SafeSetActive(false);
+        }
+    }
 }

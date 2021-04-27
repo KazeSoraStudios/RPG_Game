@@ -56,6 +56,10 @@ public class GameLogic : MonoBehaviour
         //    Stack.PushTextbox("this is a sample text box", Constants.PORTRAIT_PATH + "mage_portrait");
         //}
 
+        #if UNITY_EDITOR
+        LogManager.SetLogLevel(LogLevel);
+        #endif
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             var parent = UIController.CombatLayer;

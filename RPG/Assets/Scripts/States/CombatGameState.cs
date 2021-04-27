@@ -91,6 +91,8 @@ namespace RPG_Combat
                 config.BackgroundPath = "Textures/combat_bg_forest";
             //Background.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.BackgroundPath, () => Background.gameObject.SafeSetActive(true));
             PlaceActors();
+            AddTurns(PartyActors, true);
+            AddTurns(EnemyActors);
         }
 
         public virtual bool Execute(float deltaTime)
@@ -428,16 +430,18 @@ namespace RPG_Combat
             }
         }
 
-        private void AddTurns(List<Actor> actors)
+        private void AddTurns(List<Actor> actors, bool forceFirst = false)
         {
             foreach (var actor in actors)
             {
+                var firstSpeed = Constants.MAX_STAT_VALUE + 1;
                 var isAlive = actor.Stats.Get(Stat.HP) > 0;
                 if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
                 {
                     var turn = new CETurn(actor, this);
-                    var speed = turn.CalculatePriority(EventQueue);
+                    var speed = forceFirst ? firstSpeed : turn.CalculatePriority(EventQueue);
                     EventQueue.Add(turn, speed);
+                    LogManager.LogDebug($"Adding turn for {actor.name}");
                 }
             }
         }

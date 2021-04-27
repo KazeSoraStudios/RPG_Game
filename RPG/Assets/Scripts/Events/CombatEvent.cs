@@ -60,6 +60,7 @@ namespace RPG_Combat
 
         public override void Execute(EventQueue queue)
         {
+            LogManager.LogDebug($"Executing CETurn for {actor.name}");
             // Player first
             if (state.IsPartyMember(actor))
                 HandlePlayerTurn();
@@ -135,6 +136,8 @@ namespace RPG_Combat
             }
 
             var events = new List<IStoryboardEvent>();
+            var text = ServiceManager.Get<LocalizationManager>().Localize("ID_ATTACK_NOTICE_TEXT");
+            events.Add(StoryboardEventFunctions.Function(() => state.ShowNotice(string.Format(text, actor.Name))));
             if (config.IsPlayer)
             {
                 //this.mAttackAnim = gEntities.slash
@@ -151,7 +154,7 @@ namespace RPG_Combat
                 };
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, attackMoveParams));
                 // TODO remove Temp for testing
-                events.Add(StoryboardEventFunctions.Wait(0.5f));
+                events.Add(StoryboardEventFunctions.Wait(1.0f));
                 //
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.RUN_ANIMATION_STATE, new CSRunAnimation.Config { Animation = Constants.ATTACK_ANIMATION }));
                 events.Add(StoryboardEventFunctions.Function(DoAttack));
@@ -167,16 +170,16 @@ namespace RPG_Combat
                 var attackMoveParams = new CombatStateParams
                 {
                     Direction = 1,
-                    MovePosition = Vector2.right,
-                    MoveTime = 0.2f
+                    MovePosition = Vector2.right
                 };
                 var returnMoveParams = new CombatStateParams
                 {
                     Direction = -1,
-                    MovePosition = Vector2.left,
-                    MoveTime = 0.4f
+                    MovePosition = Vector2.left
                 };
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, attackMoveParams));
+                // TODO remove Temp for testing
+                events.Add(StoryboardEventFunctions.Wait(1.0f));
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.RUN_ANIMATION_STATE, new CSRunAnimation.Config { Animation = Constants.ATTACK_ANIMATION }));
                 events.Add(StoryboardEventFunctions.Function(DoAttack));
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, returnMoveParams));
@@ -187,8 +190,9 @@ namespace RPG_Combat
 
         public override void Execute(EventQueue queue)
         {
+            LogManager.LogDebug($"Executing CEAttack for {actor.name}");
             state.CombatStack.Push(storyboard);
-            for (int i = targets.Count - 1; i > -1; i++)
+            for (int i = targets.Count - 1; i > -1; i--)
             {
                 var hp = targets[i].Stats.Get(Stat.HP);
                 if (hp <= 0)
@@ -201,6 +205,7 @@ namespace RPG_Combat
         public void OnFinish()
         {
             finished = true;
+            state.HideNotice();
         }
 
         public void DoAttack()
@@ -308,6 +313,7 @@ namespace RPG_Combat
 
         public override void Execute(EventQueue queue)
         {
+            LogManager.LogDebug($"Executing CEFlee for {actor.name}");
             state.CombatStack.Push(storyboard);
         }
 
@@ -415,6 +421,7 @@ namespace RPG_Combat
 
         public override void Execute(EventQueue queue)
         {
+            LogManager.LogDebug($"Executing CEUseItemEvent for {actor.name}");
             state.CombatStack.Push(storyboard);
         }
 
@@ -515,6 +522,7 @@ namespace RPG_Combat
 
         public override void Execute(EventQueue queue)
         {
+            LogManager.LogDebug($"Executing CECastSpellEvent for {actor.name}");
             state.CombatStack.Push(storyboard);
             for (int i = targets.Count - 1; i >= 0; i--)
             {

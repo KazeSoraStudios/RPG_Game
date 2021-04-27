@@ -623,7 +623,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.777512, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -727,7 +727,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc8f5891a7aefee4892417aca3538e23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DownloadGameData: 1
+  DownloadGameData: 0
   GameData: {fileID: 1334097476}
 --- !u!114 &1334097475
 MonoBehaviour:

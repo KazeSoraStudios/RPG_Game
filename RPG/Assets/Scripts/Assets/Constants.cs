@@ -6,6 +6,9 @@ public class Constants
     public const string HERO_PREFAB_PATH = "Prefabs/Character/Hero";
     public const string TEST_NPC_PREFAB_PATH = "Prefabs/Character/TestNPC";
     public const string TEST_MAP_PREFAB_PATH = "Prefabs/Maps/Grid";
+    public const string COMBAT_PREFAB_PATH = "prefabs/Combat/Combat";
+
+    // UI Prefabs
     public const string ITEM_LIST_CELL_PREFAB_PATH = "Prefabs/UI/ItemCell";
     public const string FRONT_MENU_PREFAB = "Prefabs/UI/FrontMenu";
     public const string ITEM_MENU_PREFAB = "Prefabs/UI/ItemMenu";
@@ -16,9 +19,9 @@ public class Constants
     public const string TITLE_MENU_PREFAB = "Prefabs/UI/TitleScreen";
     public const string GAME_OVER_PREFAB = "Prefabs/UI/GameOverScreen";
     public const string TEXTBOX_PREFAB = "Prefabs/UI/Textbox";
-    public const string COMBAT_PREFAB_PATH = "prefabs/Combat/Combat";
     public const string COMBAT_MENU_PREFAB_PATH = "prefabs/UI/CombatMenu";
     public const string XP_SUMMARY_MENU_PREFAB_PATH = "prefabs/UI/XPSummaryMenu";
+    public const string UI_SELECTION_CARET_PREFAB = "prefabs/UI/Selection Caret";
 
     // Portraits
     public const string PORTRAIT_PATH = "Textures/Portraits/";
@@ -46,6 +49,7 @@ public class Constants
     // Defaults
     public const int EMPTY_EVENT_COUNTDOWN = -999;
     public const int MAX_TEXTBOX_CHARACTERS = 225;
+    public const int MAX_ENEMIES = 6;
     public const float TEXTBOX_CHARACTER_SPEED = 0.02f;
     public const float SELECT_MARKER_BOUNCE_SPEED = 5.0f;
 
@@ -65,7 +69,7 @@ public class Constants
     public const string RUN_ANIMATION_STATE = "run_anim";
     public const string CAST_ANIMATION_STATE = "cast";
     public static List<string> PARTY_STATES = new List<string> { WAIT_STATE, MOVE_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_STATE, USE_STATE, RUN_ANIMATION_STATE };
-    public static List<string> ENEMY_STATES = new List<string> { COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_ENEMY_STATE, DIE_ENEMY_STATE, RUN_ANIMATION_STATE };
+    public static List<string> ENEMY_STATES = new List<string> { WAIT_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_ENEMY_STATE, DIE_ENEMY_STATE, RUN_ANIMATION_STATE };
     public static List<string> NPC_STATES = new List<string> { STAND_STATE, MOVE_STATE, FOLLOW_PATH_STATE, STROLL_STATE};
 
     // Game states

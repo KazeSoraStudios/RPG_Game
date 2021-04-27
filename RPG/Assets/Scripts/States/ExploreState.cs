@@ -36,7 +36,7 @@ public class ExploreState : MonoBehaviour, IGameState
             npc.transform.position = new Vector2(-4.0f, 0.0f);
             npc.transform.rotation = Quaternion.identity;
             npc.gameObject.transform.SetParent(transform, true);
-            npc.Init(map, Constants.NPC_STATES, Constants.STROLL_STATE);
+            npc.Init(map, Constants.ENEMY_STATES, Constants.WAIT_STATE);
             var actor = npc.GetComponent<Actor>();
             actor.Init(ServiceManager.Get<GameData>().Enemies["goblin"]);
             ServiceManager.Get<NPCManager>().AddNPC(npc);

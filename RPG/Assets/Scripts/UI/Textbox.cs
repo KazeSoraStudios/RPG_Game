@@ -44,6 +44,7 @@ namespace RPG_UI
 
         public void Init(Config config)
         {
+            ServiceManager.Get<UIController>().Show();
             if (config == null)
                 return;
             gameObject.SafeSetActive(true);
@@ -58,7 +59,7 @@ namespace RPG_UI
             Image.gameObject.SafeSetActive(false);
             isDead = false;
             if (config.ImagePath != null)
-                Image.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.ImagePath, () => Image.gameObject.SafeSetActive(true));
+                Image.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.ImagePath, (_) => Image.gameObject.SafeSetActive(true));
         }
 
         public void Enter(object o)

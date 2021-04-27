@@ -7,6 +7,7 @@ namespace RPG_Character
     public enum EquipSlot { Weapon, Armor, Accessory1, Accessory2 };
     public class Actor : MonoBehaviour
     {
+        private static int actorId = 0;
         public struct LevelUp
         {
             public int Exp;
@@ -52,6 +53,7 @@ namespace RPG_Character
             }
             Spells.Clear();
             Specials.Clear();
+            Id = actorId++;
             var gameData = ServiceManager.Get<GameData>();
             Stats.FromStatsDefinition(gameData.Stats[partyMemeber.StatsId]);
             StatGrowth = partyMemeber.StatGrowth;
@@ -93,7 +95,7 @@ namespace RPG_Character
             }
             Spells.Clear();
             Specials.Clear();
-            //Id = enemy.Id;
+            Id = actorId++;
             Name = ServiceManager.Get<LocalizationManager>().Localize(enemy.Name);
             Portrait = enemy.Portrait;
             Spells.AddRange(GetSpellsForLevelUp(enemy.Spells));

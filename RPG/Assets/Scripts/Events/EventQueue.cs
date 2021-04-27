@@ -53,7 +53,7 @@ public class EventQueue : MonoBehaviour
         if (points < 0)
         {
             e.SetPriority(-1);
-            events.Add(e);
+            events.Insert(0, e);
             return;
         }
         e.SetPriority(points);
@@ -75,14 +75,19 @@ public class EventQueue : MonoBehaviour
         foreach (var e in events)
         {
             var countDown = e.GetPriority();
+            LogManager.LogDebug($"Executing event: {e.GetName()}");
             e.SetPriority(Mathf.Max(0, --countDown));
         }
 
         if (currentEvent.GetPriority() != Constants.EMPTY_EVENT_COUNTDOWN)
         {
             currentEvent.Update();
-            if (currentEvent.IsFinished())
+            var finished = currentEvent.IsFinished();
+            if (finished)
+            {
                 currentEvent = emptyEvent;
+                LogManager.LogDebug($"Current event [{currentEvent.GetName()}] is finished. Setting to EmptyEvent.");
+            }
             else
                 return;
         }

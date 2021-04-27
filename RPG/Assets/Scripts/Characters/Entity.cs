@@ -95,7 +95,7 @@ namespace RPG_Character
         public Vector2 GetTargetPosition()
         {
             var position = transform.position;
-            var x = position.x + width * 0.5f;
+            var x = position.x - 1.5f;
             return new Vector2(x, position.y);
         }
 

@@ -123,7 +123,7 @@ namespace RPG_Combat
                         State = combatState
                     };
                     var fleeEvent = new CEFlee(fleeConfig);
-                    var speed = fleeEvent.CalculatePriority(queue);
+                    var speed = -1;//fleeEvent.CalculatePriority(queue);
                     queue.Add(fleeEvent, speed);
                     break;
                 default:
@@ -300,7 +300,7 @@ namespace RPG_Combat
                     };
                     combatEvent = new CECastSpellEvent(spellConfig);
                 }
-                var priority = combatEvent.CalculatePriority(queue);
+                var priority = -1;//combatEvent.CalculatePriority(queue);
                 queue.Add(combatEvent, priority);
             };
 
@@ -360,48 +360,8 @@ namespace RPG_Combat
             };
             var attackEvent = new CEAttack(config);
             var queue = combatState.EventQueue;
-            var priority = attackEvent.CalculatePriority(queue);
+            var priority = -1;// TODO possibly queue attacks? attackEvent.CalculatePriority(queue);
             queue.Add(attackEvent, priority);
         }
     }
-
-    /*
-    function CombatChoiceState:CreateChoiceDialog()
-        local x = -System.ScreenWidth()/2
-        local y = -System.ScreenHeight()/2
-
-        local height = self.mSelection:GetHeight() + 18
-        local width = self.mSelection:GetWidth() + 16
-
-        y = y + height + 16
-        x = x + 100
-
-
-        self.mTextbox = Textbox:Create
-        {
-            textScale = 1.2,
-            text = "",
-            size =
-            {
-                left = x,
-                right = x + width,
-                top = y,
-                bottom = y - height
-            },
-            textbounds =
-            {
-                left = -20,
-                right = 0,
-                top = 0,
-                bottom = 2
-            },
-            panelArgs =
-            {
-                texture = Texture.Find("gradient_panel.png"),
-                size = 3,
-            },
-            selectionMenu = self.mSelection,
-            stack = self.mStack,
-        }
-    end*/
 }

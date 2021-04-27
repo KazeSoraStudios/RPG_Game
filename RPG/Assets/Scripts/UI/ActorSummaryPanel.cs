@@ -33,7 +33,7 @@ namespace RPG_UI
             this.config = config;
             var actor = config.Actor;
             CharacterImage.gameObject.SetActive(false);
-            CharacterImage.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(Constants.PORTRAIT_PATH + actor.Portrait, () => CharacterImage.gameObject.SetActive(true));
+            CharacterImage.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(Constants.PORTRAIT_PATH + actor.Portrait, (_) => CharacterImage.gameObject.SetActive(true));
             NameText.SetText(ServiceManager.Get<LocalizationManager>().Localize(actor.Name));
             LevelText.SetText(actor.Level.ToString());
 
