@@ -19,8 +19,10 @@ public class Constants
     public const string TITLE_MENU_PREFAB = "Prefabs/UI/TitleScreen";
     public const string GAME_OVER_PREFAB = "Prefabs/UI/GameOverScreen";
     public const string TEXTBOX_PREFAB = "Prefabs/UI/Textbox";
-    public const string COMBAT_MENU_PREFAB_PATH = "prefabs/UI/CombatMenu";
-    public const string XP_SUMMARY_MENU_PREFAB_PATH = "prefabs/UI/XPSummaryMenu";
+    public const string COMBAT_MENU_PREFAB = "prefabs/UI/CombatMenu";
+    public const string XP_SUMMARY_MENU_PREFAB = "prefabs/UI/EXPScreen";
+    public const string XP_POPUP_PREFAB = "prefabs/UI/XPPopUp";
+    public const string LOOT_SUMMARY_PREFAB = "prefabs/UI/LootSummaryScreen";
     public const string UI_SELECTION_CARET_PREFAB = "prefabs/UI/Selection Caret";
 
     // Portraits
@@ -64,12 +66,12 @@ public class Constants
     public const string HURT_STATE = "cs_hurt";
     public const string DIE_STATE = "death";
     public const string HURT_ENEMY_STATE = "cs_hurt";
-    public const string DIE_ENEMY_STATE = "enemy_death";
+    public const string ENEMY_DIE_STATE = "enemy_death";
     public const string USE_STATE = "use";
     public const string RUN_ANIMATION_STATE = "run_anim";
     public const string CAST_ANIMATION_STATE = "cast";
     public static List<string> PARTY_STATES = new List<string> { WAIT_STATE, MOVE_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_STATE, USE_STATE, RUN_ANIMATION_STATE };
-    public static List<string> ENEMY_STATES = new List<string> { WAIT_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_ENEMY_STATE, DIE_ENEMY_STATE, RUN_ANIMATION_STATE };
+    public static List<string> ENEMY_STATES = new List<string> { WAIT_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_ENEMY_STATE, ENEMY_DIE_STATE, RUN_ANIMATION_STATE };
     public static List<string> NPC_STATES = new List<string> { STAND_STATE, MOVE_STATE, FOLLOW_PATH_STATE, STROLL_STATE};
 
     // Game states

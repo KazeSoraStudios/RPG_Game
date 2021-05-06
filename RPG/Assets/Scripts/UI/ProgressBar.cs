@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +14,8 @@ namespace RPG_UI
 
         public void SetTargetFillAmountImmediate(float target)
         {
+            if (Mathf.Abs(TargetProgress - target) < 1.0f)
+                return;
             filling = false;
             TargetProgress = target;
             Slider.value = TargetProgress;
@@ -24,10 +25,18 @@ namespace RPG_UI
         {
             TargetProgress = target;
             if (!filling)
-                StartCoroutine(Fill());
+                Fill(target);
         }
 
-        private IEnumerator Fill()
+        private void Fill(float target)
+        {
+            if (target > Slider.value)
+                StartCoroutine(FillUp());
+            else
+                StartCoroutine(FillDown());
+        }
+
+        private IEnumerator FillUp()
         {
             filling = true;
             while (Slider.value < TargetProgress)
@@ -35,6 +44,19 @@ namespace RPG_UI
                 Slider.value += FillSpeed * Time.deltaTime;
                 yield return null;
             }
+            Slider.value = TargetProgress;
+            filling = false;
+        }
+
+        private IEnumerator FillDown()
+        {
+            filling = true;
+            while (Slider.value > TargetProgress)
+            {
+                Slider.value -= FillSpeed * Time.deltaTime;
+                yield return null;
+            }
+            Slider.value = TargetProgress;
             filling = false;
         }
     }

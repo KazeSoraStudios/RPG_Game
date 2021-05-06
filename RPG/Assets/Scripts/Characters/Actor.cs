@@ -8,7 +8,7 @@ namespace RPG_Character
     public class Actor : MonoBehaviour
     {
         private static int actorId = 0;
-        public struct LevelUp
+        public class LevelUp
         {
             public int Exp;
             public int Level;
@@ -150,7 +150,7 @@ namespace RPG_Character
             }
         }
 
-        private bool ReadyToLevelUp()
+        public bool ReadyToLevelUp()
         {
             return Exp >= NextLevelExp;
         }

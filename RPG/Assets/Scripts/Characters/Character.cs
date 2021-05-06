@@ -190,7 +190,7 @@ namespace RPG_Character
                     return new CSHurt(this);
                 // Constants.HURT_ENEMY_STATE: // TODO fix
                   //  return new CSEnemyHurt(this);
-                case Constants.DIE_ENEMY_STATE:
+                case Constants.ENEMY_DIE_STATE:
                     return new CSEnemyDie(this);
                 case Constants.USE_STATE:
                     return new CSEnemyDie(this);

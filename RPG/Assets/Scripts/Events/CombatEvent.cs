@@ -119,6 +119,7 @@ namespace RPG_Combat
 
         private bool counter;
         private int speed = 0;
+        private FormulaResult result;
         private Character character;
         private Storyboard storyboard;
         private Func<CombatGameState, List<Actor>> targeter;
@@ -158,7 +159,9 @@ namespace RPG_Combat
                 //
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.RUN_ANIMATION_STATE, new CSRunAnimation.Config { Animation = Constants.ATTACK_ANIMATION }));
                 events.Add(StoryboardEventFunctions.Function(DoAttack));
+                events.Add(StoryboardEventFunctions.Function(ShowResult));
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, returnMoveParams));
+                events.Add(StoryboardEventFunctions.Wait(1.0f));
                 events.Add(StoryboardEventFunctions.Function(OnFinish));
             }
             else
@@ -182,7 +185,9 @@ namespace RPG_Combat
                 events.Add(StoryboardEventFunctions.Wait(1.0f));
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.RUN_ANIMATION_STATE, new CSRunAnimation.Config { Animation = Constants.ATTACK_ANIMATION }));
                 events.Add(StoryboardEventFunctions.Function(DoAttack));
+                events.Add(StoryboardEventFunctions.Function(ShowResult));
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, returnMoveParams));
+                events.Add(StoryboardEventFunctions.Wait(1.0f));
                 events.Add(StoryboardEventFunctions.Function(OnFinish));
             }
             storyboard = new Storyboard(state.CombatStack, events);
@@ -202,13 +207,13 @@ namespace RPG_Combat
                 targets.AddRange(targeter(state));
         }
 
-        public void OnFinish()
+        private void OnFinish()
         {
             finished = true;
             state.HideNotice();
         }
 
-        public void DoAttack()
+        private void DoAttack()
         {
             foreach (var target in targets)
             {
@@ -218,7 +223,7 @@ namespace RPG_Combat
             }
         }
 
-        public void CounterTarget(Actor target)
+        private void CounterTarget(Actor target)
         {
             var countered = CombatFormula.IsCounter(state, actor, target);
             if (countered)
@@ -228,10 +233,10 @@ namespace RPG_Combat
             }
         }
 
-        public void AttackTarget(Actor target)
+        private void AttackTarget(Actor target)
         {
             LogManager.LogDebug($"Attacking {target.name}");
-            var result = CombatFormula.MeleeAttack(state, actor, target);
+            result = CombatFormula.MeleeAttack(state, actor, target);
             var entity = target.GetComponent<Entity>();
             if (result.Result == CombatFormula.HitResult.Miss)
             {
@@ -252,6 +257,37 @@ namespace RPG_Combat
             //                            self.mAttackAnim.frames)
 
             //    self.mState:AddEffect(effect)
+        }
+
+        private void ShowResult()
+        {
+            if (result == null)
+                return;
+            
+            var message = CreateResultMessage();
+            state.ShowNotice(message);
+        }
+
+        private string CreateResultMessage()
+        {
+            var localization = ServiceManager.Get<LocalizationManager>();
+            if (result.Result == CombatFormula.HitResult.Miss)
+            {
+                var message = localization.Localize("ID_MISS_TEXT");
+                return string.Format(message, actor.Name);
+            }
+            else if (result.Result == CombatFormula.HitResult.Dodge)
+                return localization.Localize("ID_DODGE_TEXT");
+            else if (result.Result == CombatFormula.HitResult.Hit)
+            { 
+                var message = localization.Localize("ID_ATTACK_HIT_TEXT");
+                return string.Format(message, result.Damage);
+            }
+            else
+            {
+                var message = localization.Localize("ID_CRITICAL_HIT_TEXT");
+                return string.Format(message, result.Damage);
+            }
         }
 
         public override string GetName()
@@ -556,6 +592,7 @@ namespace RPG_Combat
             //                        gEntities.fx_use_item.frames, 0.1)
             //self.mState:AddEffect(effect)
             actor.ReduceManaForSpell(spell);
+            state.UpdateActorMp(actor);
             var config = new CombatActionConfig
             {
                 Owner = actor,

@@ -32,9 +32,9 @@ public class Map : MonoBehaviour
             var backgroundMap = background.GetComponent<Tilemap>();
             Width = backgroundMap.size.x;
             Height = backgroundMap.size.y;
-            var tile = backgroundMap.GetSprite(Vector3Int.zero);
-            TileWidth = (int)tile.bounds.size.x;
-            TileWidth = (int)tile.bounds.size.y;
+            //var tile = backgroundMap.GetSprite(Vector3Int.zero);
+            //TileWidth = (int)tile.bounds.size.x;
+            //TileWidth = (int)tile.bounds.size.y;
         }
         var triggerGrid = Grid.transform.Find("Trigger");
         if (triggerGrid == null)

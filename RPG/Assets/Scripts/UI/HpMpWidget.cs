@@ -9,10 +9,10 @@ namespace RPG_UI
     {
         public class Config
         {
-            public float HpFill;
-            public float MpFill;
-            public string Hp;
-            public string Mp;
+            public int Hp;
+            public int MaxHp;
+            public int Mp;
+            public int MaxMp;
         }
 
         [SerializeField] TextMeshProUGUI HpText;
@@ -20,18 +20,36 @@ namespace RPG_UI
         [SerializeField] ProgressBar HpBar;
         [SerializeField] ProgressBar MpBar;
 
+        private Config config;
         public void Init(Config config)
         {
-            if (!CheckUIConfigAndLogError(config, "HpMpWidget"))
+            if (CheckUIConfigAndLogError(config, "HpMpWidget"))
                 return;
+            this.config = config;
             if (HpText != null)
-                HpText.SetText(config.Hp);
+                HpText.SetText(string.Format(Constants.STAT_FILL_TEXT, config.Hp, config.MaxHp));
             if (MpText != null)
-                MpText.SetText(config.Mp);
+                MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, config.Mp, config.MaxMp));
             if (HpBar != null)
-                HpBar.SetTargetFillAmountImmediate(config.HpFill);
+                HpBar.SetTargetFillAmountImmediate(config.Hp / config.MaxHp);
             if (MpBar != null)
-                MpBar.SetTargetFillAmountImmediate(config.MpFill);
+                MpBar.SetTargetFillAmountImmediate(config.Mp / config.MaxMp);
+        }
+
+        public void UpdateHp(int hp)
+        {
+            if (HpText != null)
+                HpText.SetText(string.Format(Constants.STAT_FILL_TEXT, hp, config.MaxHp));
+            if (HpBar != null)
+                HpBar.SetTargetFillAmount(hp / (float)config.MaxHp);
+        }
+
+        public void UpdateMp(int mp)
+        {
+            if (MpText != null)
+                MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, mp, config.MaxHp));
+            if (MpBar != null)
+                MpBar.SetTargetFillAmount(mp / config.MaxHp);
         }
     }
 }

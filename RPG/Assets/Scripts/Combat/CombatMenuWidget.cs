@@ -23,6 +23,26 @@ namespace RPG_UI
             SetActorStats(config.Actors);
         }
 
+        public void UpdateHp(int position, int hp)
+        {
+            if (position < 0 || position > PartyMemeberStats.Length)
+            {
+                LogManager.LogError($"Position [{position}] passed to UpdateHp");
+                return;
+            }
+            PartyMemeberStats[position].UpdateHp(hp);
+        }
+
+        public void UpdateMp(int position, int mp)
+        {
+            if (position < 0 || position > PartyMemeberStats.Length)
+            {
+                LogManager.LogError($"Position [{position}] passed to UpdateMp");
+                return;
+            }
+            PartyMemeberStats[position].UpdateMp(mp);
+        }
+
         private void InitMenuList(List<Actor> actors)
         {
             if (MenuOptions == null)
@@ -47,10 +67,10 @@ namespace RPG_UI
                 var maxMp = actor.Stats.Get(Stat.MaxMP);
                 var config = new HpMpWidget.Config
                 {
-                    HpFill = hp / maxhp,
-                    MpFill = mp / maxMp,
-                    Hp = string.Format(Constants.STAT_FILL_TEXT, hp, maxhp),
-                    Mp = mp.ToString()
+                    Hp = hp,
+                    MaxHp = maxhp,
+                    Mp = mp,
+                    MaxMp = maxMp,
                 };
                 PartyMemeberStats[i].Init(config);
             }

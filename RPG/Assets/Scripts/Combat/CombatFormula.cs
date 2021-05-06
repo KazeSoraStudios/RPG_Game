@@ -3,7 +3,7 @@ using RPG_Character;
 
 namespace RPG_Combat
 {
-    public struct FormulaResult
+    public class FormulaResult
     {
         public int Damage;
         public CombatFormula.HitResult Result;
@@ -11,7 +11,7 @@ namespace RPG_Combat
 
     public class CombatFormula : MonoBehaviour
     {
-        private static FormulaResult result;
+        private static FormulaResult result = new FormulaResult();
 
         public enum HitResult
         {
@@ -56,9 +56,9 @@ namespace RPG_Combat
             var speed = stats.Get(Stat.Speed);
             var intelligence = stats.Get(Stat.Intelligence);
             // max value is 255 if we add then divide by 255 we get 0-1
-            var bonus = ((speed + intelligence) * 0.5f) * 0.555f;
+            var bonus = ((speed + intelligence) * 0.5f) / 255.0f;
             var chanceToHit = Constants.CHANCE_TO_HIT + bonus * 0.5f;
-            var value = Random.Range(0, 1);
+            var value = Random.Range(0.0f, 1.0f);
             var isHit = value <= chanceToHit;
             var isCrit = value <= Constants.CHANCE_TO_CRIT;
             return isCrit ? HitResult.Critical : isHit ?
@@ -75,7 +75,7 @@ namespace RPG_Combat
             // Clamp to 0-1
             speedDifference = Mathf.Clamp(speedDifference, -10, 10) * 0.01f;
             var chanceToDodge = Mathf.Max(0, Constants.CHANCE_TO_DODGE + speedDifference);
-            return Random.Range(0, 1) <= chanceToDodge;
+            return Random.Range(0.0f, 1.0f) <= chanceToDodge;
         }
 
         public static bool IsCounter(CombatGameState state, Actor attacker, Actor target)

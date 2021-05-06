@@ -63,7 +63,7 @@ public class OddmentTable
             if (total >= pick)
                 return oddment;
         }
-        var last = oddments.Count - 1;
-        return last < 0 ? empty : oddments[last];
+        var count = oddments.Count;
+        return count == 0 ? null : oddments[count];
     }
 }

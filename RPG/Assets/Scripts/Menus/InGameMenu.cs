@@ -25,7 +25,7 @@ namespace RPG_UI
         public MagicMenuState.Config MagicConfig;
         public EquipMenuState.Config EquipConfig;
 
-        void Awake()
+        void Start()
         {
             ServiceManager.Register(this);
             var states = new Dictionary<string, IState>();

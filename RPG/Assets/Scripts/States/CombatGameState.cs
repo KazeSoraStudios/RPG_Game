@@ -131,12 +131,29 @@ namespace RPG_Combat
                     OnLose();
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.W))
+                foreach (var enemy in EnemyActors)
+                    enemy.Stats.SetStat(Stat.HP, 0);
+
             return true;
         }
 
         public void HandleInput() { }
         public void Enter(object stateParams) { }
-        public void Exit() { }
+        public void Exit() 
+        {
+            CombatMenu.gameObject.SafeSetActive(false);
+            Positions.gameObject.SafeSetActive(false);
+            TipContainer.gameObject.SafeSetActive(false);
+            TipText.gameObject.SafeSetActive(false);
+            NoticeContainer.gameObject.SafeSetActive(false);
+            NoticeText.gameObject.SafeSetActive(false);
+            Background.gameObject.SafeSetActive(false);
+
+            // TODO tell characters combat is over
+            Destroy(gameObject);
+        }
         public List<Actor> GetPartyActors() { return PartyActors; }
         public List<Actor> GetEnemiesActors() { return EnemyActors; }
         public bool IsFinished() { return true; }
@@ -221,6 +238,8 @@ namespace RPG_Combat
             {
                 controller.Change(Constants.HURT_STATE, new CombatStateParams { State = controller.CurrentState.GetName() });
             }
+
+            UpdateActorHp(target);
             /*
             local entity = character.mEntity
             local x = entity.mX
@@ -240,6 +259,24 @@ namespace RPG_Combat
             //local dmgEffect = JumpingNumbers:Create(x, y, damage, dmgColor)
             //self: AddEffect(dmgEffect)
             HandleDeath();
+        }
+
+        public void UpdateActorHp(Actor actor)
+        {
+            var position = GetPartyPosition(actor);
+            if (position != -1)
+            {
+                CombatMenu.UpdateHp(position, actor.Stats.Get(Stat.HP));
+            }
+        }
+
+        public void UpdateActorMp(Actor actor)
+        {
+            var position = GetPartyPosition(actor);
+            if (position != -1)
+            {
+                CombatMenu.UpdateMp(position, actor.Stats.Get(Stat.MP));
+            }
         }
 
         public void HandleDeath()
@@ -310,7 +347,7 @@ namespace RPG_Combat
 
         private void HandleEnemyDeath()
         {
-            for (int i = EnemyActors.Count - 1; i > -1; i++)
+            for (int i = EnemyActors.Count - 1; i > -1; i--)
             {
                 var actor = EnemyActors[i];
                 var character = ActorToCharacterMap[actor.Id];
@@ -321,7 +358,7 @@ namespace RPG_Combat
                     EnemyActors.RemoveAt(i);
                     EnemyCharacters.RemoveAt(i);
                     ActorToCharacterMap.Remove(actor.Id);
-                    character.Controller.Change(Constants.DIE_STATE);
+                    character.Controller.Change(Constants.ENEMY_DIE_STATE);
                     EventQueue.RemoveEventsForActor(actor.Id);
                     Drops.Add(actor.Loot);
                     DeadCharacters.Add(character);
@@ -343,8 +380,9 @@ namespace RPG_Combat
             }
 
             var combatData = CalculateCombatData();
-            var xp = ServiceManager.Get<AssetManager>().Load<XPSummaryState>(Constants.XP_SUMMARY_MENU_PREFAB_PATH);
+            var xp = ServiceManager.Get<AssetManager>().Load<XPSummaryState>(Constants.XP_SUMMARY_MENU_PREFAB);
             var summary = Instantiate(xp);
+            summary.gameObject.SafeSetActive(false);
             var layer = ServiceManager.Get<UIController>().MenuLayer;
             summary.transform.SetParent(layer, false);
             var config = new XPSummaryState.Config
@@ -477,6 +515,14 @@ namespace RPG_Combat
                 if (actor.Id == a.Id)
                     return true;
             return false;
+        }
+
+        public int GetPartyPosition(Actor a)
+        {
+            for (int i = 0; i < PartyActors.Count; i++)
+                if (PartyActors[i].Id == a.Id)
+                    return i;
+            return -1;
         }
 
         private LootData CalculateCombatData()
