@@ -31,9 +31,9 @@ namespace RPG_UI
             if (MpText != null)
                 MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, config.Mp, config.MaxMp));
             if (HpBar != null)
-                HpBar.SetTargetFillAmountImmediate(config.Hp / config.MaxHp);
+                HpBar.SetTargetFillAmountImmediate(config.Hp / (float)config.MaxHp);
             if (MpBar != null)
-                MpBar.SetTargetFillAmountImmediate(config.Mp / config.MaxMp);
+                MpBar.SetTargetFillAmountImmediate(config.Mp / (float)config.MaxMp);
         }
 
         public void UpdateHp(int hp)
@@ -47,7 +47,7 @@ namespace RPG_UI
         public void UpdateMp(int mp)
         {
             if (MpText != null)
-                MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, mp, config.MaxHp));
+                MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, mp, config.MaxMp));
             if (MpBar != null)
                 MpBar.SetTargetFillAmount(mp / config.MaxHp);
         }

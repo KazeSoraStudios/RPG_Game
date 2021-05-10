@@ -152,7 +152,7 @@ namespace RPG_Combat
                     combatState.HideTip();
                     OptionsList.ShowCursor();
                 },
-                OnRender = (c) => { return c == null ? string.Empty : c.Name; }, // TODO change color if can/cannot use
+                OnRender = (c) => { return c == null ? string.Empty : c.Name; }, 
                 OnFocus = (c) => {
                     var text = string.Empty;
                     if (c == null || c.Description.IsEmptyOrWhiteSpace())
@@ -202,6 +202,8 @@ namespace RPG_Combat
                 return;
             }
             var spell = spells[id];
+            if (!actor.CanCast(spell)) // TODO play sound effect
+                return;
             var targeter = CreateActionTargeter(action, spell);
             if (targeter == null)
             {
@@ -225,6 +227,8 @@ namespace RPG_Combat
                 return;
             }
             var special = specials[id];
+            if (!actor.CanCast(special)) // TODO play sound effect
+                return;
             var targeter = CreateActionTargeter(action, special);
             if (targeter == null)
             {

@@ -16,7 +16,7 @@ public class ExploreState : MonoBehaviour, IGameState
     {
         this.Map = map;
         this.stack = stack;
-        var obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.HERO_PREFAB_PATH);
+        var obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.HERO_PREFAB);
         if (obj != null)
         {
             Hero = Instantiate(obj);
@@ -29,7 +29,7 @@ public class ExploreState : MonoBehaviour, IGameState
             actor.Init(ServiceManager.Get<GameData>().PartyDefs["hero"]);
             ServiceManager.Get<World>().Party.Add(actor);
         }
-        obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.TEST_NPC_PREFAB_PATH);
+        obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.TEST_NPC_PREFAB);
         if (obj != null)
         {
             var npc = Instantiate(obj);

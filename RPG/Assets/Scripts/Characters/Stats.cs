@@ -58,7 +58,7 @@ namespace RPG_Character
                 LogManager.LogError($"Stats for Entity[{name}] does not contain stat [{stat}]. Cannot set value");
                 return;
             }
-            stats[stat] = value;
+            stats[stat] = Mathf.Max(0, value);
         }
 
         public void AddModifier(EquipSlot slot, StatModifier modifier)

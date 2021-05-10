@@ -63,6 +63,11 @@ public class World : MonoBehaviour
         return $"{hours}:{minutes}:{seconds}";
     }
 
+    public void AddItem(Item item)
+    {
+        AddItem(item.ItemInfo, item.Count);
+    }
+
     public void AddItem(ItemInfo itemInfo, int count = 1)
     {
         if (count < 1)
@@ -79,7 +84,6 @@ public class World : MonoBehaviour
             var item = new Item(itemInfo, count);
             Items.Add(itemInfo.Id, item);
         }
-
     }
 
     public int GetItemCount(string itemId)

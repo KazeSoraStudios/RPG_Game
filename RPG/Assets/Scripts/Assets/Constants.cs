@@ -3,8 +3,9 @@ using System.Collections.Generic;
 public class Constants
 {
     // PREFABS
-    public const string HERO_PREFAB_PATH = "Prefabs/Character/Hero";
-    public const string TEST_NPC_PREFAB_PATH = "Prefabs/Character/TestNPC";
+    public const string CHARACTER_PREFAB_PATH = "Prefabs/Character/";
+    public const string HERO_PREFAB = CHARACTER_PREFAB_PATH + "Hero";
+    public const string TEST_NPC_PREFAB = CHARACTER_PREFAB_PATH + "TestNPC";
     public const string TEST_MAP_PREFAB_PATH = "Prefabs/Maps/Grid";
     public const string COMBAT_PREFAB_PATH = "prefabs/Combat/Combat";
 
@@ -22,7 +23,7 @@ public class Constants
     public const string COMBAT_MENU_PREFAB = "prefabs/UI/CombatMenu";
     public const string XP_SUMMARY_MENU_PREFAB = "prefabs/UI/EXPScreen";
     public const string XP_POPUP_PREFAB = "prefabs/UI/XPPopUp";
-    public const string LOOT_SUMMARY_PREFAB = "prefabs/UI/LootSummaryScreen";
+    public const string LOOT_REWARDS_PREFAB = "prefabs/UI/Loot Menu";
     public const string UI_SELECTION_CARET_PREFAB = "prefabs/UI/Selection Caret";
 
     // Portraits
@@ -35,6 +36,7 @@ public class Constants
 
     // Stats
     public const int MAX_STAT_VALUE = 255;
+    public const int STEAL_BONUS = 50;
     public const float CHANCE_TO_HIT = 0.7f;
     public const float CHANCE_TO_CRIT = 0.1f;
     public const float CHANCE_TO_DODGE = 0.03f;
@@ -42,12 +44,12 @@ public class Constants
     public const float ESCAPE_CHANCE = 0.35f;
     public const float ESCAPE_BONUS = 0.15f;
     public const float CHANCE_TO_STEAL = 0.05f;
-    public const int STEAL_BONUS = 50;
     public const float STEAL_MIN_CHANCE = 0.05f;
     public const float STEAL_MAX_CHANCE = 0.95f;
     public const string STAT_FILL_TEXT = "{0}/{1}";
     public const string EMPTY_ITEM_TEXT = "--";
-    
+    public const string GOLD_FORMAT_TEXT = "{0}G";
+
     // Defaults
     public const int EMPTY_EVENT_COUNTDOWN = -999;
     public const int MAX_TEXTBOX_CHARACTERS = 225;

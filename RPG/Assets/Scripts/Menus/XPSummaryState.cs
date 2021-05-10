@@ -66,7 +66,10 @@ namespace RPG_UI
             return true;
         }
 
-        public void Exit() { }
+        public void Exit() 
+        {
+            Destroy(gameObject);
+        }
 
         public string GetName()
         {
@@ -140,18 +143,26 @@ namespace RPG_UI
 
         private void GotoLootSummary()
         {
-            var lootSummaryState = ServiceManager.Get<AssetManager>().Load</*LootSummaryState*/Object>(Constants.LOOT_SUMMARY_PREFAB);
-            //LootSummaryState:Create(self.mStack,
-            //gGame.World,
-            //self.mCombatData)
+            var asset = ServiceManager.Get<AssetManager>().Load<LootRewardsState>(Constants.LOOT_REWARDS_PREFAB);
+            var lootState = Instantiate(asset);
+            var layer = ServiceManager.Get<UIController>().MenuLayer;
+            lootState.transform.SetParent(layer, false);
+            var lootConfig = new LootRewardsState.Config
+            { 
+                Data = config.Loot,
+                Stack = config.Stack,
+                World = ServiceManager.Get<World>()
+            };
+            lootState.Init(lootConfig);
             var events = new List<IStoryboardEvent>
             {
                 StoryboardEventFunctions.BlackScreen("black", 1.0f),
                 StoryboardEventFunctions.FadeScreenIn("black", 0.2f),
-                StoryboardEventFunctions.ReplaceState(this, null/* lootSummaryState*/),
+                StoryboardEventFunctions.ReplaceState(this, lootState),
                 StoryboardEventFunctions.Wait(0.1f),
                 StoryboardEventFunctions.FadeScreenOut("black", 0.2f)
             };
+            gameObject.SafeSetActive(false);
             var storyboard = new Storyboard(config.Stack, events);
             config.Stack.Push(storyboard);
         }

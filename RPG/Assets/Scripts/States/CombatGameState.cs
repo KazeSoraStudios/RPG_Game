@@ -83,7 +83,6 @@ namespace RPG_Combat
             EnemyActors = config.Enemies;
             onWin = config.OnWin;
             onDie = config.OnDie;
-            //Stack.Clear();
             CreateCombatCharacters(true);
             CreateCombatCharacters(false);
             LoadMenuUI(config.Party);
@@ -143,15 +142,6 @@ namespace RPG_Combat
         public void Enter(object stateParams) { }
         public void Exit() 
         {
-            CombatMenu.gameObject.SafeSetActive(false);
-            Positions.gameObject.SafeSetActive(false);
-            TipContainer.gameObject.SafeSetActive(false);
-            TipText.gameObject.SafeSetActive(false);
-            NoticeContainer.gameObject.SafeSetActive(false);
-            NoticeText.gameObject.SafeSetActive(false);
-            Background.gameObject.SafeSetActive(false);
-
-            // TODO tell characters combat is over
             Destroy(gameObject);
         }
         public List<Actor> GetPartyActors() { return PartyActors; }
@@ -387,7 +377,7 @@ namespace RPG_Combat
             summary.transform.SetParent(layer, false);
             var config = new XPSummaryState.Config
             {
-                Stack = CombatStack, // Stack
+                Stack = gameStack,
                 Party = ServiceManager.Get<World>().Party.ToList(),
                 Loot = combatData
             };
@@ -401,8 +391,8 @@ namespace RPG_Combat
                 StoryboardEventFunctions.Wait(0.3f),
                 StoryboardEventFunctions.FadeScreenOut("black", 0.3f),
             };
-
             onWin?.Invoke();
+            gameObject.SafeSetActive(false);
             var storyboard = new Storyboard(gameStack, events);
             gameStack.Push(storyboard);
         }

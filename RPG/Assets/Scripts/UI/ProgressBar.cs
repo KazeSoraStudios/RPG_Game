@@ -14,7 +14,7 @@ namespace RPG_UI
 
         public void SetTargetFillAmountImmediate(float target)
         {
-            if (Mathf.Abs(TargetProgress - target) < 1.0f)
+            if (Mathf.Abs(TargetProgress - target) < 0.01f)
                 return;
             filling = false;
             TargetProgress = target;

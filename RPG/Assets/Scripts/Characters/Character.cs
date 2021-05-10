@@ -157,6 +157,43 @@ namespace RPG_Character
             return false;
         }
 
+        public void PrepareForTextState()
+        {
+            movementBeforeTextbox.x = animator.GetFloat("Horizontal");
+            movementBeforeTextbox.x = animator.GetFloat("Vertical");
+            hasSpeedBeforeText = animator.GetFloat("Speed") != 0;
+            Entity.PrepareForTextbox();
+            ResetAnimator();
+        }
+
+        public void ReturnFromTextState()
+        {
+            animator.SetFloat("Horizontal", movementBeforeTextbox.x);
+            animator.SetFloat("Vertical", movementBeforeTextbox.y);
+            animator.SetFloat("Speed", hasSpeedBeforeText ? 1 : 0);
+            Entity.ReturnFromTextbox();
+        }
+
+        public void PrepareForCombat()
+        {
+            ResetAnimator();
+            Controller.Change(Constants.EMPTY_STATE);
+            Entity.UpdateMovement(Vector2.zero);
+        }
+
+        public void ReturnFromCombat()
+        {
+            ResetAnimator();
+            Controller.Change(defaultState);
+        }
+
+        private void ResetAnimator()
+        {
+            animator.SetFloat("Horizontal", 0);
+            animator.SetFloat("Vertical", 0);
+            animator.SetFloat("Speed", 0);
+        }
+
         private void BuildStateMachine(List<string> characterStates)
         {
             var states = new Dictionary<string, IState>();
@@ -200,26 +237,6 @@ namespace RPG_Character
                     LogManager.LogError($"Unkown CharacterState {state}, cannot build state.");
                     return null;
             }
-        }
-
-        public void PrepareForTextState()
-        {
-            movementBeforeTextbox.x = animator.GetFloat("Horizontal");
-            movementBeforeTextbox.x = animator.GetFloat("Vertical");
-            hasSpeedBeforeText = animator.GetFloat("Speed") != 0;
-            Entity.PrepareForTextbox();
-
-            animator.SetFloat("Horizontal", 0);
-            animator.SetFloat("Vertical", 0);
-            animator.SetFloat("Speed", 0);
-        }
-
-        public void ReturnFromTextState()
-        {
-            animator.SetFloat("Horizontal", movementBeforeTextbox.x);
-            animator.SetFloat("Vertical", movementBeforeTextbox.y);
-            animator.SetFloat("Speed", hasSpeedBeforeText ? 1 : 0);
-            Entity.ReturnFromTextbox();
         }
     }
 }

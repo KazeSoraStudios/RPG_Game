@@ -9,6 +9,7 @@ namespace RPG_UI
         public class Config
         {
             public bool ShowIcon;
+            public Color Color = Color.white;
             public string Id;
             public string Name;
             public string Amount;
@@ -41,6 +42,7 @@ namespace RPG_UI
             else
             {
                 NameText.SetText(config.Name);
+                NameText.color = config.Color;
                 ItemNameText.SetText(string.Empty);
             }
             AmountText.SetText(config.Amount);

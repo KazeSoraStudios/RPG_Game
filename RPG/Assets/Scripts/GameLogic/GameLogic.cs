@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using RPG_UI;
 using RPG_Combat;
+using RPG_Character;
 public class GameLogic : MonoBehaviour
 {
     [SerializeField] LogLevel LogLevel;
@@ -67,6 +68,7 @@ public class GameLogic : MonoBehaviour
             var combat = Instantiate(obj, Vector3.zero, Quaternion.identity);
             combat.transform.SetParent(parent, false);
             var npc = GameObject.Find("TestNPC(Clone)").GetComponent<RPG_Character.Actor>();
+            npc.Stats.SetStat(Stat.HP, npc.Stats.Get(Stat.MaxHP));
             var config = new CombatGameState.Config
             {
                 CanFlee = true,
@@ -77,6 +79,8 @@ public class GameLogic : MonoBehaviour
                 //OnWin
                 //OnDie
             };
+            ServiceManager.Get<Party>().PrepareForCombat();
+            ServiceManager.Get<NPCManager>().PrepareForCombat();
             combat.Init(config);
             Stack.Push(combat);
             UIController.gameObject.SafeSetActive(true);

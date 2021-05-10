@@ -184,7 +184,8 @@ namespace RPG_Combat
                     ShowIcon = false,
                     Name = name,
                     Amount = cost,
-                    Id =spell.Id
+                    Id =spell.Id,
+                    Color = config.Actor.CanCast(spell) ? Color.white : Color.red
                 });
             }
         }
@@ -201,7 +202,8 @@ namespace RPG_Combat
                     ShowIcon = false,
                     Name = name,
                     Amount = cost,
-                    Id = special.Id
+                    Id = special.Id,
+                    Color = config.Actor.CanCast(special) ? Color.white : Color.red
                 });
             }
         }
@@ -215,11 +217,15 @@ namespace RPG_Combat
 
         private void OnSelect(int index)
         {
-            if (index < 0 || index > configs.Count || configs.Count == 0)
+            if (configs.Count == 0)
+                return;
+            if (index < 0 || index > configs.Count)
             {
                 LogManager.LogError("Index is invalid for BrowseList configs.");
                 return;
             }
+            if (configs[index].Id.IsEmptyOrWhiteSpace())
+                return;
             config.OnSelect?.Invoke(this, configs[index].Id);
         }
     }

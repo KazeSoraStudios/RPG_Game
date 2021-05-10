@@ -109,5 +109,17 @@ namespace RPG_Character
             foreach (var character in npcs)
                 character.Value.GetComponent<Character>().ReturnFromTextState();
         }
+
+        public void PrepareForCombat()
+        {
+            foreach (var character in npcs)
+                character.Value.GetComponent<Character>().PrepareForCombat();
+        }
+
+        public void ReturnFromCombat()
+        {
+            foreach (var character in npcs)
+                character.Value.GetComponent<Character>().ReturnFromCombat();
+        }
     }
 }

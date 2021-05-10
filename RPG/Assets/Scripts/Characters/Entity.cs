@@ -18,7 +18,7 @@ namespace RPG_Character
             rigidbody.velocity = Vector2.zero;
         }
 
-        public void UpdateMovement(Vector2 movement, Map map)
+        public void UpdateMovement(Vector2 movement, Map map = null)
         {
             this.movement.x = Mathf.Ceil(movement.x);
             this.movement.y = Mathf.Ceil(movement.y);

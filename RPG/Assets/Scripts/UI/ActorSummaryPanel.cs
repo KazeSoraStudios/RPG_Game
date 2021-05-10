@@ -29,7 +29,6 @@ namespace RPG_UI
         {
             if (CheckUIConfigAndLogError(config, name))
                 return;
-            gameObject.SetActive(true);
             this.config = config;
             var actor = config.Actor;
             CharacterImage.gameObject.SetActive(false);
@@ -55,6 +54,7 @@ namespace RPG_UI
             MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, mp, maxMp));
             HpBar.SetTargetFillAmountImmediate(hp / (float)maxHp);
             MpBar.SetTargetFillAmountImmediate(mp / (float)maxMp);
+            gameObject.SetActive(true);
         }
 
         /*
