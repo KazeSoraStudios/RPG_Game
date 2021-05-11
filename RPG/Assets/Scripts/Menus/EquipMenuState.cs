@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using RPG_Character;
+using RPG_GameData;
 
 namespace RPG_UI
 {

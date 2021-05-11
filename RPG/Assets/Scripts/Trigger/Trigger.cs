@@ -11,7 +11,7 @@ public interface Trigger
     void OnExit(TriggerParams triggerParams);
 }
 
-public struct TriggerParams
+public class TriggerParams
 {
     public int X;
     public int Y;

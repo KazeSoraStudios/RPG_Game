@@ -1,14 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_GameData;
 
 namespace RPG_Character
 {
-    public class TextNPC : MonoBehaviour, Trigger
+    public class SimpleDialogueNPC : MonoBehaviour, Trigger
     {
         public string Id;
 
         private string text = string.Empty;
+        private string portrait = string.Empty;
 
         void Awake()
         {
@@ -21,6 +23,18 @@ namespace RPG_Character
             //ServiceManager.Get<GameData>().
             text = "This forest is 1,000 years old and filled with goblins. Be careful!";
         }
+
+        public void SetText(string text)
+        {
+            if (Id.IsEmptyOrWhiteSpace())
+            {
+                LogManager.LogError($"Text passed to SetText is Empty or Null.");
+                return;
+            }
+            var message = ServiceManager.Get<LocalizationManager>().Localize(text);
+            text = message;
+        }
+
         public void OnEnter(TriggerParams triggerParams)
         {
 
@@ -39,7 +53,7 @@ namespace RPG_Character
         public void OnUse(TriggerParams triggerParams)
         {
             var stack = ServiceManager.Get<GameLogic>().Stack;
-            stack.PushTextbox(text, string.Empty);
+            stack.PushTextbox(text, true, portrait);
         }
     }
 }

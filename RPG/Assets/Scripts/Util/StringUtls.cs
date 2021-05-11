@@ -16,4 +16,9 @@ public static class StringUtls
     {
         return value == null || value.Trim() == string.Empty;
     }
+
+    public static bool DoesNotEqual(this string value, string other)
+    {
+        return !value.Equals(other);
+    }
 }

@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Linq;
 using RPG_Character;
+using RPG_GameData;
+using RPG_Combat;
 
 public class World : MonoBehaviour
 {
@@ -130,6 +132,18 @@ public class World : MonoBehaviour
         }
     }
 
+    public bool HasItem(string itemId)
+    {
+        return Items.ContainsKey(itemId);
+    }
+
+    public bool HasItemAmount(string itemId, int count = 1)
+    {
+        if (!HasItem(itemId))
+            return false;
+        return Items[itemId].Count >= count;
+    }
+
     public bool HasKeyItem(string itemId)
     {
         return KeyItems.ContainsKey(itemId);
@@ -170,5 +184,23 @@ public class World : MonoBehaviour
             if (item.Value.ItemInfo.Type == type)
                 items.Add(item.Value);
         return items;
+    }
+
+    public void GiveReward(LootData loot)
+    {
+        if (loot == null)
+        {
+            LogManager.LogError("Null LootData passed to GiveReward.");
+            return;
+        }
+        Gold += loot.Gold;
+        Party.GiveExp(loot.Exp);
+        foreach (var item in loot.Loot)
+        {
+            if (item.ItemInfo.Type == ItemType.Key)
+                AddKeyItem(item.ItemInfo);
+            else
+                AddItem(item);
+        }
     }
 }

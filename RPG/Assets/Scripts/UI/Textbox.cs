@@ -10,9 +10,10 @@ namespace RPG_UI
     {
         public class Config
         {
+            public bool ShowImage = false;
+            public float AdvanceTime = 2.0f;
             public string ImagePath;
             public string Text;
-            public float AdvanceTime = 2.0f;
             public Action OnFinish;
             public Action OnSelect;
         }
@@ -58,7 +59,7 @@ namespace RPG_UI
             onSelect = config.OnSelect;
             Image.gameObject.SafeSetActive(false);
             isDead = false;
-            if (config.ImagePath != null)
+            if (config.ShowImage && config.ImagePath.IsEmptyOrWhiteSpace())
                 Image.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.ImagePath, (_) => Image.gameObject.SafeSetActive(true));
         }
 

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using RPG_UI;
 using RPG_Combat;
 using RPG_Character;
+using RPG_GameData;
 public class GameLogic : MonoBehaviour
 {
     [SerializeField] LogLevel LogLevel;

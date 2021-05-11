@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
 using RPG_Character;
 
-public class GameDataStatsHandler : GameDataHandler
+namespace RPG_GameData
 {
-    public static Dictionary<string, Dictionary<Stat, int>> ProcessStats(int index, int count, int numberOfColumns, string[] data)
+    public class GameDataStatsHandler : GameDataHandler
     {
-        LogManager.LogDebug("Creating GameData Stats.");
-        LogManager.LogDebug($"Processing Stats for data {data}");
-        var statDefitions = new Dictionary<string, Dictionary<Stat, int>>();
-        // Account for difference in columns
-        var columnDifference = numberOfColumns - 6;
-        for (int i = 0; i < count; i++)
+        public static Dictionary<string, Dictionary<Stat, int>> ProcessStats(int index, int count, int numberOfColumns, string[] data)
         {
-            var id = data[index++];
-            var stats = new Dictionary<Stat, int>
+            LogManager.LogDebug("Creating GameData Stats.");
+            LogManager.LogDebug($"Processing Stats for data {data}");
+            var statDefitions = new Dictionary<string, Dictionary<Stat, int>>();
+            // Account for difference in columns
+            var columnDifference = numberOfColumns - 6;
+            for (int i = 0; i < count; i++)
+            {
+                var id = data[index++];
+                var stats = new Dictionary<Stat, int>
             {
                 { Stat.HP, int.Parse(data[index++])},
                 { Stat.MP, int.Parse(data[index++])},
@@ -21,10 +23,11 @@ public class GameDataStatsHandler : GameDataHandler
                 { Stat.Speed, int.Parse(data[index++])},
                 { Stat.Intelligence, int.Parse(data[index++])}
             };
-            index += columnDifference;
-            statDefitions.Add(id, stats);
+                index += columnDifference;
+                statDefitions.Add(id, stats);
+            }
+            LogManager.LogDebug("Processing Gamedata Stats finished.");
+            return statDefitions;
         }
-        LogManager.LogDebug("Processing Gamedata Stats finished.");
-        return statDefitions;
     }
 }

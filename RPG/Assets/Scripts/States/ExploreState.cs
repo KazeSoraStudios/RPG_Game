@@ -1,6 +1,7 @@
 using UnityEngine;
 using RPG_UI;
 using RPG_Character;
+using RPG_GameData;
 
 public class ExploreState : MonoBehaviour, IGameState
 {
