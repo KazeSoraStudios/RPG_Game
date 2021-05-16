@@ -30,7 +30,7 @@ namespace RPG_UI
         public void InitUI()
         {
             // have awake run
-            GameMenu.SetUIController(this);
+            GameMenu.SetUpUI(this);
             gameObject.SafeSetActive(true);
             gameObject.SafeSetActive(false);
         }

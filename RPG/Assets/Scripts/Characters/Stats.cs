@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG_GameData;
 using RPG_GameState;
-
 namespace RPG_Character
 {
     public enum Stat { HP, MaxHP, MP, MaxMP, Strength, Speed, Intelligence, Dodge, Counter, Attack, Defense, Resist, Magic };
@@ -149,18 +147,6 @@ namespace RPG_Character
             // MaxHP/MP are not included in the definition
             stats.Add(Stat.MaxHP, stats[Stat.HP]);
             stats.Add(Stat.MaxMP, stats[Stat.MP]);
-        }
-    }
-
-    [CreateAssetMenu(fileName = "LevelFunction", menuName = "RPG/Level")]
-    public class LevelFunction : ScriptableObject
-    {
-        [SerializeField] float Exponent;
-        [SerializeField] float BaseExp;
-
-        public int NextLevel(int level)
-        {
-            return Mathf.FloorToInt(BaseExp * Mathf.Pow(level, Exponent));
         }
     }
 

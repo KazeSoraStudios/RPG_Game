@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace RPG_Character
 {
     public class Party : MonoBehaviour
     {
-        private Dictionary<int, Actor> members = new Dictionary<int, Actor>();
+        public List<Actor> Members = new List<Actor>();
 
         private void Awake()
         {
@@ -20,75 +19,81 @@ namespace RPG_Character
 
         public void Reset()
         {
-            members.Clear();
+            Members.Clear();
         }
 
-        public bool HasMemeber(int id)
+        public int Count()
         {
-            return members.ContainsKey(id);
+            return Members.Count;
         }
 
-        public Actor GetActor(int id)
+        public bool HasMemeber(string id)
         {
-            if (!HasMemeber(id))
+            return IndexOf(id) != -1;
+        }
+
+        public Actor GetActor(int index)
+        {
+            if (index < 0 || index > Members.Count)
             {
-                LogManager.LogError($"Actor not found at party slot {id}");
+                LogManager.LogError($"Index [{index}] is outside the range of Party Memebers.");
                 return null;
             }
-            return members[id];
+            return Members[index];
+        }
+
+        public Actor GetActor(string id)
+        {
+            var index = IndexOf(id);
+            if (index == -1)
+            {
+                LogManager.LogError($"Actor {id} is not in the Party.");
+                return null;
+            }
+            return Members[index];
         }
 
         public void Add(Actor member)
         {
-            if (members.ContainsKey(member.Id))
+            if (IndexOf(member.PartyId) != -1)
                 return;
-            members.Add(member.Id, member);
+            Members.Add(member);
         }
 
-        public void RemoveById(int id)
+        public void RemoveById(string id)
         {
-            members.Remove(id);
+            var index = IndexOf(id);
+            if (index == -1)
+                return;
+            Members.RemoveAt(index);
         }
 
-        public Actor[] ToArray()
-        {
-            var actors = new Actor[members.Count];
-            int index = 0;
-            foreach (var member in members)
-                actors[index++] = member.Value;
-            return actors;
-        }
-
-        public List<Actor> ToList()
-        {
-            return members.Values.ToList();
-        }
         public int EquipCount(Item item)
         {
             int count = 0;
-            foreach (var member in members)
-                count += member.Value.EquipCount(item.ItemInfo);
+            foreach (var member in Members)
+                count += member.EquipCount(item.ItemInfo);
             return count;
         }
 
         public void Rest()
         {
-            foreach (var member in members)
-                if (member.Value.Stats.Get(Stat.HP) > 0)
-                    member.Value.Stats.ResetHpMp();
+            foreach (var member in Members)
+                if (member.Stats.Get(Stat.HP) > 0)
+                    member.Stats.ResetHpMp();
         }
 
         public void RestAll()
         {
-            foreach (var member in members)
-                member.Value.Stats.ResetHpMp();
+            foreach (var member in Members)
+                member.Stats.ResetHpMp();
         }
 
         public void DebugPrintParty()
         {
-            foreach (var member in members)
+            foreach (var member in Members)
             {
-                var actor = member.Value;
+                var actor = member;
                 var name = actor.name;
                 var stats = actor.Stats;
                 var hp = stats.Get(Stat.HP);
@@ -99,33 +104,33 @@ namespace RPG_Character
 
         public void PrepareForTextboxState()
         {
-            foreach (var character in members)
-                character.Value.GetComponent<Character>().PrepareForTextState();
+            foreach (var character in Members)
+                character.GetComponent<Character>().PrepareForTextState();
         }
 
         public void ReturnFromTextboxState()
         {
-            foreach (var character in members)
-                character.Value.GetComponent<Character>().ReturnFromTextState();
+            foreach (var character in Members)
+                character.GetComponent<Character>().ReturnFromTextState();
         }
 
         public void PrepareForCombat()
         {
-            foreach (var character in members)
-                character.Value.GetComponent<Character>().PrepareForCombat();
+            foreach (var character in Members)
+                character.GetComponent<Character>().PrepareForCombat();
         }
 
         public void ReturnFromCombat()
         {
-            foreach (var character in members)
-                character.Value.GetComponent<Character>().ReturnFromCombat();
+            foreach (var character in Members)
+                character.GetComponent<Character>().ReturnFromCombat();
         }
 
         public void GiveExp(int exp)
         {
-            foreach (var member in members)
+            foreach (var member in Members)
             {
-                var actor = member.Value;
+                var actor = member;
                 actor.AddExp(exp);
                 while (actor.ReadyToLevelUp())
                 {
@@ -139,13 +144,21 @@ namespace RPG_Character
         public List<RPG_GameState.CharacterInfo> ToCharacterInfoList()
         {
             var info = new List<RPG_GameState.CharacterInfo>();
-            foreach (var member in members)
+            foreach (var member in Members)
             {
-                var actor = member.Value;
+                var actor = member;
                 var character = new RPG_GameState.CharacterInfo(actor.Exp, actor.name, actor.Stats.ToStatsData(), actor.Equipment);
                 info.Add(character);
             }
             return info;
+        }
+
+        public int IndexOf(string id)
+        {
+            for(int i = 0; i <Members.Count; i++)
+                if (Members[i].PartyId.Equals(id))
+                    return i;
+            return -1;
         }
     }
 }

@@ -137,7 +137,7 @@ namespace RPG_Character
         private void DoInitialLeveling()
         {
             // Only party members need to level up
-            if (!ServiceManager.Get<World>().Party.HasMemeber(Id))
+            if (!ServiceManager.Get<World>().Party.HasMemeber(PartyId))
                 return;
 
             for (int i = 1; i < Level; i++)

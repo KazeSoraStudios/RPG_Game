@@ -41,6 +41,11 @@ public class Map : MonoBehaviour
         Triggers.Add(position, trigger);
     }
 
+    public void AddTrigger(Vector2Int position, Trigger trigger)
+    {
+        Triggers.Add(position, trigger);
+    }
+
     public void AddEntity(Entity entity)
     {
         var pos = entity.transform.position;

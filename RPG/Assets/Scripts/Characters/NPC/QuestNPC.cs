@@ -18,9 +18,8 @@ namespace RPG_Character
 
         private void Start()
         {
-            int x = (int)transform.position.x;
-            int y = (int)transform.position.y;
-            GetComponent<Character>().Map.AddTrigger(x, y, this);
+            var position = Vector2Int.RoundToInt((Vector2)transform.position);
+            GetComponent<Character>().Map.AddTrigger(position, this);
 
             quest = GetQuest();
             if (quest == null)
@@ -37,15 +36,9 @@ namespace RPG_Character
             
         }
 
-        public void OnExit(TriggerParams triggerParams)
-        {
-            throw new System.NotImplementedException();
-        }
+        public void OnExit(TriggerParams triggerParams) { }
 
-        public void OnStay(TriggerParams triggerParams)
-        {
-            throw new System.NotImplementedException();
-        }
+        public void OnStay(TriggerParams triggerParams) { }
 
         public void OnUse(TriggerParams triggerParams)
         {

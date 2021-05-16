@@ -28,6 +28,20 @@ namespace RPG_UI
         void Start()
         {
             ServiceManager.Register(this);
+        }
+
+        public void Init(Map map, StateStack stack)
+        {
+            Map = map;
+            Stack = stack;
+            gameObject.SafeSetActive(true);
+            RefreshConfigs(map.MapName);
+            StateMachine.Change(Constants.FRONT_MENU_STATE, FrontConfig);
+        }
+
+        public void SetUpUI(UIController controller)
+        {
+            uiController = controller;
             var states = new Dictionary<string, IState>();
             states.Add(Constants.FRONT_MENU_STATE, GetFrontMenu());
             states.Add(Constants.ITEM_MENU_STATE, GetItemMenu());
@@ -58,20 +72,6 @@ namespace RPG_UI
             {
                 Parent = this
             };
-        }
-
-        public void Init(Map map, StateStack stack)
-        {
-            Map = map;
-            Stack = stack;
-            gameObject.SafeSetActive(true);
-            RefreshConfigs(map.MapName);
-            StateMachine.Change(Constants.FRONT_MENU_STATE, FrontConfig);
-        }
-
-        public void SetUIController(UIController controller)
-        {
-            uiController = controller;
         }
 
         public bool Execute(float deltaTime)

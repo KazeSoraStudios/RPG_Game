@@ -2,6 +2,7 @@ using UnityEngine;
 using RPG_UI;
 using RPG_Character;
 using RPG_GameData;
+using Cinemachine;
 
 public class ExploreState : MonoBehaviour, IGameState
 {
@@ -15,20 +16,9 @@ public class ExploreState : MonoBehaviour, IGameState
     {
         this.Map = map;
         this.stack = stack;
-        var obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.HERO_PREFAB);
-        if (obj != null)
-        {
-            Hero = Instantiate(obj);
-            Hero.transform.position = Vector2.zero;
-            Hero.transform.rotation = Quaternion.identity;
-            followCharacter = Hero;
-            Hero.gameObject.transform.SetParent(transform, true);
-            Hero.Init(map, Constants.PARTY_STATES, Constants.WAIT_STATE);
-            var actor = Hero.GetComponent<Actor>();
-            actor.Init(ServiceManager.Get<GameData>().PartyDefs["hero"]);
-            ServiceManager.Get<World>().Party.Add(actor);
-        }
-        obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.TEST_NPC_PREFAB);
+        LoadHero();
+        // TODO remove test code
+        var obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.TEST_NPC_PREFAB);
         if (obj != null)
         {
             var npc = Instantiate(obj);
@@ -104,5 +94,36 @@ public class ExploreState : MonoBehaviour, IGameState
     public string GetName()
     {
         return "ExploreState";
+    }
+
+    private void LoadHero()
+    {
+        var game = ServiceManager.Get<GameLogic>().GameState;
+        if (game == null || game.World.Party.Count() < 1)
+            LoadHeroPrefab();
+        else
+            Hero = game.World.Party.GetActor(0).GetComponent<Character>();
+        Hero.transform.position = Vector2.zero;
+        Hero.transform.rotation = Quaternion.identity;
+    }
+
+    private void LoadHeroPrefab()
+    {
+        var obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.HERO_PREFAB);
+        if (obj == null)
+        {
+            LogManager.LogError("Unable to load hero in ExplroeState.");
+            return;
+        }
+        Hero = Instantiate(obj);
+        followCharacter = Hero;
+        var world = ServiceManager.Get<World>();
+        var characterParent = world.PersistentCharacters;
+        Hero.gameObject.transform.SetParent(characterParent, true);
+        Hero.Init(Map, Constants.PARTY_STATES, Constants.WAIT_STATE);
+        var actor = Hero.GetComponent<Actor>();
+        actor.Init(ServiceManager.Get<GameData>().PartyDefs["hero"]);
+        world.Party.Add(actor);
+        GameObject.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>().Follow = Hero.transform;
     }
 }

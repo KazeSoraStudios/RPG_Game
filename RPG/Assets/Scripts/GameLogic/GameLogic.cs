@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using RPG_UI;
 using RPG_Combat;
 using RPG_Character;
@@ -9,7 +10,7 @@ using RPG_GameState;
 public class GameLogic : MonoBehaviour
 {
     [SerializeField] LogLevel LogLevel;
-    [SerializeField] GameState GameState;
+    [SerializeField] public GameState GameState;
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
     [SerializeField] public Image ScreenImage;
@@ -22,6 +23,8 @@ public class GameLogic : MonoBehaviour
     {
         ServiceManager.Register(this);
         LogManager.SetLogLevel(LogLevel);
+        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(Camera.main);
     }
 
     private void OnDestroy()
@@ -38,6 +41,17 @@ public class GameLogic : MonoBehaviour
         if (gameManager.GetNumberOfSaves() > 0)
             gameManager.LoadGameStateData(0);
         SetUpNewGame();
+    }
+
+    public void StartNewGame()
+    {
+        SceneManager.LoadScene("Village", LoadSceneMode.Single);
+        LoadMap();
+    }
+
+    public void LoadGame()
+    {
+        
     }
 
     private void Update()
@@ -66,6 +80,11 @@ public class GameLogic : MonoBehaviour
         LogManager.SetLogLevel(LogLevel);
         #endif
 
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            LoadMap();
+        }
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             var parent = UIController.CombatLayer;
@@ -78,7 +97,7 @@ public class GameLogic : MonoBehaviour
             {
                 CanFlee = true,
                 BackgroundPath = "",
-                Party = GameState.World.Party.ToList(),
+                Party = GameState.World.Party.Members,
                 Enemies = new System.Collections.Generic.List<RPG_Character.Actor> { npc },
                 Stack = Stack,
                 //OnWin
@@ -109,14 +128,15 @@ public class GameLogic : MonoBehaviour
         GameState.World.Execute(deltaTime);
     }
 
+    // TODO change name
     private void SetUpNewGame()
     {
-        GameDataDownloader.LoadGameData(LoadMap);
+        GameDataDownloader.LoadGameData(null);
     }
 
     private void LoadMap()
     {
-        var obj = ServiceManager.Get<AssetManager>().Load<Map>(Constants.TEST_MAP_PREFAB_PATH);
+        var obj = ServiceManager.Get<AssetManager>().Load<Map>(Constants.FIRST_VILLAGE_PREFAB_PATH);
         if (obj != null)
         {
             var map = Instantiate(obj);
@@ -139,7 +159,7 @@ public class GameLogic : MonoBehaviour
             world.AddItem(item, 99);
         }
 
-        var party = world.Party.ToList();
+        var party = world.Party.Members;
         var spells = gameData.Spells;
         var specials = gameData.Specials;
         foreach (var member in party)

@@ -12,6 +12,7 @@ public class World : MonoBehaviour
     [SerializeField] public int Gold;
     [SerializeField] public float PlayTime = 0;
     [SerializeField] public Party Party;
+    [SerializeField] public Transform PersistentCharacters;
     Dictionary<string, Item> Items = new Dictionary<string, Item>();
     Dictionary<string, Item> KeyItems = new Dictionary<string, Item>();
     Dictionary<string, Quest> Quests = new Dictionary<string, Quest>();

@@ -378,7 +378,7 @@ namespace RPG_Combat
             var config = new XPSummaryState.Config
             {
                 Stack = gameStack,
-                Party = ServiceManager.Get<World>().Party.ToList(),
+                Party = ServiceManager.Get<World>().Party.Members,
                 Loot = combatData
             };
             summary.Init(config);

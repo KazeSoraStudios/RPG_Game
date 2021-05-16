@@ -104,8 +104,8 @@ namespace RPG_UI
 
         private void InitPanels()
         {
-            var partyMembers = config.Party.ToArray();
-            var numberOfMembers = partyMembers.Length;
+            var partyMembers = config.Party.Members;
+            var numberOfMembers = partyMembers.Count;
             var numberOfPanels = ActorSummaries.Length;
 
             int i = 0;
