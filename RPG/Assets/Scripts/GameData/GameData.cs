@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RPG_Character;
 using RPG_Combat;
+using RPG_GameState;
 
 namespace RPG_GameData
 {
@@ -140,12 +141,19 @@ namespace RPG_GameData
             };
         }
 
-        public void TryToComplete()
+        public bool TryToComplete()
         {
             if (IsComplete)
-                return;
+                return false;
             Condition.TryToComplete();
             IsComplete = Condition.IsComplete();
+            return IsComplete;
+        }
+
+        public void LoadFromQuestData(QuestData data)
+        {
+            IsStarted = data.IsStarted;
+            IsComplete = data.IsComplete;
         }
     }
 }

@@ -6,8 +6,6 @@ using RPG_GameData;
 public class ExploreState : MonoBehaviour, IGameState
 {
     public bool followCamera = true;
-    public int manualCameraX = 0;
-    public int manualCameraY = 0;
     public Character followCharacter;
     public Character Hero;
     public StateStack stack;
@@ -42,7 +40,6 @@ public class ExploreState : MonoBehaviour, IGameState
             actor.Init(ServiceManager.Get<GameData>().Enemies["goblin"]);
             ServiceManager.Get<NPCManager>().AddNPC(npc);
         }
-        map.GoToTile((int)startPosition.x, (int)startPosition.y);
     }
 
     public void HideHero()
@@ -57,26 +54,7 @@ public class ExploreState : MonoBehaviour, IGameState
 
     public void UpdateCamera(Map map)
     {
-        if (followCamera)
-        {
-            var position = Hero.Entity.transform.position;
-            map.UpdateCameraPosition((int)position.x, (int)position.y);
-        }
-        else
-        {
-            map.UpdateCameraPosition(manualCameraX, manualCameraY);
-        }
-    }
-
-    public void SetFollowCamera(bool followPlayer, Character character = null)
-    {
-        if (character != null)
-            followCharacter = character;
-        followCamera = followPlayer;
-        if (followCamera)
-            return;
-        var position = followCharacter.Entity.transform.position;
-        Map.UpdateCameraPosition((int)position.x, (int)position.y);
+        
     }
 
     public void Enter(object o) { }
@@ -108,9 +86,11 @@ public class ExploreState : MonoBehaviour, IGameState
             //    trigger.OnUse(new TriggerParams(x,y,Hero));
             var targetPosition = new Vector2(x,y);
             var position = (Vector2)transform.position + targetPosition;
-            var collision = Physics2D.OverlapCircle(position, 0.2f, Hero.collisionLayer);
+            //var collision = Physics2D.OverlapCircle(position, 0.2f, Hero.collisionLayer);
+            var trigger = Map.GetTrigger((int)facingTile.x, (int)facingTile.y);
             //var trigger = collision.GetComponent<Trigger>();// != null
-            if (collision?.GetComponent<Trigger>() is var trigger && trigger != null)
+            //if (collision?.GetComponent<Trigger>() is var trigger && trigger != null)
+            if (trigger != null)
             {
                 trigger.OnUse(new TriggerParams(x,y,Hero.GetComponent<Character>()));
             }

@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 5883101160653709394}
   - component: {fileID: 5883101160653709416}
   - component: {fileID: 8475761078481550912}
-  - component: {fileID: 2446168966383806122}
   m_Layer: 0
   m_Name: Hero
   m_TagString: Untagged
@@ -215,18 +214,6 @@ MonoBehaviour:
   Exp: 0
   Level: 0
   NextLevelExp: 0
+  StealItem: 0
   UseRestriction: 1
-  Stats: {fileID: 2446168966383806122}
   LevelFunction: {fileID: 11400000, guid: b51ef95fe17abb6408a0678deff1d915, type: 2}
---- !u!114 &2446168966383806122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5883101160653709395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad465f575cbf33f4a9a169b9babba7ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

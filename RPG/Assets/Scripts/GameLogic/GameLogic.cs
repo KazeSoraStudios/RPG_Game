@@ -4,11 +4,12 @@ using RPG_UI;
 using RPG_Combat;
 using RPG_Character;
 using RPG_GameData;
+using RPG_GameState;
+
 public class GameLogic : MonoBehaviour
 {
     [SerializeField] LogLevel LogLevel;
-    [SerializeField] World world;
-    [SerializeField] object GameState;// TODO GetDefaultGameState()
+    [SerializeField] GameState GameState;
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
     [SerializeField] public Image ScreenImage;
@@ -31,8 +32,11 @@ public class GameLogic : MonoBehaviour
     private void Start()
     {
         Stack = new StateStack();
-        world.Reset();
         UIController.InitUI();
+        var gameManager = ServiceManager.Get<GameStateManager>();
+        gameManager.LoadSavedGames();
+        if (gameManager.GetNumberOfSaves() > 0)
+            gameManager.LoadGameStateData(0);
         SetUpNewGame();
     }
 
@@ -74,7 +78,7 @@ public class GameLogic : MonoBehaviour
             {
                 CanFlee = true,
                 BackgroundPath = "",
-                Party = world.Party.ToList(),
+                Party = GameState.World.Party.ToList(),
                 Enemies = new System.Collections.Generic.List<RPG_Character.Actor> { npc },
                 Stack = Stack,
                 //OnWin
@@ -87,11 +91,22 @@ public class GameLogic : MonoBehaviour
             UIController.gameObject.SafeSetActive(true);
         }
 
+
+        if (Input.GetKeyDown(KeyCode.K))
+            ServiceManager.Get<GameStateManager>().SaveGameStateData(GameState.ToGameStateData());
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            var gameManager = ServiceManager.Get<GameStateManager>();
+            if (gameManager.GetNumberOfSaves() > 0)
+                gameManager.LoadGameStateData(0);
+        }
+
         if (Input.GetKeyDown(KeyCode.F2))
             GiveEverything();
         var deltaTime = Time.deltaTime;
         Stack.Update(deltaTime);
-        world.Execute(deltaTime);
+        GameState.World.Execute(deltaTime);
     }
 
     private void SetUpNewGame()
@@ -114,6 +129,7 @@ public class GameLogic : MonoBehaviour
 
     private void GiveEverything()
     {
+        var world = GameState.World;
         world.Gold = 999999;
         var gameData = ServiceManager.Get<GameData>();
         var items = gameData.Items;

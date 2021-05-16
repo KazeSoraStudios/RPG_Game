@@ -6,41 +6,12 @@ using RPG_Character;
 
 public class Map : MonoBehaviour
 {
-    [SerializeField] public int Width;
-    [SerializeField] public int Height;
-    [SerializeField] public int TileWidth;
-    [SerializeField] public int TileHeight;
-    [SerializeField] public int camX;
-    [SerializeField] public int camY;
     [SerializeField] public string MapName;
-    [SerializeField] public Grid Grid;
     [SerializeField] Dictionary<Vector2Int, Trigger> Triggers = new Dictionary<Vector2Int, Trigger>();
     [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
     [SerializeField] Tilemap collision;
 
     private EmptyTrigger emptyTrigger = new EmptyTrigger();
-
-    private void Start()
-    {
-        if (Grid == null)
-        {
-            LogManager.LogError($"Grid is null for Map[{name}].");
-        }
-        var background = Grid.transform.Find("Background");
-        if (background != null)
-        {
-            var backgroundMap = background.GetComponent<Tilemap>();
-            Width = backgroundMap.size.x;
-            Height = backgroundMap.size.y;
-            //var tile = backgroundMap.GetSprite(Vector3Int.zero);
-            //TileWidth = (int)tile.bounds.size.x;
-            //TileWidth = (int)tile.bounds.size.y;
-        }
-        var triggerGrid = Grid.transform.Find("Trigger");
-        if (triggerGrid == null)
-            return;
-        // TODO set up triggers from map
-    }
 
     public struct ChangeTile
     {
@@ -49,52 +20,10 @@ public class Map : MonoBehaviour
         public Tile sprite, detail;
     }
 
-    public void WriteTile(ChangeTile changeTile)
-    {
-        var layer = changeTile.layer;
-        var sprite = changeTile.sprite;
-
-        //layer = ((layer - 1) * 3) + 1
-        //print("LAYER SET TO", layer)
-
-        var x = changeTile.x;
-        var y = changeTile.y;
-        //var tile = params.tile
-        //var collision = self.mBlockingTile
-        //if not params.collision then
-        //    collision = 0
-        //end
-
-        //var index = self:CoordToIndex(x, y)
-        var tileMap = Grid.transform.GetChild(layer).GetComponent<Tilemap>();
-        var position = new Vector3Int(x, y, 0);
-        tileMap.SetTile(position, sprite);
-        if (changeTile.detail != null)
-        {
-            var detailMap = Grid.transform.GetChild(layer + 1).GetComponent<Tilemap>();
-            detailMap.SetTile(position, sprite);
-        }
-        if (!changeTile.collision)
-            return;
-
-        var collisionMap = Grid.transform.GetChild(layer + 2).GetComponent<Tilemap>();
-        collisionMap.SetTile(position, sprite);
-    }
-
     public bool IsCollision(Vector2 position)
     {
         var tilePosition = new Vector3Int((int)position.x, (int)position.y, 0);
         return collision.HasTile(tilePosition);
-    }
-
-    public int TotalLayerCount()
-    {
-        return Grid.transform.childCount;
-    }
-
-    public int NormalizedLayerCount()
-    {
-        return Grid.transform.childCount / 3;
     }
 
     public Trigger GetTrigger(int x, int y)
@@ -106,29 +35,10 @@ public class Map : MonoBehaviour
         return Triggers[position];
     }
 
-    public void AddTrigger(int x, int y)
+    public void AddTrigger(int x, int y, Trigger trigger)
     {
         var position = new Vector2Int(x, y);
-        Triggers.Add(position, new EmptyTrigger());
-    }
-
-    public void GoToTile(int x, int y)
-    {
-        var _x = (int)(x * TileWidth + TileWidth * 0.5f);
-        var _y = (int)(y * TileHeight + TileHeight * 0.5f);
-        GoTo(_x, _y);
-    }
-
-    public void GoTo(int x, int y)
-    {
-        camX = (int)(x - Screen.width * 0.5f);
-        camY = (int)(x - Screen.height * 0.5f);
-    }
-
-    public void UpdateCameraPosition(int x, int y)
-    {
-        camX = x;
-        camY = y;
+        Triggers.Add(position, trigger);
     }
 
     public void AddEntity(Entity entity)
@@ -163,16 +73,6 @@ public class Map : MonoBehaviour
             return null;
         return Entities[position];
     }
-
-
-    public Tuple<int,int> GetTileFoot(int x, int y)
-    {
-        // TODO cache
-        var rect = Grid.GetComponent<RectTransform>().rect;
-        var left = rect.xMin + (x * TileWidth);
-        var top = rect.yMin - (y * TileHeight) - TileHeight * 0.5f;
-        return Tuple.Create<int, int>((int)left, (int)top);
-     }
 
     /*
      

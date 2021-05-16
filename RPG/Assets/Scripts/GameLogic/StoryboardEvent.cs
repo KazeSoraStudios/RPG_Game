@@ -356,50 +356,50 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent WriteTile(int mapId, Map.ChangeTile changeTile)
-    {
-        return new StoryboardFunctionEvent
-        {
-            Function = (storyboard) =>
-            {
-                var map = GetMapReference(storyboard, mapId);
-                map.WriteTile(changeTile);
-                return EmptyEvent;
-            }
-        };
-    }
+    //public static IStoryboardEvent WriteTile(int mapId, Map.ChangeTile changeTile)
+    //{
+    //    return new StoryboardFunctionEvent
+    //    {
+    //        Function = (storyboard) =>
+    //        {
+    //            var map = GetMapReference(storyboard, mapId);
+    //            map.WriteTile(changeTile);
+    //            return EmptyEvent;
+    //        }
+    //    };
+    //}
 
-    public static IStoryboardEvent MoveCameraToTile(string state, int x, int y, float duration = 1.0f)
-    {
-        return new StoryboardFunctionEvent
-        {
-            Function = (storyboard) =>
-            {
-                var exploreState = (ExploreState)storyboard.States[state];
-                var startX = exploreState.manualCameraX;
-                var startY = exploreState.manualCameraY;
-                var topLeft = exploreState.Map.GetTileFoot(x, y);
-                var endX = topLeft.Item1;
-                var endY = topLeft.Item2;
-                var xDistance = endX - startX;
-                var yDistance = endY - startY;
+    //public static IStoryboardEvent MoveCameraToTile(string state, int x, int y, float duration = 1.0f)
+    //{
+    //    return new StoryboardFunctionEvent
+    //    {
+    //        Function = (storyboard) =>
+    //        {
+    //            var exploreState = (ExploreState)storyboard.States[state];
+    //            var startX = exploreState.manualCameraX;
+    //            var startY = exploreState.manualCameraY;
+    //            var topLeft = exploreState.Map.GetTileFoot(x, y);
+    //            var endX = topLeft.Item1;
+    //            var endY = topLeft.Item2;
+    //            var xDistance = endX - startX;
+    //            var yDistance = endY - startY;
 
-                return new TweenEvent<ExploreState>
-                {
-                    Target = exploreState,
-                    Function = (target, value) =>
-                    {
-                        var dX = startX + xDistance * value;
-                        var dY = startY + xDistance * value;
-                        target.manualCameraX = (int)dX;
-                        target.manualCameraY = (int)dY;
-                    },
-                    Start = 0,
-                    Duration = duration
-                };
-            }
-        };
-    }
+    //            return new TweenEvent<ExploreState>
+    //            {
+    //                Target = exploreState,
+    //                Function = (target, value) =>
+    //                {
+    //                    var dX = startX + xDistance * value;
+    //                    var dY = startY + xDistance * value;
+    //                    target.manualCameraX = (int)dX;
+    //                    target.manualCameraY = (int)dY;
+    //                },
+    //                Start = 0,
+    //                Duration = duration
+    //            };
+    //        }
+    //    };
+    //}
 
     public static IStoryboardEvent FadeSound(string name, float start, float end, float duration)
     {

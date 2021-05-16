@@ -135,5 +135,17 @@ namespace RPG_Character
                 }
             }
         }
+
+        public List<RPG_GameState.CharacterInfo> ToCharacterInfoList()
+        {
+            var info = new List<RPG_GameState.CharacterInfo>();
+            foreach (var member in members)
+            {
+                var actor = member.Value;
+                var character = new RPG_GameState.CharacterInfo(actor.Exp, actor.name, actor.Stats.ToStatsData(), actor.Equipment);
+                info.Add(character);
+            }
+            return info;
+        }
     }
 }

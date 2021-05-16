@@ -8,7 +8,7 @@ namespace RPG_GameData
 {
     public class GameDataHandler : MonoBehaviour
     {
-        protected static int GetIntFromCell(string intCell)
+        public static int GetIntFromCell(string intCell)
         {
             int price = 0;
             if (intCell.IsNotEmpty())
@@ -16,7 +16,7 @@ namespace RPG_GameData
             return price;
         }
 
-        protected static float GetFloatFromCell(string floatCell)
+        public static float GetFloatFromCell(string floatCell)
         {
             float price = 0.0f;
             if (floatCell.IsNotEmpty())
@@ -24,7 +24,7 @@ namespace RPG_GameData
             return price;
         }
 
-        protected static Vector2 GetVector2FromCell(string vec2Cell)
+        public static Vector2 GetVector2FromCell(string vec2Cell)
         {
             var vars = vec2Cell.Split(':');
             if (vars.Length != 2)
@@ -32,7 +32,7 @@ namespace RPG_GameData
             return new Vector2(GetFloatFromCell(vars[0]), GetFloatFromCell(vars[1]));
         }
 
-        protected static Vector3 GetVector3FromCell(string vec2Cell)
+        public static Vector3 GetVector3FromCell(string vec2Cell)
         {
             var vars = vec2Cell.Split(':');
             if (vars.Length != 3)
@@ -40,7 +40,7 @@ namespace RPG_GameData
             return new Vector3(GetFloatFromCell(vars[0]), GetFloatFromCell(vars[1]), GetFloatFromCell(vars[2]));
         }
 
-        protected static T GetEnum<T>(T defaultT, string type) where T : struct, Enum
+        public static T GetEnum<T>(T defaultT, string type) where T : struct, Enum
         {
             var t = defaultT;
             if (!Enum.TryParse(type, true, out t))
@@ -48,7 +48,17 @@ namespace RPG_GameData
             return t;
         }
 
-        protected static T[] GetEnumArray<T>(T defaultT, string data, bool returnEmpty = false) where T : struct, Enum
+        public static bool GetEnumByRef<T>(string type, out T t) where T : struct, Enum
+        {
+            if (!Enum.TryParse(type, true, out t))
+            {
+                LogManager.LogError($"Cannot parse {type} into {t}. Returning null.");
+                return false;
+            }
+            return true;
+        }
+
+        public static T[] GetEnumArray<T>(T defaultT, string data, bool returnEmpty = false) where T : struct, Enum
         {
             if (data.IsEmpty())
                 return returnEmpty ? new T[0] : new T[] { defaultT };
@@ -64,7 +74,7 @@ namespace RPG_GameData
             return ts;
         }
 
-        protected static Func<CombatGameState, bool, List<Actor>> GetTarget(string name, string data)
+        public static Func<CombatGameState, bool, List<Actor>> GetTarget(string name, string data)
         {
             if (data.IsEmpty())
             {

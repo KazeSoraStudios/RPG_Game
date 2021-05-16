@@ -60,11 +60,6 @@ namespace RPG_UI
             };
         }
 
-        void OnDestroy()
-        {
-            ServiceManager.Unregister(this);
-        }
-
         public void Init(Map map, StateStack stack)
         {
             Map = map;

@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 9091877173033026570}
   - component: {fileID: 3057305007961802950}
   - component: {fileID: 6918768904403121363}
-  - component: {fileID: 1375352564297740012}
   - component: {fileID: 1307229700805801451}
   m_Layer: 4
   m_Name: TestNPC
@@ -218,20 +217,7 @@ MonoBehaviour:
   NextLevelExp: 0
   StealItem: 0
   UseRestriction: 0
-  Stats: {fileID: 1375352564297740012}
   LevelFunction: {fileID: 0}
---- !u!114 &1375352564297740012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3057305007961802813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad465f575cbf33f4a9a169b9babba7ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1307229700805801451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,5 +231,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestId: quest1
-  BeforeCompletionText: ID_TEST_QUEST_NPC_BEFORE_TEXT
-  AfterCompletionText: ID_TEST_QUEST_NPC_AFTER_TEXT
+  BeforeStartedText: ID_TEST_QUEST_NPC_BEFORE_TEXT
+  StartedText: 
+  CompletedText: ID_TEST_QUEST_NPC_AFTER_TEXT

@@ -24,6 +24,13 @@ namespace RPG_Character
             text = "This forest is 1,000 years old and filled with goblins. Be careful!";
         }
 
+        void Start()
+        {
+            int x = (int)transform.position.x;
+            int y = (int)transform.position.y;
+            GetComponent<Character>().Map.AddTrigger(x, y, this);
+        }
+
         public void SetText(string text)
         {
             if (Id.IsEmptyOrWhiteSpace())
