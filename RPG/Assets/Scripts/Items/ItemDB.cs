@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RPG_Character;
 using RPG_Combat;
-
+using RPG_GameData;
 public enum ItemType { Useable, Key, Accessory, Weapon, Armor, None };
 public enum UseRestriction { None, Hero, Thief, Mage };
 

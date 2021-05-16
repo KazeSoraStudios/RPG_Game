@@ -1,26 +1,27 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
-using RPG_Combat;
+using RPG_GameData;
+using RPG_GameState;
 
 namespace RPG_Character
 {
     public enum Stat { HP, MaxHP, MP, MaxMP, Strength, Speed, Intelligence, Dodge, Counter, Attack, Defense, Resist, Magic };
 
-    public class Stats : MonoBehaviour
+    public class Stats
     {
-        Dictionary<Stat, int> stats = new Dictionary<Stat, int>();
-        [SerializeField] StatModifier[] modifiers;
+        private Dictionary<Stat, int> stats = new Dictionary<Stat, int>();
+        private StatModifier[] modifiers;
 
+        private string name;
         private StatModifier EmptyModifier;
 
-        private void Awake()
+        public Stats(Dictionary<Stat, int> statDefinitions, string name)
         {
-            EmptyModifier = new StatModifier();
-            var slots = (EquipSlot[])Enum.GetValues(typeof(EquipSlot));
-            modifiers = new StatModifier[slots.Length];
-            for (int i = 0; i < slots.Length; i++)
-                modifiers[i] = EmptyModifier;
+            this.name = name;
+            SetUp();
+            BuildStatsFromDefinition(statDefinitions);
         }
 
         public bool HasStat(Stat stat)
@@ -122,7 +123,24 @@ namespace RPG_Character
             return newValue - currentValue;
         }
 
-        public void FromStatsDefinition(Dictionary<Stat, int> statDefinitions)
+        public StatsData ToStatsData()
+        {
+            var statInfo = new List<StatInfo>();
+            foreach (var stat in stats)
+                statInfo.Add(new StatInfo { Stat = stat.Key, Value = stat.Value });
+            return new StatsData { Stats = statInfo };
+        }
+
+        private void SetUp()
+        {
+            EmptyModifier = new StatModifier();
+            var slots = (EquipSlot[])Enum.GetValues(typeof(EquipSlot));
+            modifiers = new StatModifier[slots.Length];
+            for (int i = 0; i < slots.Length; i++)
+                modifiers[i] = EmptyModifier;
+        }
+
+        private void BuildStatsFromDefinition(Dictionary<Stat, int> statDefinitions)
         {
             stats.Clear();
             foreach (var entry in statDefinitions)

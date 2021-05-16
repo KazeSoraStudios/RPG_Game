@@ -5,105 +5,114 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityGoogleDrive;
 
-public class GameDataDownloader : MonoBehaviour
+namespace RPG_GameData
 {
-    [SerializeField] bool DownloadGameData;
-    [SerializeField] GameData GameData;
-
-    private const string sheetID = "1bmAVofqQuVjT_QvqyrGK6_vwzcdfymHfTYjUSSrgjQY";
-    private readonly string gameDataPath = "/Resources/GameData/gamedata.txt";
-    private Action OnComplete;
-
-    public void LoadGameData(Action callback = null)
+    public class GameDataDownloader : MonoBehaviour
     {
-        OnComplete = callback;
-        if (DownloadGameData)
-            DownLoadGameData();
-        else
-            LoadFromSavedFile();
-    }
+        [SerializeField] bool DownloadGameData;
+        [SerializeField] GameData GameData;
 
-    private void DownLoadGameData()
-    {
-        GoogleDriveFiles.Export(sheetID, "text/csv").Send().OnDone += OnLoad;
-    }
+        private const string sheetID = "1bmAVofqQuVjT_QvqyrGK6_vwzcdfymHfTYjUSSrgjQY";
+        private readonly string gameDataPath = "/Resources/GameData/gamedata.txt";
+        private Action OnComplete;
 
-    private void LoadFromSavedFile()
-    {
-        var data = File.ReadAllText(Application.dataPath + gameDataPath);
-        var cells = data.Split(',');
-        HandleData(cells);
-    }
+        public void LoadGameData(Action callback = null)
+        {
+            OnComplete = callback;
+            if (DownloadGameData)
+                DownLoadGameData();
+            else
+                LoadFromSavedFile();
+        }
 
-    public void OnLoad(UnityGoogleDrive.Data.File file)
-    {
-        var content = System.Text.Encoding.Default.GetString(file.Content);
-        // Remove new lines
-        content = Regex.Replace(content, @"\r\n?|\n", ",");
-        var cells = content.Split(',');
-        HandleData(cells);
-        File.WriteAllText(Application.dataPath + gameDataPath, content);
-    }
+        private void DownLoadGameData()
+        {
+            GoogleDriveFiles.Export(sheetID, "text/csv").Send().OnDone += OnLoad;
+        }
 
-    private void HandleData(string[] data)
-    {
-        // First row is total number of rows and columns
-        var cells = new Dictionary<string, List<List<string>>>();
-        int numberOfColumns = int.Parse(data[1]);
-        int index = numberOfColumns;
-        // Second row is sheet name, number of rows and columns
-        int numberOfCells = int.Parse(data[index + 1]);
-        int cellsProcessed = 0;
-        index = numberOfColumns * 2;
-        var items = GameDataItemHandler.ProcessItems(index, numberOfCells, numberOfColumns, data);
-        // Count the cells we just processed plus the two rows we skipped
-        cellsProcessed = numberOfColumns * 2 + numberOfColumns * numberOfCells;
-        // Get the new number of cells to process and skip the row
-        numberOfCells = int.Parse(data[cellsProcessed + 1]);
-        cellsProcessed += numberOfColumns;
-        index = cellsProcessed;
-        var itemUses = GameDataItemUseHandler.ProcessItems(index, numberOfCells, numberOfColumns, data);
-        cellsProcessed += numberOfColumns * numberOfCells;
-        // Get the new number of cells to process and skip the row
-        numberOfCells = int.Parse(data[cellsProcessed + 1]);
-        cellsProcessed += numberOfColumns;
-        index = cellsProcessed;
-        var loc = GameDataLocalizationHandler.ProcessLocaliation(index, numberOfCells, numberOfColumns, data);
-        cellsProcessed += numberOfColumns * numberOfCells;
-        // Get the new number of cells to process and skip the row
-        numberOfCells = int.Parse(data[cellsProcessed + 1]);
-        cellsProcessed += numberOfColumns;
-        index = cellsProcessed;
-        var party = GameDataPartyHandler.ProcessParty(index, numberOfCells, numberOfColumns, data);
-        cellsProcessed += numberOfColumns * numberOfCells;
-        // Get the new number of cells to process and skip the row
-        numberOfCells = int.Parse(data[cellsProcessed + 1]);
-        cellsProcessed += numberOfColumns;
-        index = cellsProcessed;
-        var stats = GameDataStatsHandler.ProcessStats(index, numberOfCells, numberOfColumns, data);
-        cellsProcessed += numberOfColumns * numberOfCells;
-        // Get the new number of cells to process and skip the row
-        numberOfCells = int.Parse(data[cellsProcessed + 1]);
-        cellsProcessed += numberOfColumns;
-        index = cellsProcessed;
-        var spells = GameDataSpellHandler.ProcessSpells(index, numberOfCells, numberOfColumns, data);
-        cellsProcessed += numberOfColumns * numberOfCells;
-        // Get the new number of cells to process and skip the row
-        numberOfCells = int.Parse(data[cellsProcessed + 1]);
-        cellsProcessed += numberOfColumns;
-        index = cellsProcessed;
-        var enemies = GameDataEnemyHandler.PrcoessEnemies(index, numberOfCells, numberOfColumns, data);
+        private void LoadFromSavedFile()
+        {
+            var data = File.ReadAllText(Application.dataPath + gameDataPath);
+            var cells = data.Split(',');
+            HandleData(cells);
+        }
 
+        public void OnLoad(UnityGoogleDrive.Data.File file)
+        {
+            var content = System.Text.Encoding.Default.GetString(file.Content);
+            // Remove new lines
+            content = Regex.Replace(content, @"\r\n?|\n", ",");
+            var cells = content.Split(',');
+            HandleData(cells);
+            File.WriteAllText(Application.dataPath + gameDataPath, content);
+        }
 
-        GameData.Items = items;
-        GameData.ItemUses = itemUses;
-        GameData.PartyDefs = party;
-        GameData.Stats = stats;
-        GameData.Spells = spells.spells;
-        GameData.Specials = spells.specials;
-        GameData.Enemies = enemies;
-        ServiceManager.Get<LocalizationManager>().SetLocalization(loc);
-        enabled = false;
-        OnComplete?.Invoke();
+        private void HandleData(string[] data)
+        {
+            // First row is total number of rows and columns
+            var cells = new Dictionary<string, List<List<string>>>();
+            int numberOfColumns = int.Parse(data[1]);
+            int index = numberOfColumns;
+            // Second row is sheet name, number of rows and columns
+            int numberOfCells = int.Parse(data[index + 1]);
+            int cellsProcessed = 0;
+            index = numberOfColumns * 2;
+            var items = GameDataItemHandler.ProcessItems(index, numberOfCells, numberOfColumns, data);
+            // Count the cells we just processed plus the two rows we skipped
+            cellsProcessed = numberOfColumns * 2 + numberOfColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            cellsProcessed += numberOfColumns;
+            index = cellsProcessed;
+            var itemUses = GameDataItemUseHandler.ProcessItems(index, numberOfCells, numberOfColumns, data);
+            cellsProcessed += numberOfColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            cellsProcessed += numberOfColumns;
+            index = cellsProcessed;
+            var loc = GameDataLocalizationHandler.ProcessLocaliation(index, numberOfCells, numberOfColumns, data);
+            cellsProcessed += numberOfColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            cellsProcessed += numberOfColumns;
+            index = cellsProcessed;
+            var party = GameDataPartyHandler.ProcessParty(index, numberOfCells, numberOfColumns, data);
+            cellsProcessed += numberOfColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            cellsProcessed += numberOfColumns;
+            index = cellsProcessed;
+            var stats = GameDataStatsHandler.ProcessStats(index, numberOfCells, numberOfColumns, data);
+            cellsProcessed += numberOfColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            cellsProcessed += numberOfColumns;
+            index = cellsProcessed;
+            var spells = GameDataSpellHandler.ProcessSpells(index, numberOfCells, numberOfColumns, data);
+            cellsProcessed += numberOfColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            cellsProcessed += numberOfColumns;
+            index = cellsProcessed;
+            var enemies = GameDataEnemyHandler.PrcoessEnemies(index, numberOfCells, numberOfColumns, data);
+            cellsProcessed += numberOfColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            cellsProcessed += numberOfColumns;
+            index = cellsProcessed;
+            var quests = GameDataQuestHandler.ProcessQuests(index, numberOfCells, numberOfColumns, data);
+
+            GameData.Items = items;
+            GameData.ItemUses = itemUses;
+            GameData.PartyDefs = party;
+            GameData.Stats = stats;
+            GameData.Spells = spells.spells;
+            GameData.Specials = spells.specials;
+            GameData.Enemies = enemies;
+            GameData.Quests = quests;
+            ServiceManager.Get<LocalizationManager>().SetLocalization(loc);
+            enabled = false;
+            OnComplete?.Invoke();
+        }
     }
 }

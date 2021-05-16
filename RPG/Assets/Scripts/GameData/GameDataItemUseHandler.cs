@@ -4,36 +4,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using RPG_Combat;
 
-public class GameDataItemUseHandler : GameDataHandler
+namespace RPG_GameData
 {
-    public static Dictionary<string, ItemUse> ProcessItems(int index, int count, int numberOfColumns, string[] data)
+    public class GameDataItemUseHandler : GameDataHandler
     {
-        LogManager.LogDebug("Creating GameData ItemUses.");
-        LogManager.LogDebug($"Processing ItemUse for data {data}");
-        var items = new Dictionary<string, ItemUse>();
-        // Account for difference in columns
-        var columnDifference = numberOfColumns - 8;
-        for (int i = 0; i < count; i++)
+        public static Dictionary<string, ItemUse> ProcessItems(int index, int count, int numberOfColumns, string[] data)
         {
-            var name = data[index++];
-            var itemUse = new ItemUse()
+            LogManager.LogDebug("Creating GameData ItemUses.");
+            LogManager.LogDebug($"Processing ItemUse for data {data}");
+            var items = new Dictionary<string, ItemUse>();
+            // Account for difference in columns
+            var columnDifference = numberOfColumns - 8;
+            for (int i = 0; i < count; i++)
             {
-                Id = name,
-                Amount = GetIntFromCell(data[index++]),
-                Hint = data[index++],
-                Action = data[index++],
-                UseOnMap = data[index++].Equals("1"),
-                Target = new ItemTarget
+                var name = data[index++];
+                var itemUse = new ItemUse()
                 {
-                    Selector = GetTarget(name, data[index++]),
-                    SwitchSides = data[index++].Equals("1"),
-                    Type = GetEnum(CombatTargetType.One, data[index++])
-                }
-            };
-            index += columnDifference;
-            items.Add(name, itemUse);
+                    Id = name,
+                    Amount = GetIntFromCell(data[index++]),
+                    Hint = data[index++],
+                    Action = data[index++],
+                    UseOnMap = data[index++].Equals("1"),
+                    Target = new ItemTarget
+                    {
+                        Selector = GetTarget(name, data[index++]),
+                        SwitchSides = data[index++].Equals("1"),
+                        Type = GetEnum(CombatTargetType.One, data[index++])
+                    }
+                };
+                index += columnDifference;
+                items.Add(name, itemUse);
+            }
+            LogManager.LogDebug("Processing Gamedata ItemUses finished.");
+            return items;
         }
-        LogManager.LogDebug("Processing Gamedata ItemUses finished.");
-        return items;
     }
 }

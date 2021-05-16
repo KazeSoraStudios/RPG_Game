@@ -100,4 +100,8 @@ public class Constants
     public const string MP_RESTORE_COMBAT_ACTION = "mp_restore";
     public const string REVIVE_COMBAT_ACTION = "revive";
     public const string SPELL_COMBAT_ACTION = "element_spell";
+
+    // Text constants
+    public const string ID_QUEST_NAME_FORMAT = "ID_{0}_NAME_TEXT";
+    public const string ID_QUEST_DESCRIPTION_FORMAT = "ID_{0}_NAME_TEXT";
 }

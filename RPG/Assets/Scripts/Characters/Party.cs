@@ -120,5 +120,32 @@ namespace RPG_Character
             foreach (var character in members)
                 character.Value.GetComponent<Character>().ReturnFromCombat();
         }
+
+        public void GiveExp(int exp)
+        {
+            foreach (var member in members)
+            {
+                var actor = member.Value;
+                actor.AddExp(exp);
+                while (actor.ReadyToLevelUp())
+                {
+                    var levelup = actor.CreateLevelUp();
+                    actor.ApplyLevel(levelup);
+
+                }
+            }
+        }
+
+        public List<RPG_GameState.CharacterInfo> ToCharacterInfoList()
+        {
+            var info = new List<RPG_GameState.CharacterInfo>();
+            foreach (var member in members)
+            {
+                var actor = member.Value;
+                var character = new RPG_GameState.CharacterInfo(actor.Exp, actor.name, actor.Stats.ToStatsData(), actor.Equipment);
+                info.Add(character);
+            }
+            return info;
+        }
     }
 }

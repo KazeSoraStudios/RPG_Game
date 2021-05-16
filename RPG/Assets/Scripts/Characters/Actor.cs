@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_GameData;
 
 namespace RPG_Character
 {
@@ -55,7 +56,7 @@ namespace RPG_Character
             Specials.Clear();
             Id = actorId++;
             var gameData = ServiceManager.Get<GameData>();
-            Stats.FromStatsDefinition(gameData.Stats[partyMemeber.StatsId]);
+            Stats = new Stats(gameData.Stats[partyMemeber.StatsId], name);
             StatGrowth = partyMemeber.StatGrowth;
             Portrait = partyMemeber.Portrait;
             Name = ServiceManager.Get<LocalizationManager>().Localize(partyMemeber.Name);
@@ -102,7 +103,7 @@ namespace RPG_Character
             Specials.AddRange(GetSpecialsForLevelUp(enemy.Specials));
             StealItem = enemy.StealItem;
             Loot = CreateLoot(enemy);
-            Stats.FromStatsDefinition(enemy.Stats);
+            Stats = new Stats(enemy.Stats, name);
         }
 
         /*

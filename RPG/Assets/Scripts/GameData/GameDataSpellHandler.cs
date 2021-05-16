@@ -1,43 +1,46 @@
 ﻿using System.Collections.Generic;
 using RPG_Combat;
 
-public class GameDataSpellHandler : GameDataHandler
+namespace RPG_GameData
 {
-    public static (Dictionary<string, Spell> spells, Dictionary<string, Spell> specials) ProcessSpells(int index, int count, int numberOfColumns, string[] data)
+    public class GameDataSpellHandler : GameDataHandler
     {
-        LogManager.LogDebug("Creating GameData Spells.");
-        LogManager.LogDebug($"Processing Spells for data {data}");
-        var spells = new Dictionary<string, Spell>();
-        var specials = new Dictionary<string, Spell>();
-        // Account for difference in columns
-        var columnDifference = numberOfColumns - 11;
-        for (int i = 0; i < count; i++)
+        public static (Dictionary<string, Spell> spells, Dictionary<string, Spell> specials) ProcessSpells(int index, int count, int numberOfColumns, string[] data)
         {
-            var name = data[index++];
-            var spell = new Spell()
+            LogManager.LogDebug("Creating GameData Spells.");
+            LogManager.LogDebug($"Processing Spells for data {data}");
+            var spells = new Dictionary<string, Spell>();
+            var specials = new Dictionary<string, Spell>();
+            // Account for difference in columns
+            var columnDifference = numberOfColumns - 11;
+            for (int i = 0; i < count; i++)
             {
-                Id = name,
-                Name = data[index++],
-                Action = data[index++],
-                SpellElement = GetEnum(SpellElement.None, data[index++]),
-                MpCost = GetIntFromCell(data[index++]),
-                BaseDamage = GetVector2FromCell(data[index++]),
-                HitChance = GetFloatFromCell(data[index++]),
-                ItemTarget = new ItemTarget
+                var name = data[index++];
+                var spell = new Spell()
                 {
-                    Selector = GetTarget(name, data[index++]),
-                    SwitchSides = data[index++].Equals("1"),
-                    Type = GetEnum(CombatTargetType.One, data[index++])
-                },
-                Description = data[index++]
-            };
-            index += columnDifference;
-            if (spell.SpellElement == SpellElement.Special)
-                specials.Add(spell.Id, spell);
-            else
-                spells.Add(spell.Id, spell);
+                    Id = name,
+                    Name = data[index++],
+                    Action = data[index++],
+                    SpellElement = GetEnum(SpellElement.None, data[index++]),
+                    MpCost = GetIntFromCell(data[index++]),
+                    BaseDamage = GetVector2FromCell(data[index++]),
+                    HitChance = GetFloatFromCell(data[index++]),
+                    ItemTarget = new ItemTarget
+                    {
+                        Selector = GetTarget(name, data[index++]),
+                        SwitchSides = data[index++].Equals("1"),
+                        Type = GetEnum(CombatTargetType.One, data[index++])
+                    },
+                    Description = data[index++]
+                };
+                index += columnDifference;
+                if (spell.SpellElement == SpellElement.Special)
+                    specials.Add(spell.Id, spell);
+                else
+                    spells.Add(spell.Id, spell);
+            }
+            LogManager.LogDebug("Processing Gamedata Spells finished.");
+            return (spells, specials);
         }
-        LogManager.LogDebug("Processing Gamedata Spells finished.");
-        return (spells, specials);
     }
 }
