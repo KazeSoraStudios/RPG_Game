@@ -19,7 +19,7 @@ namespace RPG_Character
         private void Start()
         {
             var position = Vector2Int.RoundToInt((Vector2)transform.position);
-            GetComponent<Character>().Map.AddTrigger(position, this);
+            ServiceManager.Get<TriggerManager>().AddTrigger(position, this);
 
             quest = GetQuest();
             if (quest == null)
@@ -83,11 +83,11 @@ namespace RPG_Character
         private string GetMessage(bool justCompleted)
         {
             if (justCompleted)
-                return OnCompleteText;
-            if (quest.IsStarted)
-                return StartedText.IsEmptyOrWhiteSpace() ? BeforeStartedText : StartedText;
+                return OnCompleteText.IsEmptyOrWhiteSpace() ? CompletedText : OnCompleteText;
             if (quest.IsComplete)
                 return CompletedText.IsEmptyOrWhiteSpace() ? BeforeStartedText : CompletedText;
+            if (quest.IsStarted)
+                return StartedText.IsEmptyOrWhiteSpace() ? BeforeStartedText : StartedText;
             return BeforeStartedText;
         }
     }

@@ -52,16 +52,15 @@ namespace RPG_UI
 
         public void HideCursor()
         {
+            if (SelectionArrow == null)
+                return;
             SelectionArrow.gameObject.SetActive(false);
         }
 
         public void ShowCursor()
         {
             if (SelectionArrow == null)
-            {
-                LogManager.LogError("SelectionArrow is null in MenuOptionsList.");
                 return;
-            }
             SelectionArrow.gameObject.SetActive(true);
         }
 

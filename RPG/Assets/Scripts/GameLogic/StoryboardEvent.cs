@@ -321,40 +321,40 @@ public class StoryboardEventFunctions
     }
 
 
-    public static IStoryboardEvent FadeOutChararcter(string npcId, float duration = 1)
-    {
-        return new StoryboardFunctionEvent
-        {
-            Function = (storyboard) =>
-            {
-                var npcs = ServiceManager.Get<NPCManager>();
-                if (!npcs.HasNPC(npcId))
-                {
-                    LogManager.LogError($"NPC Manager does not contain npc [{npcId}]. Returning from FadeOutCharacterEvent.");
-                    return EmptyEvent;
-                }
-                var npc = npcs.GetNPC(npcId);
-                if (npc.IsHero())
-                    npc = ((ExploreState)storyboard.States[Constants.EXPLORE_STATE]).Hero;
-                return new TweenEvent<Character>
-                {
-                    Function = (target, value) =>
-                    {
-                        if (target.GetComponent<SpriteRenderer>() is var renderer && renderer != null)
-                        {
-                            var color = renderer.color;
-                            color.a = value;
-                            renderer.color = color;
-                        }
-                    },
-                    Target = npc,
-                    Start = 1,
-                    Distance = 1,
-                    Duration = 1,
-                };
-            }
-        };
-    }
+    //public static IStoryboardEvent FadeOutChararcter(string npcId, float duration = 1)
+    //{
+    //    return new StoryboardFunctionEvent
+    //    {
+    //        Function = (storyboard) =>
+    //        {
+    //            var npcs = ServiceManager.Get<NPCManager>();
+    //            if (!npcs.HasNPC(npcId))
+    //            {
+    //                LogManager.LogError($"NPC Manager does not contain npc [{npcId}]. Returning from FadeOutCharacterEvent.");
+    //                return EmptyEvent;
+    //            }
+    //            var npc = npcs.GetNPC(npcId);
+    //            if (npc.IsHero())
+    //                npc = ((ExploreState)storyboard.States[Constants.EXPLORE_STATE]).Hero;
+    //            return new TweenEvent<Character>
+    //            {
+    //                Function = (target, value) =>
+    //                {
+    //                    if (target.GetComponent<SpriteRenderer>() is var renderer && renderer != null)
+    //                    {
+    //                        var color = renderer.color;
+    //                        color.a = value;
+    //                        renderer.color = color;
+    //                    }
+    //                },
+    //                Target = npc,
+    //                Start = 1,
+    //                Distance = 1,
+    //                Duration = 1,
+    //            };
+    //        }
+    //    };
+    //}
 
     //public static IStoryboardEvent WriteTile(int mapId, Map.ChangeTile changeTile)
     //{
@@ -454,12 +454,12 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent FadeScreenIn(string state = "", float duration = 3.0f)
+    public static IStoryboardEvent FadeScreenIn(string state = "blackscreen", float duration = 3.0f)
     {
         return FadeScreen(0, 1, duration, state);
     }
 
-    public static IStoryboardEvent FadeScreenOut(string state = "", float duration = 3.0f)
+    public static IStoryboardEvent FadeScreenOut(string state = "blackscreen", float duration = 3.0f)
     {
         return FadeScreen(1, 0, duration, state);
     }
@@ -561,43 +561,21 @@ public class StoryboardEventFunctions
         return exploreState.Map;
     }
 
-    //function SOP.ReplaceScene(name, params)
-    //    return function(storyboard)
-    //        gGame.World.mParty:DebugPrintParty()
-    //        local state = storyboard.mStates [name]
-    //print("Replace scene tried to get", name, "got", state.mId)
-
-    //        -- Give the state an updated name
-    //        local id = params.name or params.map
-    //        storyboard.mStates [name] = nil
-    //        storyboard.mStates [id] = state
-
-    //        local mapDef = MapDB [params.map](gGame.World.mGameState)
-    //        state.mMap =  Map:Create(mapDef)
-    //        state.mMapDef = mapDef
-
-    //        print("after map created")
-    //        gGame.World.mParty:DebugPrintParty()
-
-    //        state.mMap:GotoTile(params.focusX, params.focusY)
-    //        state.mHero = Character:Create(gCharacters.hero, state.mMap)
-    //        state.mHero.mEntity:SetTilePos(
-    //            params.focusX,
-    //            params.focusY,
-    //            params.focusZ or 1,
-    //            state.mMap)
-    //        state:SetFollowCam(true, state.mHero)
-
-    //        if params.hideHero then
-    //            state:HideHero()
-    //        else
-    //            state:ShowHero()
-    //        end
-
-    //        gGame.World.mParty:DebugPrintParty()
-    //        return SOP.NoBlock(SOP.Wait(0.1))()
-    //    end
-    //end
+    public static IStoryboardEvent ReplaceExploreStateMap(string explore, Map map)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (storyboard) =>
+            {
+                var exploreState = storyboard.States[explore] as ExploreState;
+                LogManager.LogDebug($"Replacing ExploreState map with Map: {map.MapName}");
+                //storyboard.States.Remove(explore);
+                //storyboard.States[map.MapName] = exploreState;
+                exploreState.Map = map;
+                return NoBlock(Wait(0.1f));
+            }
+        };
+    }
 
     public static IStoryboardEvent ReplaceState(IGameState current, IGameState newState)
     {
@@ -635,42 +613,42 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent Say(string mapId, string npcId, string text, Textbox.Config config, float time = 1.0f)
-    {
-        return new StoryboardFunctionEvent
-        {
-            Function = (storyboard) =>
-            {
-                var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
-                if (npcId.Equals("hero"))
-                {
-                    if (!storyboard.States.ContainsKey(mapId))
-                    {
-                        LogManager.LogError($"Storyboard States [{storyboard.States}] does not contain map id: {mapId}");
-                        return EmptyEvent;
-                    }
-                    npc = ((ExploreState)storyboard.States[mapId]).Hero;
-                }
-                return new TimedTextBoxEvent(config, time);
-            }
-            /*
-                         local map = GetMapRef(storyboard, mapId)
-            local npc = map.mNPCbyId[npcId]
-if npcId == "hero" then
-   npc = storyboard.mStates[mapId].mHero
-            end
-            local pos = npc.mEntity.mSprite:GetPosition()
-            storyboard.mStack:PushFit(
-                gRenderer,
-                -map.mCamX + pos:X(), -map.mCamY + pos:Y() + 32,
-                text, -1, params)
-            local box = storyboard.mStack:Top()
-            return TimedTextboxEvent:Create(box, time)
-        end
-    end
-             */
-        };
-    }
+//    public static IStoryboardEvent Say(string mapId, string npcId, string text, Textbox.Config config, float time = 1.0f)
+//    {
+//        return new StoryboardFunctionEvent
+//        {
+//            Function = (storyboard) =>
+//            {
+//                var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
+//                if (npcId.Equals("hero"))
+//                {
+//                    if (!storyboard.States.ContainsKey(mapId))
+//                    {
+//                        LogManager.LogError($"Storyboard States [{storyboard.States}] does not contain map id: {mapId}");
+//                        return EmptyEvent;
+//                    }
+//                    npc = ((ExploreState)storyboard.States[mapId]).Hero;
+//                }
+//                return new TimedTextBoxEvent(config, time);
+//            }
+//            /*
+//                         local map = GetMapRef(storyboard, mapId)
+//            local npc = map.mNPCbyId[npcId]
+//if npcId == "hero" then
+//   npc = storyboard.mStates[mapId].mHero
+//            end
+//            local pos = npc.mEntity.mSprite:GetPosition()
+//            storyboard.mStack:PushFit(
+//                gRenderer,
+//                -map.mCamX + pos:X(), -map.mCamY + pos:Y() + 32,
+//                text, -1, params)
+//            local box = storyboard.mStack:Top()
+//            return TimedTextboxEvent:Create(box, time)
+//        end
+//    end
+//             */
+//        };
+//    }
 
 
 
@@ -687,24 +665,24 @@ if npcId == "hero" then
         };
     }
 
-    public static IStoryboardEvent MoveNPC(string npcId, List<Direction> path)
-    {
-        return new StoryboardFunctionEvent
-        {
-            Function = (storyboard) =>
-            {
-                var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
-                npc.FollowPath(path);
-                return new BlockUntilEvent
-                {
-                    UntilFunction = () =>
-                    {
-                        return npc.PathIndex > npc.PathToMove.Count;
-                    }
-                };
-            }
-        };
-    }
+    //public static IStoryboardEvent MoveNPC(string npcId, List<Direction> path)
+    //{
+    //    return new StoryboardFunctionEvent
+    //    {
+    //        Function = (storyboard) =>
+    //        {
+    //            var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
+    //            npc.FollowPath(path);
+    //            return new BlockUntilEvent
+    //            {
+    //                UntilFunction = () =>
+    //                {
+    //                    return npc.PathIndex > npc.PathToMove.Count;
+    //                }
+    //            };
+    //        }
+    //    };
+    //}
 
     public static IStoryboardEvent HandOffToExploreState()
     {

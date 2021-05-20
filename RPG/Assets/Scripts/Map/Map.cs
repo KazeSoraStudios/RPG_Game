@@ -7,43 +7,17 @@ using RPG_Character;
 public class Map : MonoBehaviour
 {
     [SerializeField] public string MapName;
-    [SerializeField] Dictionary<Vector2Int, Trigger> Triggers = new Dictionary<Vector2Int, Trigger>();
     [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
-    [SerializeField] Tilemap collision;
+    [SerializeField] Transform NPCParent;
 
-    private EmptyTrigger emptyTrigger = new EmptyTrigger();
-
-    public struct ChangeTile
+    private void Start()
     {
-        public bool collision;
-        public int x, y, layer;
-        public Tile sprite, detail;
+        ServiceManager.Get<GameLogic>().OnMapLoaded(this);
     }
 
-    public bool IsCollision(Vector2 position)
+    public void AddNPC(Character npc)
     {
-        var tilePosition = new Vector3Int((int)position.x, (int)position.y, 0);
-        return collision.HasTile(tilePosition);
-    }
-
-    public Trigger GetTrigger(int x, int y)
-    {
-        var position = new Vector2Int(x, y);
-        var trigger = emptyTrigger;
-        if (!Triggers.ContainsKey(position))
-            return trigger;
-        return Triggers[position];
-    }
-
-    public void AddTrigger(int x, int y, Trigger trigger)
-    {
-        var position = new Vector2Int(x, y);
-        Triggers.Add(position, trigger);
-    }
-
-    public void AddTrigger(Vector2Int position, Trigger trigger)
-    {
-        Triggers.Add(position, trigger);
+        npc.transform.SetParent(NPCParent, false);
     }
 
     public void AddEntity(Entity entity)

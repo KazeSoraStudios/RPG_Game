@@ -5,7 +5,7 @@ namespace RPG_Character
 {
     public class NPCManager : MonoBehaviour
     {
-        private Dictionary<string, Character> npcs = new Dictionary<string, Character>();
+        private Dictionary<string, List<Character>> npcsByMap = new Dictionary<string, List<Character>>();
 
         private void Awake()
         {
@@ -19,107 +19,127 @@ namespace RPG_Character
 
         public void UpdateAllNPCs(float deltaTime)
         {
-            foreach (var npc in npcs)
-                npc.Value.Controller.Update(deltaTime);
+            foreach (var map in npcsByMap)
+                foreach (var npc in map.Value)
+                    npc.Controller.Update(deltaTime);
         }
 
-        public bool HasNPC(Character character)
+        public void UpdateAllNPCsforMap(string map, float deltaTime)
         {
-            return npcs.ContainsKey(character.name);
+            if (!npcsByMap.ContainsKey(map))
+                return;
+            foreach (var npc in npcsByMap[map])
+                    npc.Controller.Update(deltaTime);
         }
 
-        public bool HasNPC(string name)
+        public bool HasNPC(string map, Character character)
         {
-            return npcs.ContainsKey(name);
+            return HasNPC(map, character.name);
         }
 
-        public void AddNPC(Character character)
+        public bool HasNPC(string map, string name)
         {
-            if (npcs.ContainsKey(character.name))
+            if (!npcsByMap.ContainsKey(map))
+                return false;
+            foreach (var npc in npcsByMap[map])
+                if (npc.name.Equals(name))
+                    return true;
+            return false;
+        }
+
+        public void AddNPC(string map, Character character)
+        {
+            if (!npcsByMap.ContainsKey(map))
+                npcsByMap.Add(map, new List<Character>());
+            if (HasNPC(map, character.name))
             {
-                LogManager.LogError($"Character {character.name} is already present in NPCs. Cannot add.");
+                LogManager.LogError($"Character {character.name} is already present in NPCsByMap for Map: {map}. Cannot add.");
                 return;
             }
-            npcs.Add(character.name, character);
+            npcsByMap[map].Add(character);
         }
 
-        public Character RemoveNPC(Character character)
+        public Character RemoveNPC(string map, Character character)
         {
-            if (!npcs.ContainsKey(character.name))
-            {
-                LogManager.LogError($"Character {character.name} is not present in NPCs. Cannot remove.");
-                return null;
-            }
-            var c = npcs[character.name];
-            npcs.Remove(character.name);
-            return c;
+            return RemoveNPC(map, character.name);
         }
 
-        public Character RemoveNPC(string name)
+        public Character RemoveNPC(string map, string name)
         {
-            if (!npcs.ContainsKey(name))
+            if (!HasNPC(map, name))
             {
-                LogManager.LogError($"Character {name} is not present in NPCs. Cannot remove.");
+                LogManager.LogError($"Map {map} is not present in NPCsByMap. Cannot remove NPC: {name}.");
                 return null;
             }
-            var character = npcs[name];
-            npcs.Remove(name);
+            var index = FindNpcIndex(map, name);
+            var character = npcsByMap[map][index];
+            npcsByMap[map].RemoveAt(index);
             return character;
         }
 
 
-        public Character GetNPC(Character character)
+        public Character GetNPC(string map, Character character)
         {
-            if (!npcs.ContainsKey(character.name))
-            {
-                LogManager.LogError($"Character {character.name} is not present in NPCs. Cannot get NPC.");
-                return null;
-            }
-            return npcs[character.name];
+            return GetNPC(map, character.name);
         }
 
 
-        public Character GetNPC(string name)
+        public Character GetNPC(string map, string name)
         {
-            if (!npcs.ContainsKey(name))
+            if (!HasNPC(map, name))
             {
-                LogManager.LogError($"Character {name} is not present in NPCs. Cannot get NPC.");
+                LogManager.LogError($"Character {name} is not present in NPCsForMap for Map: {map}. Cannot get NPC.");
                 return null;
             }
-            return npcs[name];
+            return npcsByMap[map][FindNpcIndex(map, name)];
         }
 
-        public Character[] GetNPCs()
+        public void ClearNpcsForMap(string map)
         {
-            var npcs = new Character[this.npcs.Count];
-            int index = 0;
-            foreach (var member in this.npcs)
-                npcs[index++] = member.Value;
-            return npcs;
+            if (!npcsByMap.ContainsKey(map))
+            {
+                LogManager.LogError($"Map: {map} is not present in NPCsForMap.");
+                return;
+            }
+            npcsByMap[map].Clear();
+            npcsByMap.Remove(map);
         }
 
         public void PrepareForTextboxState()
         {
-            foreach (var character in npcs)
-                character.Value.GetComponent<Character>().PrepareForTextState();
+            foreach (var map in npcsByMap)
+                foreach (var character in map.Value)
+                    character.GetComponent<Character>().PrepareForTextState();
         }
 
         public void ReturnFromTextboxState()
         {
-            foreach (var character in npcs)
-                character.Value.GetComponent<Character>().ReturnFromTextState();
+            foreach (var map in npcsByMap)
+                foreach (var character in map.Value)
+                    character.GetComponent<Character>().ReturnFromTextState();
         }
 
         public void PrepareForCombat()
         {
-            foreach (var character in npcs)
-                character.Value.GetComponent<Character>().PrepareForCombat();
+            foreach (var map in npcsByMap)
+                foreach (var character in map.Value)
+                    character.GetComponent<Character>().PrepareForCombat();
         }
 
         public void ReturnFromCombat()
         {
-            foreach (var character in npcs)
-                character.Value.GetComponent<Character>().ReturnFromCombat();
+            foreach (var map in npcsByMap)
+                foreach (var character in map.Value)
+                    character.GetComponent<Character>().ReturnFromCombat();
+        }
+
+        private int FindNpcIndex(string map, string name)
+        {
+            var npcs = npcsByMap[map];
+            for (int i = 0; i < npcs.Count; i++)
+                if (npcs[i].name.Equals(name))
+                    return i;
+            return -1;
         }
     }
 }

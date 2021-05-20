@@ -204,7 +204,7 @@ namespace RPG_Character
 
             ServiceManager.Get<World>().RemoveItem(item.Id);
             Equipment[(int)slot] = item; // TODO change to use ids and get from db
-            Stats.AddModifier(slot, item.Modifier);
+            Stats.AddModifier(slot, item.Stats.Modifier);
         }
 
         public void Unequip(EquipSlot slot)
@@ -236,8 +236,9 @@ namespace RPG_Character
         public List<int> PredictStats(EquipSlot slot, ItemInfo item)
         {
             var stats = new List<int>();
+            var modifier = item == null ? null : item.Stats.Modifier;
             foreach (var stat in (Stat[])Enum.GetValues(typeof(Stat)))
-                stats.Add(Stats.GetStatDiffForNewItem(stat, slot, item.Modifier));
+                stats.Add(Stats.GetStatDiffForNewItem(stat, slot, modifier));
             return stats;
         }
 

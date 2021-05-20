@@ -20,6 +20,7 @@ namespace RPG_UI
 
         private int menu = 0;
         private int currentSelection;
+        private int memberCount = 1;
         private Config config;
 
         public void Init(Config config)
@@ -85,7 +86,7 @@ namespace RPG_UI
         public void IncreaseSelection()
         {
             currentSelection++;
-            if (currentSelection >= ActorSummaries.Length)
+            if (currentSelection >= memberCount)
                 currentSelection = 0;
             var y = ActorSummaries[currentSelection].transform.position.y;
             var position = new Vector2(SelectionArrow.transform.position.x, y);
@@ -96,7 +97,7 @@ namespace RPG_UI
         {
             currentSelection--;
             if (currentSelection < 0)
-                currentSelection = ActorSummaries.Length - 1;
+                currentSelection = memberCount - 1;
             var y = ActorSummaries[currentSelection].transform.position.y;
             var position = new Vector2(SelectionArrow.transform.position.x, y);
             SelectionArrow.transform.position = position;
@@ -105,11 +106,10 @@ namespace RPG_UI
         private void InitPanels()
         {
             var partyMembers = config.Party.Members;
-            var numberOfMembers = partyMembers.Count;
+            memberCount = partyMembers.Count;
             var numberOfPanels = ActorSummaries.Length;
-
             int i = 0;
-            for (; i < numberOfMembers && i < numberOfPanels; i++)
+            for (; i < memberCount && i < numberOfPanels; i++)
             {
                 var config = new ActorSummaryPanel.Config
                 {

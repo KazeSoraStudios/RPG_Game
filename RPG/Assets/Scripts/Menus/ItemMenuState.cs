@@ -121,7 +121,8 @@ namespace RPG_UI
                 {
                     ShowIcon = true,
                     Name = use.ItemInfo.GetName(),
-                    Amount = use.Count.ToString()
+                    Amount = use.Count.ToString(),
+                    Description = use.ItemInfo.Description
                 });
 
             foreach (var key in config.KeyItems)
@@ -129,7 +130,8 @@ namespace RPG_UI
                 {
                     ShowIcon = true,
                     Name = key.ItemInfo.GetName(),
-                    Amount = key.Count.ToString()
+                    Amount = key.Count.ToString(),
+                    Description = key.ItemInfo.Description
                 });
             activeConfigs = useConfigs;
             ScrollView.Init(this, SetDescription);
@@ -185,8 +187,12 @@ namespace RPG_UI
 
         private void SetSelectionPosition()
         {
-            var categoryPosition = Categories[categoryIndex].position;
-            var position = new Vector2(categoryPosition.x - 50.0f, categoryPosition.y);
+            var transform = (RectTransform)Categories[categoryIndex].transform;
+            var categoryPosition = transform.position;
+            var categoryWidthOffset = transform.rect.width * 0.5f;
+            var arrowWidthOffset = SelectionArrow.GetComponent<RectTransform>().rect.width * 0.5f;
+            var xPosition = categoryPosition.x - categoryWidthOffset - arrowWidthOffset - 10.0f;
+            var position = new Vector2(xPosition, categoryPosition.y);
             SelectionArrow.transform.position = position;
             activeConfigs = categoryIndex == 0 ? useConfigs : keyConfigs;
         }

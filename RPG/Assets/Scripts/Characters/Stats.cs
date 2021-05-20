@@ -104,8 +104,10 @@ namespace RPG_Character
 
         public int GetStatDiffForNewItem(Stat stat, EquipSlot slot, StatModifier newModifier)
         {
+            if (newModifier == null)
+                newModifier = EmptyModifier;
             if (!stats.ContainsKey(stat))
-                return 0;
+                return (int)(newModifier.GetAddValue(stat) + newModifier.GetMultiplyValue(stat));
             var currentValue = stats[stat];
             float multiplier = 0;
             for (int i = 0; i < modifiers.Length; i++)
@@ -118,7 +120,7 @@ namespace RPG_Character
             // TODO check this works
             currentValue = (int)(currentValue + (currentValue * multiplier));
             var newValue = (int)(currentValue + newModifier.GetAddValue(stat) + (currentValue * (multiplier + newModifier.GetMultiplyValue(stat))));
-            return newValue - currentValue;
+            return currentValue + (newValue - currentValue);
         }
 
         public StatsData ToStatsData()
@@ -147,6 +149,10 @@ namespace RPG_Character
             // MaxHP/MP are not included in the definition
             stats.Add(Stat.MaxHP, stats[Stat.HP]);
             stats.Add(Stat.MaxMP, stats[Stat.MP]);
+
+            foreach (var stat in (Stat[])Enum.GetValues(typeof(Stat)))
+                if (!stats.ContainsKey(stat))
+                    stats[stat] = 0;
         }
     }
 

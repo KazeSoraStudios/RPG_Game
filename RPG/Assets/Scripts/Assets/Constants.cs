@@ -48,6 +48,8 @@ public class Constants
     public const float STEAL_MIN_CHANCE = 0.05f;
     public const float STEAL_MAX_CHANCE = 0.95f;
     public const string STAT_FILL_TEXT = "{0}/{1}";
+    public const string STAT_DIFF_INCREASE_TEXT = "{0}  <color=\"green\">{1}";
+    public const string STAT_DIFF_DECREASE_TEXT = "{0}  <color=\"red\">{1}";
     public const string EMPTY_ITEM_TEXT = "--";
     public const string GOLD_FORMAT_TEXT = "{0}G";
 

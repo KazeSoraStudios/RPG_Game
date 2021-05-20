@@ -24,6 +24,8 @@ public class GiveItemTrigger : MonoBehaviour, Trigger
             ItemInfo = items[ItemId],
             Count = Amount
         };
+        var position = Vector2Int.RoundToInt((Vector2)transform.position);
+        ServiceManager.Get<TriggerManager>().AddTrigger(position, this);
     }
 
     public void OnEnter(TriggerParams triggerParams) { }

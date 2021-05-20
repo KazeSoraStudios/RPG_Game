@@ -204,7 +204,7 @@ namespace RPG_Character
                 LogManager.LogError($"CharacterStates for Character [{name}] does not contain DefaultState [{defaultState}]");
                 return;
             }
-            Controller = new StateMachine(states, states[defaultState]);
+            Controller = new StateMachine(states, name, states[defaultState]);
         }
 
         private IState BuildState(string state)

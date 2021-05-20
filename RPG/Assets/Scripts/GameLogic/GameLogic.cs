@@ -6,6 +6,8 @@ using RPG_Combat;
 using RPG_Character;
 using RPG_GameData;
 using RPG_GameState;
+using System.Collections.Generic;
+using System.Collections;
 
 public class GameLogic : MonoBehaviour
 {
@@ -13,10 +15,11 @@ public class GameLogic : MonoBehaviour
     [SerializeField] public GameState GameState;
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
-    [SerializeField] public Image ScreenImage;
+    [SerializeField] public Image ScreenImage; //TODO move to UIController
 
     public StateStack Stack;
 
+    private TriggerManager triggerManager;
     private LocalizationManager localizationManager;
 
     private void Awake()
@@ -25,6 +28,9 @@ public class GameLogic : MonoBehaviour
         LogManager.SetLogLevel(LogLevel);
         DontDestroyOnLoad(this);
         DontDestroyOnLoad(Camera.main);
+        DontDestroyOnLoad(GameObject.Find("UICanvas"));
+
+        triggerManager = new TriggerManager();
     }
 
     private void OnDestroy()
@@ -46,7 +52,25 @@ public class GameLogic : MonoBehaviour
     public void StartNewGame()
     {
         SceneManager.LoadScene("Village", LoadSceneMode.Single);
-        LoadMap();
+        StartCoroutine(LoadVillage());
+        //LoadMap();
+    }
+
+    IEnumerator LoadVillage()
+    {
+        yield return new WaitForSeconds(0.1f);
+        var map = GameObject.Find("VillageMap").GetComponent<Map>();
+        var exploreState = new ExploreState();
+        exploreState.Init(map, Stack, Vector2.zero);
+        Stack.Push(exploreState);
+        yield return null;
+    }
+
+    public void OnMapLoaded(Map map)
+    {
+        //var exploreState = new ExploreState();
+        //exploreState.Init(map, Stack, Vector2.zero);
+        //Stack.Push(exploreState);
     }
 
     public void LoadGame()
@@ -82,7 +106,38 @@ public class GameLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            LoadMap();
+            var events = new List<IStoryboardEvent>();
+            events.Add(StoryboardEventFunctions.BlackScreen());
+            events.Add(StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f));
+            events.Add(new StoryboardFunctionEvent
+                    {
+                        Function = (_) =>
+                        {
+                            var loaded = false;
+                            SceneManager.sceneLoaded += (x,y) => loaded = true;
+                            SceneManager.LoadScene("Forest", LoadSceneMode.Additive);
+                            return new BlockUntilEvent
+                            {
+                                UntilFunction = () =>
+                                {
+                                    return loaded == true;
+                                }
+                            };
+                        }
+                    });
+            events.Add(StoryboardEventFunctions.Wait(1.0f));
+            events.Add(StoryboardEventFunctions.Function(() =>
+            {
+                var forest = SceneManager.GetSceneByName("Forest");
+                SceneManager.SetActiveScene(forest);
+                SceneManager.UnloadSceneAsync("Village");
+            }));
+            //StoryboardEventFunctions.Wait(2.0f),
+            events.Add(StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f));
+            events.Add(StoryboardEventFunctions.Function(() =>StoryboardEventFunctions.ReplaceExploreStateMap(Constants.HANDIN_STATE, GameObject.Find("ForestMap").GetComponent<Map>())));
+            events.Add(StoryboardEventFunctions.HandOffToExploreState());
+            var storyboard = new Storyboard(Stack, events, true);
+            Stack.Push(storyboard);
         }
 
         if (Input.GetKeyDown(KeyCode.C))
@@ -141,7 +196,8 @@ public class GameLogic : MonoBehaviour
         {
             var map = Instantiate(obj);
             map.transform.SetParent(this.transform, false);
-            var exploreState = map.gameObject.AddComponent<ExploreState>();
+            //var exploreState = map.gameObject.AddComponent<ExploreState>();
+            var exploreState = new ExploreState();
             exploreState.Init(map, Stack, Vector2.zero);
             Stack.Push(exploreState);
         }

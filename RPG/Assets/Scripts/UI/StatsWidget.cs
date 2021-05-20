@@ -22,16 +22,6 @@ namespace RPG_UI
         [SerializeField] TextMeshProUGUI HPText;
         [SerializeField] TextMeshProUGUI MPText;
 
-        [SerializeField] TextMeshProUGUI StrengthPredictionText;
-        [SerializeField] TextMeshProUGUI SpeedPredictionText;
-        [SerializeField] TextMeshProUGUI IntelligencePredictionText;
-        [SerializeField] TextMeshProUGUI AttackPredictionText;
-        [SerializeField] TextMeshProUGUI DefensePredictionText;
-        [SerializeField] TextMeshProUGUI MagicPredictionText;
-        [SerializeField] TextMeshProUGUI ResistPredictionText;
-        [SerializeField] TextMeshProUGUI HPPredictionText;
-        [SerializeField] TextMeshProUGUI MPPredictionText;
-
         private Config config;
         public void Init(Config config)
         {
@@ -62,7 +52,6 @@ namespace RPG_UI
                 HPText.SetText(stats.Get(Stat.MaxHP).ToString());
             if (MPText != null)
                 MPText.SetText(stats.Get(Stat.MaxMP).ToString());
-            TurnOffPredicitionStats();
         }
 
         public void ShowPredictionStats(List<int> predictions)
@@ -75,54 +64,17 @@ namespace RPG_UI
                     continue;
                 int current = stats.Get(stat);
                 int prediction = predictions[(int)stat];
-                SetPrediction(stat, prediction);
+                SetPrediction(stat, current, prediction);
             }
         }
 
-        public void TurnOffPredicitionStats()
-        {
-            if (StrengthPredictionText != null)
-                StrengthPredictionText.gameObject.SafeSetActive(false);
-            if (SpeedPredictionText != null)
-                SpeedPredictionText.gameObject.SafeSetActive(false);
-            if (IntelligencePredictionText != null)
-                IntelligencePredictionText.gameObject.SafeSetActive(false);
-            if (AttackPredictionText != null)
-                AttackPredictionText.gameObject.SafeSetActive(false);
-            if (DefensePredictionText != null)
-                DefensePredictionText.gameObject.SafeSetActive(false);
-            if (MagicPredictionText != null)
-                MagicPredictionText.gameObject.SafeSetActive(false);
-            if (ResistPredictionText != null)
-                ResistPredictionText.gameObject.SafeSetActive(false);
-            if (HPPredictionText != null)
-                HPPredictionText.gameObject.SafeSetActive(false);
-            if (MPPredictionText != null)
-                MPPredictionText.gameObject.SafeSetActive(false);
-        }
-
-        private void SetPrediction(Stat stat, int difference)
+        private void SetPrediction(Stat stat, int current, int prediction)
         {
             var index = (int)stat;
             var text = GetPredictionText(stat);
-            string displayText = string.Empty;
-            Color color = Color.white;
-            bool display = false;
-            if (difference < 0)
-            {
-                display = true;
-                color = Color.red;
-                displayText = $"{difference * -1}";
-            }
-            else if (difference > 0)
-            {
-                display = true;
-                color = Color.green;
-                displayText = $"{difference}";
-            }
-            text.gameObject.SafeSetActive(display);
+            var format = current > prediction ? Constants.STAT_DIFF_DECREASE_TEXT : Constants.STAT_DIFF_INCREASE_TEXT;
+            string displayText = current == prediction ? current.ToString() : string.Format(format, current, prediction);
             text.SetText(displayText);
-            text.color = color;
         }
 
         private TextMeshProUGUI GetPredictionText(Stat stat)
@@ -130,23 +82,23 @@ namespace RPG_UI
             switch (stat)
             {
                 case Stat.Strength:
-                    return StrengthPredictionText;
+                    return StrengthText;
                 case Stat.Speed:
-                    return SpeedPredictionText;
+                    return SpeedText;
                 case Stat.Intelligence:
-                    return IntelligencePredictionText;
+                    return IntelligenceText;
                 case Stat.Attack:
-                    return AttackPredictionText;
+                    return AttackText;
                 case Stat.Defense:
-                    return DefensePredictionText;
+                    return DefenseText;
                 case Stat.Magic:
-                    return MagicPredictionText;
+                    return MagicText;
                 case Stat.Resist:
-                    return ResistPredictionText;
+                    return ResistText;
                 case Stat.MaxHP:
-                    return HPPredictionText;
+                    return HPText;
                 case Stat.MaxMP:
-                    return MPPredictionText;
+                    return MPText;
                 default:
                     LogManager.LogError($"Not stat prediction text for stat: {stat}");
                     return null;

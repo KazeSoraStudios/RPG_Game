@@ -49,7 +49,7 @@ namespace RPG_UI
             states.Add(Constants.MAGIC_MENU_STATE, GetMagicMenu());
             states.Add(Constants.EQUIP_MENU_STATE, GetEquipMenu());
             states.Add(Constants.OPTION_MENU_STATE, optionMenu);
-            StateMachine = new StateMachine(states);
+            StateMachine = new StateMachine(states, name);
             var world = ServiceManager.Get<World>();
             FrontConfig = new FrontMenuState.Config
             {
@@ -87,8 +87,8 @@ namespace RPG_UI
         {
             StateMachine.Stop();
             gameObject.SafeSetActive(false);
-            short layers = 0x3;
-            uiController.ClearChildren(layers);
+            //short layers = 0x3;
+            //uiController.ClearChildren(layers);
         }
 
         public void HandleInput() { }

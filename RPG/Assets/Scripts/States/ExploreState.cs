@@ -4,13 +4,14 @@ using RPG_Character;
 using RPG_GameData;
 using Cinemachine;
 
-public class ExploreState : MonoBehaviour, IGameState
+public class ExploreState : IGameState
 {
     public bool followCamera = true;
     public Character followCharacter;
     public Character Hero;
     public StateStack stack;
     public Map Map;
+
 
     public void Init(Map map, StateStack stack, Vector2 startPosition)
     {
@@ -21,14 +22,15 @@ public class ExploreState : MonoBehaviour, IGameState
         var obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.TEST_NPC_PREFAB);
         if (obj != null)
         {
-            var npc = Instantiate(obj);
+            var npc = GameObject.Instantiate(obj);
             npc.transform.position = new Vector2(-4.0f, 0.0f);
             npc.transform.rotation = Quaternion.identity;
-            npc.gameObject.transform.SetParent(transform, true);
+            Map.AddNPC(npc);
+            //npc.gameObject.transform.SetParent(transform, true);
             npc.Init(map, Constants.ENEMY_STATES, Constants.WAIT_STATE);
             var actor = npc.GetComponent<Actor>();
             actor.Init(ServiceManager.Get<GameData>().Enemies["goblin"]);
-            ServiceManager.Get<NPCManager>().AddNPC(npc);
+            ServiceManager.Get<NPCManager>().AddNPC(Map.MapName, npc);
         }
     }
 
@@ -49,12 +51,15 @@ public class ExploreState : MonoBehaviour, IGameState
 
     public void Enter(object o) { }
 
-    public void Exit() { }
+    public void Exit() 
+    {
+        ServiceManager.Get<NPCManager>().ClearNpcsForMap(Map.MapName);
+    }
 
     public bool Execute(float deltaTime)
     {
         UpdateCamera(Map);
-        ServiceManager.Get<NPCManager>().UpdateAllNPCs(deltaTime);
+        ServiceManager.Get<NPCManager>().UpdateAllNPCsforMap(Map.MapName, deltaTime);
         return true;
     }
 
@@ -75,12 +80,12 @@ public class ExploreState : MonoBehaviour, IGameState
             //if (Map.GetTrigger(x, y) is var trigger && trigger != null)
             //    trigger.OnUse(new TriggerParams(x,y,Hero));
             var targetPosition = new Vector2(x,y);
-            var position = (Vector2)transform.position + targetPosition;
-            //var collision = Physics2D.OverlapCircle(position, 0.2f, Hero.collisionLayer);
-            var trigger = Map.GetTrigger((int)facingTile.x, (int)facingTile.y);
+            //var position = (Vector2)Hero.transform.position + targetPosition;
+            var collision = Physics2D.OverlapCircle(targetPosition, 0.2f, Hero.collisionLayer);
+            //var trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)facingTile.x, (int)facingTile.y);
             //var trigger = collision.GetComponent<Trigger>();// != null
-            //if (collision?.GetComponent<Trigger>() is var trigger && trigger != null)
-            if (trigger != null)
+            if (collision?.GetComponent<Trigger>() is var trigger && trigger != null)
+            //if (trigger != null)
             {
                 trigger.OnUse(new TriggerParams(x,y,Hero.GetComponent<Character>()));
             }
@@ -115,7 +120,7 @@ public class ExploreState : MonoBehaviour, IGameState
             LogManager.LogError("Unable to load hero in ExplroeState.");
             return;
         }
-        Hero = Instantiate(obj);
+        Hero = GameObject.Instantiate(obj);
         followCharacter = Hero;
         var world = ServiceManager.Get<World>();
         var characterParent = world.PersistentCharacters;

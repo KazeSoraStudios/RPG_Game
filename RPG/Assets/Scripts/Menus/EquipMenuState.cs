@@ -22,7 +22,6 @@ namespace RPG_UI
         [SerializeField] ScrollView ScrollView;
         [SerializeField] RectTransform[] Slots;
         [SerializeField] GridLayoutGroup Grid;
-        [SerializeField] StatsWidget Stats;
 
         private bool inScrollview;
         private Actor actor;
@@ -42,12 +41,9 @@ namespace RPG_UI
             stack = parent.Stack;
             stateMachine = parent.StateMachine;
             ScrollView.HideCursor();
-            if (actor == null || actor.Id != config.Actor.Id)
-            {
-                actor = config.Actor;
-                configs.Clear();
-                BuildConfigs(actor);
-            }
+            actor = config.Actor;
+            configs.Clear();
+            BuildConfigs(actor);
             InitItemInfo(actor);
             InitActorSummary(actor);
             InitStatsWidget(actor.Stats);
@@ -146,12 +142,12 @@ namespace RPG_UI
 
         private void InitStatsWidget(Stats stats)
         {
-            if (Stats == null)
+            if (StatsWidget == null)
             {
                 LogManager.LogError("StatsWidget is null in EquipMenuState.");
                 return;
             }
-            Stats.Init(new StatsWidget.Config { Stats = stats });
+            StatsWidget.Init(new StatsWidget.Config { Stats = stats });
         }
 
         private void SetDesciptionText(int index)
@@ -188,8 +184,7 @@ namespace RPG_UI
         {
             inScrollview = false;
             ScrollView.HideCursor();
-            Stats.DisplayStats();
-            Stats.TurnOffPredicitionStats();
+            StatsWidget.DisplayStats();
         }
 
         private void OnSelectedMenuChange()
@@ -216,7 +211,7 @@ namespace RPG_UI
             }
             else
             {
-                var item = ServiceManager.Get<GameData>().Items[config.Id] as ItemInfo;
+                var item = ServiceManager.Get<GameData>().Items[config.Id];
                 actor.Equip(slot, item);
             }
             SetItemName(slot, actor.GetEquipmentName(slot));
@@ -232,7 +227,7 @@ namespace RPG_UI
             {
                 if (!actor.CanUse(item.ItemInfo))
                     continue;
-                var config = new ItemListCell.Config { Name = item.ItemInfo.GetName(), Id = item.ItemInfo.Id };
+                var config = new ItemListCell.Config { Name = item.ItemInfo.GetName(), Id = item.ItemInfo.Id, Description = item.ItemInfo.Description };
                 switch (item.ItemInfo.Type)
                 {
                     case ItemType.Weapon:
@@ -302,16 +297,17 @@ namespace RPG_UI
             var config = index < list.Count ? list[index] : ItemListCell.EmptyConfig;
             var slot = GetSlotFromIndex(slotIndex);
             var currentItem = actor.GetEquipmentAtSlot(slot);
+            ItemInfo item = null;
             if (config.Id.IsEmptyOrWhiteSpace() || currentItem != null && currentItem.Id.Equals(config.Id))
             {
-                Stats.TurnOffPredicitionStats();
-                return;
+                item = null;
             }
-            var item = ServiceManager.Get<GameData>().Items[config.Id] as ItemInfo;
+            else 
+            {
+                item = ServiceManager.Get<GameData>().Items[config.Id];
+            }
             var predictedStats = actor.PredictStats(slot, item);
-            for (int i = 0; i < predictedStats.Count; i++)
-                predictedStats[i] = Random.Range(-5, 7);
-            Stats.ShowPredictionStats(predictedStats);
+            StatsWidget.ShowPredictionStats(predictedStats);
         }
     }
 }

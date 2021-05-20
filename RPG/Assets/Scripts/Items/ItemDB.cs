@@ -52,7 +52,6 @@ public class ItemInfo
     public string Use;
     public UseRestriction[] UseRestriction;
     public ItemStats Stats;
-    public StatModifier Modifier = new StatModifier();
     // use Action
 
     public string GetName()

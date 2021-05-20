@@ -119,12 +119,14 @@ namespace RPG_UI
 
         public void HideCursor()
         {
-            SelectionArrow.gameObject.SafeSetActive(false);
+            if (SelectionArrow != null)
+                SelectionArrow.gameObject.SafeSetActive(false);
         }
 
         public void ShowCursor()
         {
-            SelectionArrow.gameObject.SafeSetActive(true);
+            if (SelectionArrow != null)
+                SelectionArrow.gameObject.SafeSetActive(true);
         }
 
         public int GetCurrentSelection()
@@ -204,7 +206,8 @@ namespace RPG_UI
             var cellSize = ScrollHandler.GetCellSize();
             var y = cellPosition.y;
             var x = cellPosition.x - cellSize.x * 0.33f;
-            SelectionArrow.transform.position = new Vector2(x, y);
+            if (SelectionArrow != null)
+                SelectionArrow.transform.position = new Vector2(x, y);
             OnChange?.Invoke(index + displayStart * ColumnCount);
         }
     }

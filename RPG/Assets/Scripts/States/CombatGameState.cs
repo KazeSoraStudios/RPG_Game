@@ -40,7 +40,6 @@ namespace RPG_Combat
         public CombatTargetState TargetState;
         public CombatChoiceState CombatChoice;
         public EventQueue EventQueue;
-        //public StateStack Stack = new StateStack();
         public Actor SelectedActor;
         public StateStack CombatStack = new StateStack();
         public List<Actor> PartyActors = new List<Actor>();
@@ -58,18 +57,6 @@ namespace RPG_Combat
         private EventQueue eventQueue = new EventQueue();
         private Action onWin;
         private Action onDie;
-        /*
-        mTipPanel = nil,
-        mNoticePanel = nil,
-    this.mTipText = ""
-    this.mShowTip = false
-    this.mTipPanel = layout:CreatePanel('tip')
-
-    this.mNoticeText = ""
-    this.mShowNotice = false
-    this.mNoticePanel = layout:CreatePanel('notice')
-    this.mBackground:SetTexture(Texture.Find(def.background))
-         */
 
         public void Init(Config config)
         {
@@ -374,6 +361,7 @@ namespace RPG_Combat
             var summary = Instantiate(xp);
             summary.gameObject.SafeSetActive(false);
             var layer = ServiceManager.Get<UIController>().MenuLayer;
+            layer.gameObject.SafeSetActive(true);
             summary.transform.SetParent(layer, false);
             var config = new XPSummaryState.Config
             {

@@ -134,7 +134,7 @@ public class MoveState : CharacterState
             return;
         }
         var triggerPosition = Character.transform.position;
-        Trigger = Map.GetTrigger((int)triggerPosition.x, (int)triggerPosition.y);
+        Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)triggerPosition.x, (int)triggerPosition.y);
         Trigger.OnExit(new TriggerParams((int)triggerPosition.x, (int)triggerPosition.y, Character));
         //else
         //    Map.TryEncounter(x,y,layer)
@@ -145,7 +145,7 @@ public class MoveState : CharacterState
     public override void Exit()
     {
         var position = Character.transform.position;
-        Trigger = Map.GetTrigger((int)position.x, (int)position.y);
+        Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
         Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
         Trigger = null;
     }
@@ -157,7 +157,7 @@ public class MoveState : CharacterState
         {
             Character.transform.position = targetPosition;
             var position = Character.transform.position;
-            Trigger = Map.GetTrigger((int)position.x, (int)position.y);
+            Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
             Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
             Character.Controller.Change(Character.defaultState);
         }

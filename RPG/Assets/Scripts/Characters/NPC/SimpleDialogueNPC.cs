@@ -28,7 +28,7 @@ namespace RPG_Character
         {
             int x = (int)transform.position.x;
             int y = (int)transform.position.y;
-            GetComponent<Character>().Map.AddTrigger(x, y, this);
+            ServiceManager.Get<TriggerManager>().AddTrigger(x, y, this);
         }
 
         public void SetText(string text)

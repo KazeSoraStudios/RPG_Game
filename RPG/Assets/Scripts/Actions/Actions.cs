@@ -62,26 +62,26 @@ public class Actions
         };
     }
 
-    public static Action<Trigger, Entity, int, int, int> AddNPC(Map map, Entity npc)
-    {
-        LogManager.LogDebug($"Adding NPC [{npc.name}]");
-        return (trigger, entity, tX, tY, tLayer) =>
-        {
-            // TODO get character info and populate information
-            var character = entity.gameObject.GetComponent<Character>();
-            entity.SetTilePosition(tX, tY, tLayer, map);
-            ServiceManager.Get<NPCManager>().AddNPC(character);
-        };
-    }
+    //public static Action<Trigger, Entity, int, int, int> AddNPC(Map map, Entity npc)
+    //{
+    //    LogManager.LogDebug($"Adding NPC [{npc.name}]");
+    //    return (trigger, entity, tX, tY, tLayer) =>
+    //    {
+    //        // TODO get character info and populate information
+    //        var character = entity.gameObject.GetComponent<Character>();
+    //        entity.SetTilePosition(tX, tY, tLayer, map);
+    //        ServiceManager.Get<NPCManager>().AddNPC(character);
+    //    };
+    //}
 
-    public static Action<Trigger, Entity> RemoveNPC(Map map, string npcId)
-    {
-        return (trigger, entity) =>
-        {
-            var character = ServiceManager.Get<NPCManager>().RemoveNPC(npcId);
-            map.RemoveEntity(character.GetComponent<Entity>());
-        };
-    }
+    //public static Action<Trigger, Entity> RemoveNPC(Map map, string npcId)
+    //{
+    //    return (trigger, entity) =>
+    //    {
+    //        var character = ServiceManager.Get<NPCManager>().RemoveNPC(npcId);
+    //        map.RemoveEntity(character.GetComponent<Entity>());
+    //    };
+    //}
 
     /*
 

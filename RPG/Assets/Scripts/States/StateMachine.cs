@@ -10,8 +10,9 @@ public class StateMachine
     public string owner;
     public Dictionary<string, IState> States = new Dictionary<string, IState>();
 
-    public StateMachine(Dictionary<string, IState> states, IState defaultState = null)
+    public StateMachine(Dictionary<string, IState> states, string owner, IState defaultState = null)
     {
+        this.owner = owner;
         States = states;
         CurrentState = defaultState;
         if (CurrentState == null)
