@@ -4,7 +4,7 @@ using RPG_Character;
 using RPG_GameData;
 using Cinemachine;
 
-public class ExploreState : IGameState
+public class ExploreState : MonoBehaviour, IGameState
 {
     public bool followCamera = true;
     public Character followCharacter;
@@ -18,20 +18,7 @@ public class ExploreState : IGameState
         this.Map = map;
         this.stack = stack;
         LoadHero();
-        // TODO remove test code
-        var obj = ServiceManager.Get<AssetManager>().Load<Character>(Constants.TEST_NPC_PREFAB);
-        if (obj != null)
-        {
-            var npc = GameObject.Instantiate(obj);
-            npc.transform.position = new Vector2(-4.0f, 0.0f);
-            npc.transform.rotation = Quaternion.identity;
-            Map.AddNPC(npc);
-            //npc.gameObject.transform.SetParent(transform, true);
-            npc.Init(map, Constants.ENEMY_STATES, Constants.WAIT_STATE);
-            var actor = npc.GetComponent<Actor>();
-            actor.Init(ServiceManager.Get<GameData>().Enemies["goblin"]);
-            ServiceManager.Get<NPCManager>().AddNPC(Map.MapName, npc);
-        }
+        Map.LoadNpcs();
     }
 
     public void HideHero()
@@ -77,15 +64,9 @@ public class ExploreState : IGameState
             var facingTile = Hero.GetFacingTilePosition();
             var x = (int)facingTile.x;
             var y = (int)facingTile.y;
-            //if (Map.GetTrigger(x, y) is var trigger && trigger != null)
-            //    trigger.OnUse(new TriggerParams(x,y,Hero));
             var targetPosition = new Vector2(x,y);
-            //var position = (Vector2)Hero.transform.position + targetPosition;
             var collision = Physics2D.OverlapCircle(targetPosition, 0.2f, Hero.collisionLayer);
-            //var trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)facingTile.x, (int)facingTile.y);
-            //var trigger = collision.GetComponent<Trigger>();// != null
             if (collision?.GetComponent<Trigger>() is var trigger && trigger != null)
-            //if (trigger != null)
             {
                 trigger.OnUse(new TriggerParams(x,y,Hero.GetComponent<Character>()));
             }

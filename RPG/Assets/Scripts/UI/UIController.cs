@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RPG_UI
 {
@@ -11,6 +11,7 @@ namespace RPG_UI
         [SerializeField] public Transform BlockingLayer;
         [SerializeField] public Transform TextLayer;
         [SerializeField] public Transform CombatLayer;
+        [SerializeField] public Image ScreenImage;
         [SerializeField] InGameMenu GameMenu;
 
         private Textbox textbox;

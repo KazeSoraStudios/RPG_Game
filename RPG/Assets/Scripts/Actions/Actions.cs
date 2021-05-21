@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using RPG_Character;
+using UnityEngine.SceneManagement;
 
 public delegate void RunAction(params object[] args);
 
@@ -62,26 +64,65 @@ public class Actions
         };
     }
 
-    //public static Action<Trigger, Entity, int, int, int> AddNPC(Map map, Entity npc)
-    //{
-    //    LogManager.LogDebug($"Adding NPC [{npc.name}]");
-    //    return (trigger, entity, tX, tY, tLayer) =>
-    //    {
-    //        // TODO get character info and populate information
-    //        var character = entity.gameObject.GetComponent<Character>();
-    //        entity.SetTilePosition(tX, tY, tLayer, map);
-    //        ServiceManager.Get<NPCManager>().AddNPC(character);
-    //    };
-    //}
+    public static void ChangeScene(StateStack stack, string currentScene, string nextScene, Func<Map> function)
+    {
+        var events = new List<IStoryboardEvent>
+        {
+            StoryboardEventFunctions.BlackScreen(),
+            StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            new StoryboardFunctionEvent
+            {
+                Function = (_) =>
+                {
+                    var loaded = false;
+                    SceneManager.sceneLoaded += (x, y) => loaded = true;
+                    SceneManager.LoadScene(nextScene, LoadSceneMode.Additive);
+                    return new BlockUntilEvent
+                    {
+                        UntilFunction = () =>
+                        {
+                            return loaded == true;
+                        }
+                    };
+                }
+            },
+            StoryboardEventFunctions.Wait(1.0f),
+            StoryboardEventFunctions.Function(() => StoryboardEventFunctions.ReplaceExploreState(Constants.HANDIN_STATE, stack, function())),
+            StoryboardEventFunctions.Function(() =>
+            {
+                var forest = SceneManager.GetSceneByName(nextScene);
+                SceneManager.SetActiveScene(forest);
+                SceneManager.UnloadSceneAsync(currentScene);
+            }),
+            //StoryboardEventFunctions.Wait(2.0f),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
+            StoryboardEventFunctions.HandOffToExploreState()
+        };
+        ServiceManager.Get<World>().LockInput();
+        var storyboard = new Storyboard(stack, events, true);
+        stack.Push(storyboard);
+    }
 
-    //public static Action<Trigger, Entity> RemoveNPC(Map map, string npcId)
-    //{
-    //    return (trigger, entity) =>
-    //    {
-    //        var character = ServiceManager.Get<NPCManager>().RemoveNPC(npcId);
-    //        map.RemoveEntity(character.GetComponent<Entity>());
-    //    };
-    //}
+    public static Action<Trigger, Entity, int, int, int> AddNPC(Map map, Entity npc)
+    {
+        LogManager.LogDebug($"Adding NPC [{npc.name}]");
+        return (trigger, entity, tX, tY, tLayer) =>
+        {
+            // TODO get character info and populate information
+            var character = entity.gameObject.GetComponent<Character>();
+            entity.SetTilePosition(tX, tY, tLayer, map);
+            map.AddNPC(character);
+        };
+    }
+
+    public static Action<Trigger, Entity> RemoveNPC(Map map, string npcId)
+    {
+        return (trigger, entity) =>
+        {
+            map.RemoveNPC(npcId);
+        };
+    }
 
     /*
 
@@ -241,34 +282,6 @@ public class Actions
             tY = tY - 4
             local x, y = map:TileToScreen(tX, tY)
             gGame.Stack:PushFix(gRenderer, x, y, 9*32, 2.5*32, text)
-        end
-    end,
-
-    ChangeMap = function(map, destinationId, dX, dY)
-
-        local storyboard =
-        {
-            SOP.BlackScreen("blackscreen", 0),
-            SOP.FadeInScreen("blackscreen", 0.5),
-            SOP.ReplaceScene(
-                "handin",
-                {
-                    map = destinationId,
-                    focusX = dX,
-                    focusY = dY,
-                    hideHero = false
-                }),
-            SOP.FadeOutScreen("blackscreen", 0.5),
-            SOP.Function(function()
-                            gGame.World:UnlockInput()
-                         end),
-            SOP.HandOff(destinationId),
-        }
-
-        return function(trigger, entity, tX, tY, tLayer)
-            gGame.World:LockInput()
-            local storyboard = Storyboard:Create(gGame.Stack, storyboard, true)
-            gGame.Stack:Push(storyboard)
         end
     end,
 

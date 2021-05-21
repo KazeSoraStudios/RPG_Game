@@ -280,7 +280,7 @@ public class StoryboardEventFunctions
         {
             Function = (storyboard) =>
             {
-                var renderer = ServiceManager.Get<GameLogic>().ScreenImage;
+                var renderer = ServiceManager.Get<UIController>().ScreenImage;
                 var screenState = new ScreenState(renderer, Color.black);
                 storyboard.PushState(id, screenState);
                 return EmptyEvent;
@@ -561,17 +561,18 @@ public class StoryboardEventFunctions
         return exploreState.Map;
     }
 
-    public static IStoryboardEvent ReplaceExploreStateMap(string explore, Map map)
+    public static IStoryboardEvent ReplaceExploreState(string explore, StateStack stack, Map map)
     {
         return new StoryboardFunctionEvent
         {
             Function = (storyboard) =>
             {
                 var exploreState = storyboard.States[explore] as ExploreState;
-                LogManager.LogDebug($"Replacing ExploreState map with Map: {map.MapName}");
-                //storyboard.States.Remove(explore);
-                //storyboard.States[map.MapName] = exploreState;
-                exploreState.Map = map;
+                LogManager.LogDebug($"Replacing ExploreState {exploreState.name} with : {map.MapName}");
+                storyboard.States.Remove(explore);
+                var newExploreState = map.gameObject.AddComponent<ExploreState>();
+                storyboard.States[map.MapName] = newExploreState;
+                newExploreState.Init(map, stack, map.HeroStartingPosition);
                 return NoBlock(Wait(0.1f));
             }
         };

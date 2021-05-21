@@ -215,6 +215,7 @@ MonoBehaviour:
   BlockingLayer: {fileID: 1819285939928329255}
   TextLayer: {fileID: 8056039865663492249}
   CombatLayer: {fileID: 7967354233810022333}
+  ScreenImage: {fileID: 1103734157}
   GameMenu: {fileID: 2302743424616690145}
 --- !u!1 &6950710910096918976
 GameObject:

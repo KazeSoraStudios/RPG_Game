@@ -3,21 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using RPG_Character;
+using RPG_GameData;
 
 public class Map : MonoBehaviour
 {
     [SerializeField] public string MapName;
+    [SerializeField] public Vector3 HeroStartingPosition;
     [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
     [SerializeField] Transform NPCParent;
+    [SerializeField] List<NPCData> MapNPCs = new List<NPCData>();
 
     private void Start()
     {
         ServiceManager.Get<GameLogic>().OnMapLoaded(this);
     }
 
+    public void LoadNpcs()
+    {
+        var assetManager = ServiceManager.Get<AssetManager>();
+        foreach (var data in MapNPCs)
+        {
+            var asset = assetManager.Load<Character>(Constants.CHARACTER_PREFAB_PATH + data.PrefabId);
+            if (asset == null)
+            {
+                continue;
+            }
+            var npc = GameObject.Instantiate(asset);
+            npc.transform.position = data.StartingPosition;
+            npc.transform.rotation = Quaternion.identity;
+            AddNPC(npc);
+            var defaultState = data.DefaultState.IsEmptyOrWhiteSpace() ? Constants.WAIT_STATE : data.DefaultState.ToUpper();
+            npc.Init(this, Constants.ENEMY_STATES, defaultState);
+        }
+    }
+
     public void AddNPC(Character npc)
     {
         npc.transform.SetParent(NPCParent, false);
+        ServiceManager.Get<NPCManager>().AddNPC(MapName, npc);
+    }
+
+    public void RemoveNpC(Character npc)
+    {
+        var character = ServiceManager.Get<NPCManager>().RemoveNPC(MapName, npc);
+        Destroy(character.gameObject);
+    }
+
+    public void RemoveNPC(string npc)
+    {
+        var character = ServiceManager.Get<NPCManager>().RemoveNPC(MapName, npc);
+        Destroy(character.gameObject);
     }
 
     public void AddEntity(Entity entity)

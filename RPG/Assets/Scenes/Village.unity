@@ -457,9 +457,29 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3228989688943515892, guid: 034a020bb40fbc547a02e297df932266,
         type: 3}
+      propertyPath: MapNPCs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3228989688943515892, guid: 034a020bb40fbc547a02e297df932266,
+        type: 3}
       propertyPath: NPCParent
       value: 
       objectReference: {fileID: 452518473}
+    - target: {fileID: 3228989688943515892, guid: 034a020bb40fbc547a02e297df932266,
+        type: 3}
+      propertyPath: MapNPCs.Array.data[0].EntityId
+      value: golbin
+      objectReference: {fileID: 0}
+    - target: {fileID: 3228989688943515892, guid: 034a020bb40fbc547a02e297df932266,
+        type: 3}
+      propertyPath: MapNPCs.Array.data[0].PrefabId
+      value: TestNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 3228989688943515892, guid: 034a020bb40fbc547a02e297df932266,
+        type: 3}
+      propertyPath: MapNPCs.Array.data[0].StartingPosition.x
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 7336642111522183941, guid: 034a020bb40fbc547a02e297df932266,
         type: 3}
       propertyPath: m_LocalPosition.x

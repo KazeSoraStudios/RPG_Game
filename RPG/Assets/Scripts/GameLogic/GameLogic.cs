@@ -15,7 +15,6 @@ public class GameLogic : MonoBehaviour
     [SerializeField] public GameState GameState;
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
-    [SerializeField] public Image ScreenImage; //TODO move to UIController
 
     public StateStack Stack;
 
@@ -59,8 +58,9 @@ public class GameLogic : MonoBehaviour
     IEnumerator LoadVillage()
     {
         yield return new WaitForSeconds(0.1f);
-        var map = GameObject.Find("VillageMap").GetComponent<Map>();
-        var exploreState = new ExploreState();
+        var village = GameObject.Find("VillageMap");
+        var map = village.GetComponent<Map>();
+        var exploreState = map.gameObject.AddComponent<ExploreState>();
         exploreState.Init(map, Stack, Vector2.zero);
         Stack.Push(exploreState);
         yield return null;
@@ -106,38 +106,39 @@ public class GameLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            var events = new List<IStoryboardEvent>();
-            events.Add(StoryboardEventFunctions.BlackScreen());
-            events.Add(StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f));
-            events.Add(new StoryboardFunctionEvent
-                    {
-                        Function = (_) =>
-                        {
-                            var loaded = false;
-                            SceneManager.sceneLoaded += (x,y) => loaded = true;
-                            SceneManager.LoadScene("Forest", LoadSceneMode.Additive);
-                            return new BlockUntilEvent
-                            {
-                                UntilFunction = () =>
-                                {
-                                    return loaded == true;
-                                }
-                            };
-                        }
-                    });
-            events.Add(StoryboardEventFunctions.Wait(1.0f));
-            events.Add(StoryboardEventFunctions.Function(() =>
-            {
-                var forest = SceneManager.GetSceneByName("Forest");
-                SceneManager.SetActiveScene(forest);
-                SceneManager.UnloadSceneAsync("Village");
-            }));
-            //StoryboardEventFunctions.Wait(2.0f),
-            events.Add(StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f));
-            events.Add(StoryboardEventFunctions.Function(() =>StoryboardEventFunctions.ReplaceExploreStateMap(Constants.HANDIN_STATE, GameObject.Find("ForestMap").GetComponent<Map>())));
-            events.Add(StoryboardEventFunctions.HandOffToExploreState());
-            var storyboard = new Storyboard(Stack, events, true);
-            Stack.Push(storyboard);
+            //var events = new List<IStoryboardEvent>();
+            //events.Add(StoryboardEventFunctions.BlackScreen());
+            //events.Add(StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f));
+            //events.Add(new StoryboardFunctionEvent
+            //        {
+            //            Function = (_) =>
+            //            {
+            //                var loaded = false;
+            //                SceneManager.sceneLoaded += (x,y) => loaded = true;
+            //                SceneManager.LoadScene("Forest", LoadSceneMode.Additive);
+            //                return new BlockUntilEvent
+            //                {
+            //                    UntilFunction = () =>
+            //                    {
+            //                        return loaded == true;
+            //                    }
+            //                };
+            //            }
+            //        });
+            //events.Add(StoryboardEventFunctions.Wait(1.0f));
+            //events.Add(StoryboardEventFunctions.Function(() =>
+            //{
+            //    var forest = SceneManager.GetSceneByName("Forest");
+            //    SceneManager.SetActiveScene(forest);
+            //    SceneManager.UnloadSceneAsync("Village");
+            //}));
+            ////StoryboardEventFunctions.Wait(2.0f),
+            //events.Add(StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f));
+            //events.Add(StoryboardEventFunctions.Function(() =>StoryboardEventFunctions.ReplaceExploreStateMap(Constants.HANDIN_STATE, GameObject.Find("ForestMap").GetComponent<Map>())));
+            //events.Add(StoryboardEventFunctions.HandOffToExploreState());
+            //var storyboard = new Storyboard(Stack, events, true);
+            //Stack.Push(storyboard);
+            Actions.ChangeScene(Stack, "Village", "Forest", () => GameObject.Find("ForestMap").GetComponent<Map>());
         }
 
         if (Input.GetKeyDown(KeyCode.C))
