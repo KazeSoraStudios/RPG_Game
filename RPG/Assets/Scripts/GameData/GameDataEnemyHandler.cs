@@ -11,7 +11,7 @@ namespace RPG_GameData
             LogManager.LogDebug($"Processing Enemies for data {data}");
             var enemies = new Dictionary<string, Enemy>();
             // Account for difference in columns
-            var columnDifference = numberOfColumns - 8;
+            var columnDifference = numberOfColumns - 9;
             for (int i = 0; i < count; i++)
             {
                 var enemy = new Enemy()
@@ -20,6 +20,7 @@ namespace RPG_GameData
                     Stats = GetStats(data[index++]),
                     Name = data[index++],
                     Portrait = data[index++],
+                    PrefabPath = data[index++],
                     StealItem = GetIntFromCell(data[index++]),
                     Spells = GetSpells(data[index++]),
                     Specials = GetSpells(data[index++]),

@@ -176,7 +176,6 @@ namespace RPG_Combat
             var spells = config.Actor.Spells;
             foreach (var spell in spells)
             {
-                // TODO change color if can/cannot cast
                 var name = spell.LocalizedName();
                 var cost = spell.MpCost.ToString();
                 configs.Add(new ItemListCell.Config

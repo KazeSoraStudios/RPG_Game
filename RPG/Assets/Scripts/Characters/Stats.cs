@@ -117,7 +117,6 @@ namespace RPG_Character
                 currentValue += modifiers[i].GetAddValue(stat);
                 multiplier += modifiers[i].GetMultiplyValue(stat);
             }
-            // TODO check this works
             currentValue = (int)(currentValue + (currentValue * multiplier));
             var newValue = (int)(currentValue + newModifier.GetAddValue(stat) + (currentValue * (multiplier + newModifier.GetMultiplyValue(stat))));
             return currentValue + (newValue - currentValue);

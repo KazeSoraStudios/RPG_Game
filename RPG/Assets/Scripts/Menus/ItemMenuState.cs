@@ -203,12 +203,9 @@ namespace RPG_UI
             var itemUses = ServiceManager.Get<GameData>().ItemUses;
             if (!itemUses.ContainsKey(useId) || !itemUses[useId].UseOnMap)
                 return;
-            // TODO item use function
+            
         }
-
         /*
-
-
     function ItemMenuState:OnUseItem(index, item)
         local itemDef = ItemDB[item.id]
         if not self:CanUseItem(itemDef) then

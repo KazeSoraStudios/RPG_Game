@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using RPG_Character;
-using UnityEngine.SceneManagement;
+using RPG_Combat;
+using RPG_GameData;
+using RPG_GameState;
+using RPG_UI;
 
 public delegate void RunAction(params object[] args);
 
@@ -64,44 +68,21 @@ public class Actions
         };
     }
 
-    public static void ChangeScene(StateStack stack, string currentScene, string nextScene, Func<Map> function)
+    public static List<IStoryboardEvent> ChangeSceneEvents(StateStack stack, string currentScene, string nextScene, Func<Map> function)
     {
-        var events = new List<IStoryboardEvent>
+        return new List<IStoryboardEvent>
         {
             StoryboardEventFunctions.BlackScreen(),
             StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
-            new StoryboardFunctionEvent
-            {
-                Function = (_) =>
-                {
-                    var loaded = false;
-                    SceneManager.sceneLoaded += (x, y) => loaded = true;
-                    SceneManager.LoadScene(nextScene, LoadSceneMode.Additive);
-                    return new BlockUntilEvent
-                    {
-                        UntilFunction = () =>
-                        {
-                            return loaded == true;
-                        }
-                    };
-                }
-            },
-            StoryboardEventFunctions.Wait(1.0f),
+            StoryboardEventFunctions.LoadScene(nextScene),
+            //StoryboardEventFunctions.Wait(1.0f),
             StoryboardEventFunctions.Function(() => StoryboardEventFunctions.ReplaceExploreState(Constants.HANDIN_STATE, stack, function())),
-            StoryboardEventFunctions.Function(() =>
-            {
-                var forest = SceneManager.GetSceneByName(nextScene);
-                SceneManager.SetActiveScene(forest);
-                SceneManager.UnloadSceneAsync(currentScene);
-            }),
+            StoryboardEventFunctions.DeleteScene(currentScene, nextScene),
             //StoryboardEventFunctions.Wait(2.0f),
             StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
             StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
             StoryboardEventFunctions.HandOffToExploreState()
         };
-        ServiceManager.Get<World>().LockInput();
-        var storyboard = new Storyboard(stack, events, true);
-        stack.Push(storyboard);
     }
 
     public static Action<Trigger, Entity, int, int, int> AddNPC(Map map, Entity npc)
@@ -287,17 +268,13 @@ public class Actions
 
     Combat = function(map, def)
         return function(trigger, entity, tX, tY, tLayer)
-
             def.background = def.background or "combat_bg_field.png"
             def.enemy = def.enemy or { "grunt" }
-
             local enemyList = {}
             for k, v in ipairs(def.enemy) do
                 print(v, tostring(gEnemyDefs[v]))
                 local enemyDef = gEnemyDefs[v]
                 enemyList[k] = Actor:Create(enemyDef)
-            end
-
             local combatState = CombatState:Create(gGame.Stack,
             {
                 background = def.background,
@@ -309,9 +286,7 @@ public class Actions
                 canFlee = def.canFlee,
                 OnWin = def.OnWin,
                 OnDie = def.OnDie
-
             })
-
             local storyboard =
             {
                 SOP.BlackScreen("blackscreen", 0),
@@ -321,12 +296,85 @@ public class Actions
                         gGame.Stack:Push(combatState)
                     end)
             }
-
             local storyboard = Storyboard:Create(gGame.Stack, storyboard)
             gGame.Stack:Push(storyboard)
-        end
-    end
-
-
      */
+
+     public class StartCombatConfig
+     {
+        public bool CanFlee = true;
+        public Map Map;
+        public StateStack Stack;
+        public Action OnWin;
+        public Action OnLose;
+        public List<string> Enemies = new List<string>();
+        public List<Actor> Party = new List<Actor>();
+    }
+
+     public static void Combat(StartCombatConfig config)
+     {
+        var uiController = ServiceManager.Get<UIController>();
+        var combatUIParent = uiController.CombatLayer;
+        var asset = ServiceManager.Get<AssetManager>().Load<CombatGameState>(Constants.COMBAT_PREFAB_PATH);
+        if (asset == null)
+        {
+            LogManager.LogError($"Unable to load Combat: {Constants.COMBAT_PREFAB_PATH}");
+            return;
+        }
+        var combat = GameObject.Instantiate(asset, Vector3.zero, Quaternion.identity);
+        combat.transform.SetParent(combatUIParent, false);
+        var combatConfig = new CombatGameState.Config
+        {
+            CanFlee = true,
+            BackgroundPath = config.Map.CombatBackground,
+            Party = config.Party,
+            Enemies =CreateEnemyList(config.Map, config.Enemies),
+            Stack = config.Stack,
+            OnWin = config.OnWin,
+            OnDie = config.OnLose,
+            ClearCharacterFunction = () => config.Map.RemoveCombatNPCs()
+        };
+        ServiceManager.Get<Party>().PrepareForCombat();
+        ServiceManager.Get<NPCManager>().PrepareForCombat();
+        combat.Init(combatConfig);
+        config.Stack.Push(combat);
+        uiController.gameObject.SafeSetActive(true);
+    }
+
+    private static List<Actor> CreateEnemyList(Map map, List<String> enemyList)
+    {
+        var enemies = new List<Actor>();
+        if (enemyList == null || enemyList.Count < 1)
+        {
+            var enemy = LoadEnemy(map);
+            if (enemy != null)
+                enemies.Add(enemy);
+            return enemies;
+        }
+        foreach (var enemy in enemyList)
+        {
+            var actor = LoadEnemy(map, enemy);
+            if (actor != null)
+                enemies.Add(actor);
+        }
+        return enemies;
+    }
+
+    private static Actor LoadEnemy(Map map, string enemyId = Constants.DEFAULT_COMBAT_ENEMY_PREFAB)
+    {
+        var assetManager = ServiceManager.Get<AssetManager>();
+        var enemyData = ServiceManager.Get<GameData>().Enemies;
+        if (!enemyData.ContainsKey(enemyId))
+            return null;
+        var enemyDef = enemyData[enemyId];
+        string prefabPath = Constants.CHARACTER_PREFAB_PATH + enemyDef.PrefabPath;
+        var asset = assetManager.Load<Actor>(prefabPath);
+        var enemy = GameObject.Instantiate(asset);
+        var character = enemy.GetComponent<Character>();
+        map.AddCombatNPC(character);
+        character.Init(map, Constants.ENEMY_STATES);
+        var actor = enemy.GetComponent<Actor>();
+        actor.Init(enemyDef);
+        return enemy;
+    }
 }

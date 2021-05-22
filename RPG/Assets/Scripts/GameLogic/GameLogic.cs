@@ -106,64 +106,45 @@ public class GameLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            //var events = new List<IStoryboardEvent>();
-            //events.Add(StoryboardEventFunctions.BlackScreen());
-            //events.Add(StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f));
-            //events.Add(new StoryboardFunctionEvent
-            //        {
-            //            Function = (_) =>
-            //            {
-            //                var loaded = false;
-            //                SceneManager.sceneLoaded += (x,y) => loaded = true;
-            //                SceneManager.LoadScene("Forest", LoadSceneMode.Additive);
-            //                return new BlockUntilEvent
-            //                {
-            //                    UntilFunction = () =>
-            //                    {
-            //                        return loaded == true;
-            //                    }
-            //                };
-            //            }
-            //        });
-            //events.Add(StoryboardEventFunctions.Wait(1.0f));
-            //events.Add(StoryboardEventFunctions.Function(() =>
-            //{
-            //    var forest = SceneManager.GetSceneByName("Forest");
-            //    SceneManager.SetActiveScene(forest);
-            //    SceneManager.UnloadSceneAsync("Village");
-            //}));
-            ////StoryboardEventFunctions.Wait(2.0f),
-            //events.Add(StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f));
-            //events.Add(StoryboardEventFunctions.Function(() =>StoryboardEventFunctions.ReplaceExploreStateMap(Constants.HANDIN_STATE, GameObject.Find("ForestMap").GetComponent<Map>())));
-            //events.Add(StoryboardEventFunctions.HandOffToExploreState());
-            //var storyboard = new Storyboard(Stack, events, true);
-            //Stack.Push(storyboard);
-            Actions.ChangeScene(Stack, "Village", "Forest", () => GameObject.Find("ForestMap").GetComponent<Map>());
+            var events = Actions.ChangeSceneEvents(Stack, "Village", "Forest", () => GameObject.Find("ForestMap").GetComponent<Map>());
+            ServiceManager.Get<World>().LockInput();
+            var storyboard = new Storyboard(Stack, events, true);
+            Stack.Push(storyboard);
         }
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            var parent = UIController.CombatLayer;
-            var obj = ServiceManager.Get<AssetManager>().Load<CombatGameState>(Constants.COMBAT_PREFAB_PATH);
-            var combat = Instantiate(obj, Vector3.zero, Quaternion.identity);
-            combat.transform.SetParent(parent, false);
-            var npc = GameObject.Find("TestNPC(Clone)").GetComponent<RPG_Character.Actor>();
-            npc.Stats.SetStat(Stat.HP, npc.Stats.Get(Stat.MaxHP));
-            var config = new CombatGameState.Config
-            {
+            //var parent = UIController.CombatLayer;
+            //var obj = ServiceManager.Get<AssetManager>().Load<CombatGameState>(Constants.COMBAT_PREFAB_PATH);
+            //var combat = Instantiate(obj, Vector3.zero, Quaternion.identity);
+            //combat.transform.SetParent(parent, false);
+            //var npc = GameObject.Find("TestNPC(Clone)").AddComponent<Actor>();
+            //npc.Init(ServiceManager.Get<GameData>().Enemies["goblin"]);
+            //npc.Stats.SetStat(Stat.HP, npc.Stats.Get(Stat.MaxHP));
+            //var config = new CombatGameState.Config
+            //{
+            //    CanFlee = true,
+            //    BackgroundPath = "",
+            //    Party = GameState.World.Party.Members,
+            //    Enemies = new System.Collections.Generic.List<RPG_Character.Actor> { npc },
+            //    Stack = Stack,
+            //    //OnWin
+            //    //OnDie
+            //};
+            //ServiceManager.Get<Party>().PrepareForCombat();
+            //ServiceManager.Get<NPCManager>().PrepareForCombat();
+            //combat.Init(config);
+            //Stack.Push(combat);
+            //UIController.gameObject.SafeSetActive(true);
+            var config = new Actions.StartCombatConfig
+            { 
                 CanFlee = true,
-                BackgroundPath = "",
-                Party = GameState.World.Party.Members,
-                Enemies = new System.Collections.Generic.List<RPG_Character.Actor> { npc },
+                Map = ((ExploreState)Stack.Top()).Map,
                 Stack = Stack,
-                //OnWin
-                //OnDie
+                Party = GameState.World.Party.Members,
+                Enemies  = new List<string> { "goblin" }
             };
-            ServiceManager.Get<Party>().PrepareForCombat();
-            ServiceManager.Get<NPCManager>().PrepareForCombat();
-            combat.Init(config);
-            Stack.Push(combat);
-            UIController.gameObject.SafeSetActive(true);
+            Actions.Combat(config);
         }
 
 

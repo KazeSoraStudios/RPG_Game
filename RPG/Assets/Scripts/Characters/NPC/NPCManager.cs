@@ -94,15 +94,16 @@ namespace RPG_Character
             return npcsByMap[map][FindNpcIndex(map, name)];
         }
 
-        public void ClearNpcsForMap(string map)
+        public List<Character> ClearNpcsForMap(string map)
         {
             if (!npcsByMap.ContainsKey(map))
             {
                 LogManager.LogError($"Map: {map} is not present in NPCsForMap.");
-                return;
+                return new List<Character>();
             }
-            npcsByMap[map].Clear();
+            var list = npcsByMap[map];
             npcsByMap.Remove(map);
+            return list;
         }
 
         public void PrepareForTextboxState()

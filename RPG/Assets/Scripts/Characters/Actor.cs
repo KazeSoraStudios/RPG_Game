@@ -80,9 +80,6 @@ namespace RPG_Character
                     Specials.AddRange(list);
                 }
             }
-
-            // TODO drops
-
             NextLevelExp = LevelFunction.NextLevel(Level);
             DoInitialLeveling();
         }
@@ -105,34 +102,6 @@ namespace RPG_Character
             Loot = CreateLoot(enemy);
             Stats = new Stats(enemy.Stats, name);
         }
-
-        /*
-            mMagic = ShallowClone(def.magic or {}),
-            mSpecial = ShallowClone(def.special or {}),
-            mStealItem = def.steal_item,
-        }
-        */
-
-
-
-        /*
-
-        if def.drop then
-            local drop = def.drop
-            local goldRange = drop.gold or {}
-            local gold  = math.random(goldRange[0] or 0, goldRange[1] or 0)
-
-            this.mDrop =
-            {
-                mXP = drop.xp or 0,
-                mGold = gold,
-                mAlways = drop.always or {},
-                mChance = OddmentTable:Create(drop.chance)
-            }
-
-        end
-
-         */
 
         private void DoInitialLeveling()
         {
@@ -203,7 +172,7 @@ namespace RPG_Character
                 return;
 
             ServiceManager.Get<World>().RemoveItem(item.Id);
-            Equipment[(int)slot] = item; // TODO change to use ids and get from db
+            Equipment[(int)slot] = item;
             Stats.AddModifier(slot, item.Stats.Modifier);
         }
 

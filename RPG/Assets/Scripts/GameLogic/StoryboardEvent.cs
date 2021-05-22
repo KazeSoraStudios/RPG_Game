@@ -280,7 +280,9 @@ public class StoryboardEventFunctions
         {
             Function = (storyboard) =>
             {
-                var renderer = ServiceManager.Get<UIController>().ScreenImage;
+                var uiController = ServiceManager.Get<UIController>();
+                uiController.gameObject.SafeSetActive(true);
+                var renderer = uiController.ScreenImage;
                 var screenState = new ScreenState(renderer, Color.black);
                 storyboard.PushState(id, screenState);
                 return EmptyEvent;
@@ -514,6 +516,46 @@ public class StoryboardEventFunctions
             {
                 storyboard.RemoveState(state);
                 return EmptyEvent;
+            }
+        };
+    }
+
+    public static IStoryboardEvent LoadScene(string scene)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (_) =>
+            {
+                var loaded = false;
+                SceneManager.sceneLoaded += (x, y) => loaded = true;
+                SceneManager.LoadScene(scene, LoadSceneMode.Additive);
+                return new BlockUntilEvent
+                {
+                    UntilFunction = () =>
+                    {
+                        return loaded == true;
+                    }
+                };
+            }
+        };
+    }
+
+    public static IStoryboardEvent DeleteScene(string currentScene, string nextScene)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (_) =>
+            {
+                var scene = SceneManager.GetSceneByName(nextScene);
+                SceneManager.SetActiveScene(scene);
+                var unload = SceneManager.UnloadSceneAsync(currentScene);
+                return new BlockUntilEvent
+                {
+                    UntilFunction = () =>
+                    {
+                        return unload.isDone;
+                    }
+                };
             }
         };
     }

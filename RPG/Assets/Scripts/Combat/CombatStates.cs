@@ -18,7 +18,7 @@ namespace RPG_Combat
         public virtual void Exit() { }
         public bool IsPartyMember(Actor actor) { return false; }
         public virtual bool IsFinished() { return true; }
-        public abstract string GetName(); // TODO change to int
+        public abstract string GetName();
     }
 
     public class CombatStateParams : StateParams

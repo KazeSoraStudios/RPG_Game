@@ -84,6 +84,7 @@ namespace RPG_GameData
         public string Id;
         public string Name;
         public string Portrait;
+        public string PrefabPath;
         public List<string> Spells = new List<string>();
         public List<string> Specials = new List<string>();
         public List<Vector3> ItemDrops = new List<Vector3>();

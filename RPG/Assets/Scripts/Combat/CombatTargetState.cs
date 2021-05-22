@@ -33,7 +33,7 @@ namespace RPG_Combat
             this.config = config;
             if (config.DefaultSelector == null)
             {
-                if (config.CombatTargetType == CombatTargetType.One) // TODO pass list as reference to avoid creating new list
+                if (config.CombatTargetType == CombatTargetType.One)
                     config.DefaultSelector = (state, hurt) => CombatSelector.FindWeakestEnemy(state);
                 else if (config.CombatTargetType == CombatTargetType.Side)
                     config.DefaultSelector = (state, hurt) => CombatSelector.Enemies(state);

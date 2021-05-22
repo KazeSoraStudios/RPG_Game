@@ -57,7 +57,7 @@ public interface IState
     void Enter(object o = null);
     bool Execute(float deltaTime);
     void Exit();
-    string GetName();  // TODO change to int
+    string GetName();
 }
 
 public class StateParams
