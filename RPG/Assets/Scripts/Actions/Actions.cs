@@ -76,7 +76,7 @@ public class Actions
             StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
             StoryboardEventFunctions.LoadScene(nextScene),
             //StoryboardEventFunctions.Wait(1.0f),
-            StoryboardEventFunctions.Function(() => StoryboardEventFunctions.ReplaceExploreState(Constants.HANDIN_STATE, stack, function())),
+            StoryboardEventFunctions.ReplaceExploreState(Constants.HANDIN_STATE, stack, function),
             StoryboardEventFunctions.DeleteScene(currentScene, nextScene),
             //StoryboardEventFunctions.Wait(2.0f),
             StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
@@ -265,28 +265,6 @@ public class Actions
             gGame.Stack:PushFix(gRenderer, x, y, 9*32, 2.5*32, text)
         end
     end,
-
-    Combat = function(map, def)
-        return function(trigger, entity, tX, tY, tLayer)
-            def.background = def.background or "combat_bg_field.png"
-            def.enemy = def.enemy or { "grunt" }
-            local enemyList = {}
-            for k, v in ipairs(def.enemy) do
-                print(v, tostring(gEnemyDefs[v]))
-                local enemyDef = gEnemyDefs[v]
-                enemyList[k] = Actor:Create(enemyDef)
-            local combatState = CombatState:Create(gGame.Stack,
-            {
-                background = def.background,
-                actors =
-                {
-                    party = gGame.World.mParty:ToArray(),
-                    enemy = enemyList,
-                },
-                canFlee = def.canFlee,
-                OnWin = def.OnWin,
-                OnDie = def.OnDie
-            })
             local storyboard =
             {
                 SOP.BlackScreen("blackscreen", 0),
@@ -331,14 +309,24 @@ public class Actions
             Enemies =CreateEnemyList(config.Map, config.Enemies),
             Stack = config.Stack,
             OnWin = config.OnWin,
-            OnDie = config.OnLose,
-            ClearCharacterFunction = () => config.Map.RemoveCombatNPCs()
+            OnDie = config.OnLose
         };
-        ServiceManager.Get<Party>().PrepareForCombat();
-        ServiceManager.Get<NPCManager>().PrepareForCombat();
-        combat.Init(combatConfig);
-        config.Stack.Push(combat);
-        uiController.gameObject.SafeSetActive(true);
+        var events = new List<IStoryboardEvent>
+        {
+            StoryboardEventFunctions.BlackScreen(),
+            StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => 
+            {
+                ServiceManager.Get<Party>().PrepareForCombat();
+                ServiceManager.Get<NPCManager>().PrepareForCombat();
+                combat.Init(combatConfig);
+                config.Stack.Push(combat);
+                uiController.gameObject.SafeSetActive(true);
+             }),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+        };
+        var storyboard = new Storyboard(config.Stack, events);
+        config.Stack.Push(storyboard);
     }
 
     private static List<Actor> CreateEnemyList(Map map, List<String> enemyList)
@@ -371,7 +359,6 @@ public class Actions
         var asset = assetManager.Load<Actor>(prefabPath);
         var enemy = GameObject.Instantiate(asset);
         var character = enemy.GetComponent<Character>();
-        map.AddCombatNPC(character);
         character.Init(map, Constants.ENEMY_STATES);
         var actor = enemy.GetComponent<Actor>();
         actor.Init(enemyDef);

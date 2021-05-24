@@ -133,13 +133,7 @@ public class MoveState : CharacterState
             Character.Controller.Change(Character.defaultState);
             return;
         }
-        var triggerPosition = Character.transform.position;
-        Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)triggerPosition.x, (int)triggerPosition.y);
-        Trigger.OnExit(new TriggerParams((int)triggerPosition.x, (int)triggerPosition.y, Character));
-        //else
-        //    Map.TryEncounter(x,y,layer)
-        targetPosition = (Vector2)triggerPosition + moveParams.MovePosition;
-        Character.UpdateMovement(moveParams.MovePosition);
+        BeforeMove(moveParams.MovePosition);
     }
 
     public override void Exit()
@@ -159,8 +153,33 @@ public class MoveState : CharacterState
             var position = Character.transform.position;
             Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
             Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
-            Character.Controller.Change(Character.defaultState);
+            var movement = GetNewMovement();
+            if (movement == Vector2.zero)
+                Character.Controller.Change(Character.defaultState);
+            else
+                BeforeMove(movement);
         }
         return true;
+    }
+
+    private void BeforeMove(Vector2 movement)
+    {
+        var triggerPosition = Character.transform.position;
+        Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)triggerPosition.x, (int)triggerPosition.y);
+        Trigger.OnExit(new TriggerParams((int)triggerPosition.x, (int)triggerPosition.y, Character));
+        //else
+        //    Map.TryEncounter(x,y,layer)
+        targetPosition = (Vector2)triggerPosition + movement;
+        Character.UpdateMovement(movement);
+    }
+
+    private Vector2 GetNewMovement()
+    {
+        var movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if (movement.x != 0.0f)
+            movement.y = 0.0f;
+        else
+            movement.x = 0.0f;
+        return movement;
     }
 }

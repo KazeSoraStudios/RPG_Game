@@ -62,13 +62,6 @@ public class Map : MonoBehaviour
         Destroy(character.gameObject);
     }
 
-    public void RemoveCombatNPCs()
-    {
-        var npcs = ServiceManager.Get<NPCManager>().ClearNpcsForMap("combat");
-        foreach (var npc in npcs)
-            Destroy(npc.gameObject);
-    }
-
     public void AddEntity(Entity entity)
     {
         var pos = entity.transform.position;

@@ -620,6 +620,28 @@ public class StoryboardEventFunctions
         };
     }
 
+    public static IStoryboardEvent ReplaceExploreState(string explore, StateStack stack, Func<Map> function)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (storyboard) =>
+            {
+                var map = function();
+                var exploreState = storyboard.States[explore] as ExploreState;
+                LogManager.LogDebug($"Replacing ExploreState {exploreState.name} with : {map.MapName}");
+                storyboard.States.Remove(explore);
+                var exploreStateComponent = map.GetComponent<ExploreState>();
+                if (exploreStateComponent == null)
+                    exploreStateComponent = map.gameObject.AddComponent<ExploreState>();
+                var newExploreState = exploreStateComponent;
+                storyboard.States[explore] = newExploreState;
+                newExploreState.Init(map, stack, map.HeroStartingPosition);
+                return NoBlock(Wait(0.1f));
+            }
+        };
+    }
+
+
     public static IStoryboardEvent ReplaceState(IGameState current, IGameState newState)
     {
         return new StoryboardFunctionEvent

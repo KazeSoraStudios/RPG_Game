@@ -13,11 +13,11 @@ public class ExploreState : MonoBehaviour, IGameState
     public Map Map;
 
 
-    public void Init(Map map, StateStack stack, Vector2 startPosition)
+    public void Init(Map map, StateStack stack, Vector3 startPosition)
     {
         this.Map = map;
         this.stack = stack;
-        LoadHero();
+        LoadHero(startPosition);
         Map.LoadNpcs();
     }
 
@@ -79,17 +79,17 @@ public class ExploreState : MonoBehaviour, IGameState
 
     public string GetName()
     {
-        return "ExploreState";
+        return "ExploreState: " + name;
     }
 
-    private void LoadHero()
+    private void LoadHero(Vector3 startPosition)
     {
         var game = ServiceManager.Get<GameLogic>().GameState;
         if (game == null || game.World.Party.Count() < 1)
             LoadHeroPrefab();
         else
             Hero = game.World.Party.GetActor(0).GetComponent<Character>();
-        Hero.transform.position = Vector2.zero;
+        Hero.transform.position = startPosition;
         Hero.transform.rotation = Quaternion.identity;
     }
 

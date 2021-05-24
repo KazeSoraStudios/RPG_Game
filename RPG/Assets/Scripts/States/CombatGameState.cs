@@ -26,7 +26,6 @@ namespace RPG_Combat
             public StateStack Stack;
             public Action OnWin;
             public Action OnDie;
-            public Action ClearCharacterFunction;
         }
 
         [SerializeField] CombatMenuWidget CombatMenu;
@@ -58,7 +57,6 @@ namespace RPG_Combat
         private EventQueue eventQueue = new EventQueue();
         private Action onWin;
         private Action onDie;
-        private Action clearCharacterFunction;
 
         public void Init(Config config)
         {
@@ -72,7 +70,6 @@ namespace RPG_Combat
             EnemyActors = config.Enemies;
             onWin = config.OnWin;
             onDie = config.OnDie;
-            clearCharacterFunction = config.ClearCharacterFunction;
             CreateCombatCharacters(true);
             CreateCombatCharacters(false);
             LoadMenuUI(config.Party);
@@ -82,6 +79,7 @@ namespace RPG_Combat
             PlaceActors();
             AddTurns(PartyActors, true);
             AddTurns(EnemyActors);
+            RegisterEnemies();
         }
 
         public virtual bool Execute(float deltaTime)
@@ -132,7 +130,9 @@ namespace RPG_Combat
         public void Enter(object stateParams) { }
         public void Exit() 
         {
-            clearCharacterFunction?.Invoke();
+            var npcs = ServiceManager.Get<NPCManager>().ClearNpcsForMap(GetName());
+            foreach (var npc in npcs)
+                Destroy(npc.gameObject);
             Destroy(gameObject);
         }
         public List<Actor> GetPartyActors() { return PartyActors; }
@@ -540,6 +540,13 @@ namespace RPG_Combat
                 Actors = party
             };
             CombatMenu.Init(menuConfig);
+        }
+
+        private void RegisterEnemies()
+        {
+            var mapName = GetName();
+            foreach (var enemy in EnemyCharacters)
+                ServiceManager.Get<NPCManager>().AddNPC(mapName, enemy);
         }
     }
 
