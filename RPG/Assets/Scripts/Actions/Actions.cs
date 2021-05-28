@@ -306,7 +306,7 @@ public class Actions
             CanFlee = true,
             BackgroundPath = config.Map.CombatBackground,
             Party = config.Party,
-            Enemies =CreateEnemyList(config.Map, config.Enemies),
+            Enemies = CreateEnemyList(config.Map, config.Enemies),
             Stack = config.Stack,
             OnWin = config.OnWin,
             OnDie = config.OnLose
@@ -319,13 +319,13 @@ public class Actions
             {
                 ServiceManager.Get<Party>().PrepareForCombat();
                 ServiceManager.Get<NPCManager>().PrepareForCombat();
-                combat.Init(combatConfig);
-                config.Stack.Push(combat);
                 uiController.gameObject.SafeSetActive(true);
              }),
             StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
         };
         var storyboard = new Storyboard(config.Stack, events);
+        combat.Init(combatConfig);
+        config.Stack.Push(combat);
         config.Stack.Push(storyboard);
     }
 

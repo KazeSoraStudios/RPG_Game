@@ -110,6 +110,6 @@ public class ExploreState : MonoBehaviour, IGameState
         var actor = Hero.GetComponent<Actor>();
         actor.Init(ServiceManager.Get<GameData>().PartyDefs["hero"]);
         world.Party.Add(actor);
-        GameObject.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>().Follow = Hero.transform;
+        GameObject.Find(Constants.CAMERA_NAME).GetComponent<CinemachineVirtualCamera>().Follow = Hero.transform;
     }
 }

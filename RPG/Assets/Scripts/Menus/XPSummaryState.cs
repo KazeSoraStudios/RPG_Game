@@ -56,14 +56,14 @@ namespace RPG_UI
                 if (summary.gameObject.activeSelf)
                     summary.Execute(deltaTime);
             if (!isCountingXp)
-                return true;
+                return false;
             xpCounter += xpPerSecond * deltaTime;
             var xpToApply = Mathf.Floor(xpCounter);
             xp -= xpToApply;
             ApplyXPToParty((int)xpToApply);
             if (xp <= 0)
                 isCountingXp = false;
-            return true;
+            return false;
         }
 
         public void Exit() 

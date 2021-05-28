@@ -61,6 +61,7 @@ public class Constants
     public const float SELECT_MARKER_BOUNCE_SPEED = 5.0f;
     public const string DEFAULT_COMBAT_BACKGROUND = "";
     public const string DEFAULT_COMBAT_ENEMY_PREFAB = CHARACTER_PREFAB_PATH + "Goblin";
+    public const string CAMERA_NAME = "CM vcam1";
 
     // Character States
     public const string EMPTY_STATE = "empty";

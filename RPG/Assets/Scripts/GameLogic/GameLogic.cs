@@ -26,7 +26,7 @@ public class GameLogic : MonoBehaviour
         ServiceManager.Register(this);
         LogManager.SetLogLevel(LogLevel);
         DontDestroyOnLoad(this);
-        DontDestroyOnLoad(Camera.main);
+        //DontDestroyOnLoad(Camera.main);
         DontDestroyOnLoad(GameObject.Find("UICanvas"));
 
         triggerManager = new TriggerManager();

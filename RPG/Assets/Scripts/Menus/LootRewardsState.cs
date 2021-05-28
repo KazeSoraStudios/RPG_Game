@@ -68,7 +68,7 @@ namespace RPG_UI
                 if (gold == 0)
                     isCountingGold = false;
             }
-            return true;
+            return false;
         }
 
         public void HandleInput()

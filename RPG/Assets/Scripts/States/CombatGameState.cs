@@ -123,7 +123,7 @@ namespace RPG_Combat
                 foreach (var enemy in EnemyActors)
                     enemy.Stats.SetStat(Stat.HP, 0);
 
-            return true;
+            return false;
         }
 
         public void HandleInput() { }

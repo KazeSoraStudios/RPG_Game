@@ -147,7 +147,7 @@ public class MoveState : CharacterState
     public override bool Execute(float deltaTime)
     {
         var distance = Vector2.Distance(Character.transform.position, targetPosition);
-        if (distance <= 0.1f)
+        if (distance <= 0.05f)
         {
             Character.transform.position = targetPosition;
             var position = Character.transform.position;
