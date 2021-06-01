@@ -180,6 +180,6 @@ public class MoveState : CharacterState
             movement.y = 0.0f;
         else
             movement.x = 0.0f;
-        return movement;
+        return Character.CanMove(movement) ? movement : Vector2.zero;
     }
 }

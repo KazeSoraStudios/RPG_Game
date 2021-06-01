@@ -58,7 +58,7 @@ public class GameLogic : MonoBehaviour
     IEnumerator LoadVillage()
     {
         yield return new WaitForSeconds(0.1f);
-        var village = GameObject.Find("VillageMap");
+        var village = GameObject.Find("VillageMap 2");
         var map = village.GetComponent<Map>();
         var exploreState = map.gameObject.AddComponent<ExploreState>();
         exploreState.Init(map, Stack, Vector2.zero);
