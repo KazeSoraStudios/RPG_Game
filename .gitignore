@@ -112,3 +112,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 RPG/credentials.json
 Design/
+RPG/Assets/UnityGoogleDrive/Resources/GoogleDriveSettings.asset

@@ -12,6 +12,10 @@ public class ExploreState : MonoBehaviour, IGameState
     public StateStack stack;
     public Map Map;
 
+    private void OnDestroy() 
+    {
+        ServiceManager.Get<NPCManager>().ClearNpcsForMap(Map.MapName);
+    }
 
     public void Init(Map map, StateStack stack, Vector3 startPosition)
     {
@@ -40,7 +44,7 @@ public class ExploreState : MonoBehaviour, IGameState
 
     public void Exit() 
     {
-        ServiceManager.Get<NPCManager>().ClearNpcsForMap(Map.MapName);
+        
     }
 
     public bool Execute(float deltaTime)

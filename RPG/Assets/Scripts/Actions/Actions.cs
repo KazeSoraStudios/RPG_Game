@@ -60,12 +60,21 @@ public class Actions
     //    ["special"] = "Special"
     //}
 
-    public static Action<Trigger, Entity> Teleport(Map map, int tileX, int tileY, int layer = 1)
+    public static void Teleport(Entity hero, Vector2 position)
     {
-        return (trigger, entity) =>
+        ServiceManager.Get<World>().LockInput();
+        var events = new List<IStoryboardEvent>
         {
-            entity.SetTilePosition(tileX, tileY, layer, map);
+            StoryboardEventFunctions.BlackScreen(),
+            StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => hero.SetTilePosition(position)),
+            StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
+            StoryboardEventFunctions.HandOffToExploreState()
         };
+        var stack = ServiceManager.Get<GameLogic>().Stack;
+        var storyboard = new Storyboard(stack, events, true);
+        stack.Push(storyboard);
     }
 
     public static List<IStoryboardEvent> ChangeSceneEvents(StateStack stack, string currentScene, string nextScene, Func<Map> function)
