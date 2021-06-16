@@ -67,8 +67,9 @@ public class Actions
         {
             StoryboardEventFunctions.BlackScreen(),
             StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
-            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
             StoryboardEventFunctions.Function(() => hero.SetTilePosition(position)),
+            StoryboardEventFunctions.Wait(0.5f),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
             StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
             StoryboardEventFunctions.HandOffToExploreState()
         };

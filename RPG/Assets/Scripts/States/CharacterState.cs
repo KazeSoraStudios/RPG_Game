@@ -66,7 +66,7 @@ public class PlanStrollState : CharacterState
                 direction = Vector2.down;
 
             if (Character.CanMove(direction))
-                Character.Controller.Change(Constants.MOVE_STATE, new MoveParams(direction));
+                Character.Controller.Change(Constants.UNIT_MOVE_STATE, new MoveParams(direction));
             CountDown = Random.Range(0, 3);
         }
         return true;
@@ -112,13 +112,13 @@ public class WaitState : CharacterState
     }
 }
 
-public class MoveState : CharacterState
+public class UnitMoveState : CharacterState
 {
     private const string Name = "MoveState";
     private Trigger Trigger;
     private Vector2 targetPosition = Vector2.zero;
 
-    public MoveState(Map map, Character character)
+    public UnitMoveState(Map map, Character character)
         : base(map, character) { }
 
     public override string GetName()
@@ -181,5 +181,55 @@ public class MoveState : CharacterState
         else
             movement.x = 0.0f;
         return Character.CanMove(movement) ? movement : Vector2.zero;
+    }
+}
+
+public class MoveState : CharacterState
+{
+    private const string Name = "MoveState";
+    private Trigger Trigger;
+
+    public MoveState(Map map, Character character)
+        : base(map, character) { }
+
+    public override string GetName()
+    {
+        return Name;
+    }
+
+    public override void Enter(object stateParams)
+    {
+        if (!(stateParams is MoveParams moveParams))
+        {
+            Character.Controller.Change(Character.defaultState);
+            return;
+        }
+        Character.UpdateMovement(moveParams.MovePosition);
+    }
+
+    public override void Exit()
+    {
+        var position = Character.transform.position;
+        Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
+        Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
+        Trigger = null;
+    }
+
+    public override bool Execute(float deltaTime)
+    {
+        Vector2 movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if (movement != Vector2.zero)
+        {
+            if (movement.x != 0.0f)
+                movement.y = 0.0f;
+            else
+                movement.x = 0.0f;
+            Character.UpdateMovement(movement);
+        }
+        else
+        {
+            Character.Controller.Change(Character.defaultState);
+        }
+        return true;
     }
 }

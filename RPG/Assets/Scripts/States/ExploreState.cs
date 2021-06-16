@@ -14,7 +14,10 @@ public class ExploreState : MonoBehaviour, IGameState
 
     private void OnDestroy() 
     {
-        ServiceManager.Get<NPCManager>().ClearNpcsForMap(Map.MapName);
+        var npcManager = ServiceManager.Get<NPCManager>();
+        if (npcManager == null)
+            return;
+        npcManager.ClearNpcsForMap(Map.MapName);
     }
 
     public void Init(Map map, StateStack stack, Vector3 startPosition)

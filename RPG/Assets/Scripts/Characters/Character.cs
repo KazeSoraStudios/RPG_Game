@@ -215,6 +215,8 @@ namespace RPG_Character
                     return new WaitState(Map, this);
                 case Constants.MOVE_STATE:
                     return new MoveState(Map, this);
+                case Constants.UNIT_MOVE_STATE:
+                    return new UnitMoveState(Map, this);
                 case Constants.COMBAT_MOVE_STATE:
                     return new CSMove(this);
                 case Constants.STROLL_STATE:

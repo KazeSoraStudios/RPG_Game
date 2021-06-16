@@ -11,6 +11,7 @@ using System.Collections;
 
 public class GameLogic : MonoBehaviour
 {
+    [SerializeField] bool QuickPlay;
     [SerializeField] LogLevel LogLevel;
     [SerializeField] public GameState GameState;
     [SerializeField] UIController UIController;
@@ -27,7 +28,25 @@ public class GameLogic : MonoBehaviour
         LogManager.SetLogLevel(LogLevel);
         DontDestroyOnLoad(this);
         //DontDestroyOnLoad(Camera.main);
-        DontDestroyOnLoad(GameObject.Find("UICanvas"));
+        var ui = GameObject.Find("UICanvas");
+        if (ui == null)
+        {
+            if (QuickPlay)
+            {
+                var prefab = Resources.Load<GameObject>("Prefabs/UI/UI");
+                ui = Instantiate(prefab);
+            }
+            if (ui == null)
+            {
+                LogManager.LogError("No UI in scene.");
+                return;
+            }
+        }
+        if (UIController == null)
+        {
+            UIController = ui.GetComponent<UIController>();
+        }
+        DontDestroyOnLoad(ui);
 
         triggerManager = new TriggerManager();
     }
@@ -45,32 +64,36 @@ public class GameLogic : MonoBehaviour
         gameManager.LoadSavedGames();
         if (gameManager.GetNumberOfSaves() > 0)
             gameManager.LoadGameStateData(0);
-        SetUpNewGame();
+        LoadData();
+        if (QuickPlay)
+        {
+            var map = GameObject.FindObjectOfType<Map>();
+            if (map == null)
+            {
+                LogManager.LogError("No map found for quick play.");
+                return;
+            }
+            var exploreState = map.gameObject.AddComponent<ExploreState>();
+            exploreState.Init(map, Stack, Vector2.zero);
+            Stack.Push(exploreState);
+        }
     }
 
     public void StartNewGame()
     {
-        SceneManager.LoadScene("Village", LoadSceneMode.Single);
+        SceneManager.LoadScene(Constants.HERO_VILLAGE_SCENE, LoadSceneMode.Single);
         StartCoroutine(LoadVillage());
-        //LoadMap();
     }
 
     IEnumerator LoadVillage()
     {
         yield return new WaitForSeconds(0.1f);
-        var village = GameObject.Find("VillageMap 2");
+        var village = GameObject.Find("VillageMap");
         var map = village.GetComponent<Map>();
         var exploreState = map.gameObject.AddComponent<ExploreState>();
         exploreState.Init(map, Stack, Vector2.zero);
         Stack.Push(exploreState);
         yield return null;
-    }
-
-    public void OnMapLoaded(Map map)
-    {
-        //var exploreState = new ExploreState();
-        //exploreState.Init(map, Stack, Vector2.zero);
-        //Stack.Push(exploreState);
     }
 
     public void LoadGame()
@@ -165,24 +188,9 @@ public class GameLogic : MonoBehaviour
         GameState.World.Execute(deltaTime);
     }
 
-    // TODO change name
-    private void SetUpNewGame()
+    private void LoadData()
     {
         GameDataDownloader.LoadGameData(null);
-    }
-
-    private void LoadMap()
-    {
-        var obj = ServiceManager.Get<AssetManager>().Load<Map>(Constants.FIRST_VILLAGE_PREFAB_PATH);
-        if (obj != null)
-        {
-            var map = Instantiate(obj);
-            map.transform.SetParent(this.transform, false);
-            //var exploreState = map.gameObject.AddComponent<ExploreState>();
-            var exploreState = new ExploreState();
-            exploreState.Init(map, Stack, Vector2.zero);
-            Stack.Push(exploreState);
-        }
     }
 
     private void GiveEverything()

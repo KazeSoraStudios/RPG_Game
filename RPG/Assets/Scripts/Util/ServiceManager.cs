@@ -32,7 +32,7 @@ public class ServiceManager
     {
         if (!_services.ContainsKey(typeof(T)))
         {
-            LogManager.LogError($"Key {typeof(T)} not found! Returning null.");
+            LogManager.LogWarn($"Key {typeof(T)} not found! Returning null.");
             return default;
         }
         else

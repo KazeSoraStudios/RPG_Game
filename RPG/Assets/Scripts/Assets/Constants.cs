@@ -27,6 +27,9 @@ public class Constants
     public const string LOOT_REWARDS_PREFAB = "prefabs/UI/Loot Menu";
     public const string UI_SELECTION_CARET_PREFAB = "prefabs/UI/Selection Caret";
 
+    // Scenes
+    public const string HERO_VILLAGE_SCENE = "Village";
+
     // Portraits
     public const string PORTRAIT_PATH = "Textures/Portraits/";
 
@@ -67,6 +70,7 @@ public class Constants
     public const string EMPTY_STATE = "empty";
     public const string WAIT_STATE = "wait";
     public const string MOVE_STATE = "move";
+    public const string UNIT_MOVE_STATE = "unit_move";
     public const string COMBAT_MOVE_STATE = "combat_move";
     public const string STROLL_STATE = "stroll";
     public const string STAND_STATE = "stand";
@@ -78,8 +82,8 @@ public class Constants
     public const string USE_STATE = "use";
     public const string RUN_ANIMATION_STATE = "run_anim";
     public const string CAST_ANIMATION_STATE = "cast";
-    public static List<string> PARTY_STATES = new List<string> { WAIT_STATE, MOVE_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_STATE, USE_STATE, RUN_ANIMATION_STATE };
-    public static List<string> ENEMY_STATES = new List<string> { WAIT_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_ENEMY_STATE, ENEMY_DIE_STATE, RUN_ANIMATION_STATE };
+    public static List<string> PARTY_STATES = new List<string> { WAIT_STATE, MOVE_STATE, UNIT_MOVE_STATE, COMBAT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_STATE, USE_STATE, RUN_ANIMATION_STATE };
+    public static List<string> ENEMY_STATES = new List<string> { WAIT_STATE, COMBAT_MOVE_STATE, UNIT_MOVE_STATE, STAND_STATE, FOLLOW_PATH_STATE, HURT_ENEMY_STATE, ENEMY_DIE_STATE, RUN_ANIMATION_STATE };
     public static List<string> NPC_STATES = new List<string> { STAND_STATE, MOVE_STATE, FOLLOW_PATH_STATE, STROLL_STATE};
 
     // Game states

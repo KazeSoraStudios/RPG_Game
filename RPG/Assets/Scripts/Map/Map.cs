@@ -16,7 +16,7 @@ public class Map : MonoBehaviour
 
     private void Start()
     {
-        ServiceManager.Get<GameLogic>().OnMapLoaded(this);
+        
     }
 
     public void LoadNpcs()
