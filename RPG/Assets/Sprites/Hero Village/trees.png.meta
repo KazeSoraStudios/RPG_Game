@@ -14,6 +14,9 @@ TextureImporter:
   - first:
       213: 5223556475179290604
     second: trees_3
+  - first:
+      213: 384058854656272681
+    second: trees_4
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -163,7 +166,7 @@ TextureImporter:
         x: 304
         y: 320
         width: 134
-        height: 184
+        height: 64
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,6 +197,27 @@ TextureImporter:
       bones: []
       spriteID: cefc04740fccd7840800000000000000
       internalID: 5223556475179290604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: trees_4
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 384
+        width: 134
+        height: 120
+      alignment: 9
+      pivot: {x: 0.5, y: 0.53333336}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92961a45e73745500800000000000000
+      internalID: 384058854656272681
       vertices: []
       indices: 
       edges: []
