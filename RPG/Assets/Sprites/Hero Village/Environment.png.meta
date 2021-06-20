@@ -101,6 +101,18 @@ TextureImporter:
   - first:
       213: -2027768988174841985
     second: Environment_32
+  - first:
+      213: 6349013988125360775
+    second: Environment_33
+  - first:
+      213: -7963306881671151232
+    second: Environment_34
+  - first:
+      213: -8895750759828453358
+    second: Environment_35
+  - first:
+      213: -420011917627683574
+    second: Environment_36
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -890,6 +902,90 @@ TextureImporter:
       bones: []
       spriteID: f77094d49daebd3e0800000000000000
       internalID: -2027768988174841985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Environment_33
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 208
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 782c23c659a3c1850800000000000000
+      internalID: 6349013988125360775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Environment_34
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 208
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08141902596ac7190800000000000000
+      internalID: -7963306881671151232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Environment_35
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 208
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 218830ec0d1fb8480800000000000000
+      internalID: -8895750759828453358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Environment_36
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 208
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a0d0f50e261db2af0800000000000000
+      internalID: -420011917627683574
       vertices: []
       indices: 
       edges: []
