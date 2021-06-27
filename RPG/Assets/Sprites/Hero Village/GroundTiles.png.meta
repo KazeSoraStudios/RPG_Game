@@ -1584,7 +1584,7 @@ TextureImporter:
         width: 160
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1592,6 +1592,27 @@ TextureImporter:
       bones: []
       spriteID: 82c825bc3e58edcd0800000000000000
       internalID: -2531438727120384984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GroundTiles_19
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f432f36e427650080800000000000000
+      internalID: -9221851253791841457
       vertices: []
       indices: 
       edges: []
