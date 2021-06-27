@@ -10,8 +10,8 @@ namespace RPG_GameState
 	{
 		[SerializeField] bool BinarySave;
 
-		[SerializeField] string dirpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/RPG/SaveData";
-		[SerializeField] string filepath = "/savedata.rpg";
+		string dirpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/RPG/SaveData/";
+		[SerializeField] string filepath = "savedata.rpg";
 		private GameStateData current;
 		private List<GameStateData> savedGames = new List<GameStateData>();
 
@@ -55,8 +55,11 @@ namespace RPG_GameState
 			}
 			else
 			{
+				if (!Directory.Exists(dirpath))
+						Debug.Log("Not found");
+				Directory.CreateDirectory(dirpath);
 				using (var writer = new StreamWriter(dirpath + filepath))
-				{
+				{					
 					var json = JsonUtility.ToJson(state);
 					writer.Write(json);
 					writer.Flush();

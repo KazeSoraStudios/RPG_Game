@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RPG_GameState
 {
@@ -15,7 +16,7 @@ namespace RPG_GameState
             World.Reset();
         }
 
-        public GameStateData ToGameStateData()
+        public GameStateData Save()
         {
             var config = new GameStateData.Config
             {
@@ -24,7 +25,9 @@ namespace RPG_GameState
                 Items = ItemData.FromItems(World.GetUseItemsList()),
                 KeyItems = ItemData.FromItems(World.GetKeyItemsList()),
                 PartyMembers = World.Party.ToCharacterInfoList(),
-                Quests = QuestData.FromQuests(World.GetQuestList())
+                Quests = QuestData.FromQuests(World.GetQuestList()),
+                SceneName = SceneManager.GetActiveScene().name,
+                Location = World.Party.Members[0].transform.position
             };
             return new GameStateData(config);
         }

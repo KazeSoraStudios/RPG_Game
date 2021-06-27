@@ -107,6 +107,16 @@ namespace RPG_UI
             SelectionArrow.transform.position = position;
         }
 
+        public void SetTextColor(int option, Color color)
+        {
+            if (option < 0 || option >= Options.Length)
+            {
+                LogManager.LogWarn($"Index {option} is larger than OptionList size {Options.Length}");
+                return;
+            }
+            Options[option].color = color;
+        }
+
         private void SetText(List<string> names)
         {
             int i = 0;

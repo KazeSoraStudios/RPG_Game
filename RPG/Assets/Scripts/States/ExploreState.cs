@@ -89,6 +89,13 @@ public class ExploreState : MonoBehaviour, IGameState
         return "ExploreState: " + name;
     }
 
+    public void SetHeroPosition(Vector2 position)
+    {
+        if (Hero == null)
+            return;
+        Hero.transform.position = position;
+    }
+
     private void LoadHero(Vector3 startPosition)
     {
         var game = ServiceManager.Get<GameLogic>().GameState;

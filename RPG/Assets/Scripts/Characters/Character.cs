@@ -35,7 +35,7 @@ namespace RPG_Character
         {
             var position = (Vector2)transform.position + targetPosition;
             var collision = Physics2D.OverlapCircle(position, 0.2f, collisionLayer);
-            return !collision;
+            return true;//!collision;
         }
 
         public void CombatMovement(Vector2 movement, Direction direction)

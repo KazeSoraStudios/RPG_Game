@@ -1,13 +1,13 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using RPG_UI;
 using RPG_Combat;
 using RPG_Character;
 using RPG_GameData;
 using RPG_GameState;
-using System.Collections.Generic;
-using System.Collections;
 
 public class GameLogic : MonoBehaviour
 {
@@ -81,24 +81,29 @@ public class GameLogic : MonoBehaviour
 
     public void StartNewGame()
     {
-        SceneManager.LoadScene(Constants.HERO_VILLAGE_SCENE, LoadSceneMode.Single);
-        StartCoroutine(LoadVillage());
+        
+        StartCoroutine(LoadVillage(Constants.HERO_VILLAGE_SCENE));
     }
 
-    IEnumerator LoadVillage()
+    IEnumerator LoadVillage(string scene, Action<ExploreState> callback = null)
     {
+        SceneManager.LoadScene(scene, LoadSceneMode.Single);
         yield return new WaitForSeconds(0.1f);
-        var village = GameObject.Find("VillageMap");
+        var village = GameObject.Find($"{scene}Map");
         var map = village.GetComponent<Map>();
         var exploreState = map.gameObject.AddComponent<ExploreState>();
         exploreState.Init(map, Stack, Vector2.zero);
         Stack.Push(exploreState);
+        callback?.Invoke(exploreState);
         yield return null;
     }
 
     public void LoadGame()
     {
-        
+        var gameManager = ServiceManager.Get<GameStateManager>();
+        GameState = gameManager.LoadGameStateFromCurrentData();
+        var savedData = gameManager.GetCurrent();
+        StartCoroutine(LoadVillage(savedData.sceneName, (ExploreState state) => state.SetHeroPosition(savedData.location)));
     }
 
     private void Update()
@@ -172,7 +177,7 @@ public class GameLogic : MonoBehaviour
 
 
         if (Input.GetKeyDown(KeyCode.K))
-            ServiceManager.Get<GameStateManager>().SaveGameStateData(GameState.ToGameStateData());
+            ServiceManager.Get<GameStateManager>().SaveGameStateData(GameState.Save());
 
         if (Input.GetKeyDown(KeyCode.L))
         {

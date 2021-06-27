@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using RPG_GameData;
 
 namespace RPG_GameState
@@ -11,6 +12,8 @@ namespace RPG_GameState
         {
             public int Gold;
             public float PlayTime;
+            public Vector2 Location;
+            public string SceneName;
             public List<CharacterInfo> PartyMembers = new List<CharacterInfo>();
             public List<ItemData> Items = new List<ItemData>();
             public List<ItemData> KeyItems = new List<ItemData>();
@@ -22,6 +25,8 @@ namespace RPG_GameState
 
         public int gold;
         public float playTime;
+        public Vector2 location;
+        public string sceneName;
         public List<CharacterInfo> partyMembers = new List<CharacterInfo>();
         public List<ItemData> items = new List<ItemData>();
         public List<ItemData> keyItems = new List<ItemData>();
@@ -43,6 +48,8 @@ namespace RPG_GameState
             }
             gold = config.Gold;
             playTime = config.PlayTime;
+            sceneName = config.SceneName;
+            location = config.Location;
             partyMembers = config.PartyMembers;
             items = config.Items;
             quests = config.Quests;
