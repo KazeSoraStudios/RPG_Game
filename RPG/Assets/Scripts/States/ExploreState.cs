@@ -2,7 +2,6 @@ using UnityEngine;
 using RPG_UI;
 using RPG_Character;
 using RPG_GameData;
-using Cinemachine;
 
 public class ExploreState : MonoBehaviour, IGameState
 {
@@ -105,6 +104,7 @@ public class ExploreState : MonoBehaviour, IGameState
             Hero = game.World.Party.GetActor(0).GetComponent<Character>();
         Hero.transform.position = startPosition;
         Hero.transform.rotation = Quaternion.identity;
+        Map.Camera.Follow = Hero.transform;
     }
 
     private void LoadHeroPrefab()
@@ -124,6 +124,5 @@ public class ExploreState : MonoBehaviour, IGameState
         var actor = Hero.GetComponent<Actor>();
         actor.Init(ServiceManager.Get<GameData>().PartyDefs["hero"]);
         world.Party.Add(actor);
-        GameObject.Find(Constants.CAMERA_NAME).GetComponent<CinemachineVirtualCamera>().Follow = Hero.transform;
     }
 }

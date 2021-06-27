@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace RPG_GameState
 {
-    public class GameState : MonoBehaviour
+    public class GameState
     {
         public World World;
 

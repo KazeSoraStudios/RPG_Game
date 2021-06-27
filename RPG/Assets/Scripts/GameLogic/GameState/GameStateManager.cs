@@ -55,8 +55,6 @@ namespace RPG_GameState
 			}
 			else
 			{
-				if (!Directory.Exists(dirpath))
-						Debug.Log("Not found");
 				Directory.CreateDirectory(dirpath);
 				using (var writer = new StreamWriter(dirpath + filepath))
 				{					
@@ -115,9 +113,10 @@ namespace RPG_GameState
 			current = savedGames[index];
         }
 
-		public GameState LoadGameStateFromCurrentData()
+		public GameState LoadGameStateFromCurrentData(World world)
 		{
 			var game = new GameState();
+			game.World = world;
 			if (current == null)
 				return game;
 			game.FromGameStateData(current);

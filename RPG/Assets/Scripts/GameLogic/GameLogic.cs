@@ -46,9 +46,13 @@ public class GameLogic : MonoBehaviour
         {
             UIController = ui.GetComponent<UIController>();
         }
-        DontDestroyOnLoad(ui);
+        DontDestroyOnLoad(UIController.transform.parent);
 
         triggerManager = new TriggerManager();
+        GameState = new GameState
+        {
+            World = GetComponent<World>()
+        };
     }
 
     private void OnDestroy()
@@ -60,10 +64,6 @@ public class GameLogic : MonoBehaviour
     {
         Stack = new StateStack();
         UIController.InitUI();
-        var gameManager = ServiceManager.Get<GameStateManager>();
-        gameManager.LoadSavedGames();
-        if (gameManager.GetNumberOfSaves() > 0)
-            gameManager.LoadGameStateData(0);
         LoadData();
         if (QuickPlay)
         {
@@ -81,11 +81,10 @@ public class GameLogic : MonoBehaviour
 
     public void StartNewGame()
     {
-        
-        StartCoroutine(LoadVillage(Constants.HERO_VILLAGE_SCENE));
+        StartCoroutine(LoadScene(Constants.HERO_VILLAGE_SCENE));
     }
 
-    IEnumerator LoadVillage(string scene, Action<ExploreState> callback = null)
+    IEnumerator LoadScene(string scene, Action<ExploreState> callback = null)
     {
         SceneManager.LoadScene(scene, LoadSceneMode.Single);
         yield return new WaitForSeconds(0.1f);
@@ -101,9 +100,11 @@ public class GameLogic : MonoBehaviour
     public void LoadGame()
     {
         var gameManager = ServiceManager.Get<GameStateManager>();
-        GameState = gameManager.LoadGameStateFromCurrentData();
+        GameState = gameManager.LoadGameStateFromCurrentData(GetComponent<World>());
         var savedData = gameManager.GetCurrent();
-        StartCoroutine(LoadVillage(savedData.sceneName, (ExploreState state) => state.SetHeroPosition(savedData.location)));
+        var events = Actions.LoadGameEvents(Stack, savedData);
+        var storyboard = new Storyboard(Stack, events, false);
+        Stack.Push(storyboard);
     }
 
     private void Update()

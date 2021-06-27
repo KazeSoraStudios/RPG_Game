@@ -1106,80 +1106,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: -15, y: 8}
---- !u!1001 &859971097
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4474695500408404650, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_Name
-      value: World
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4474695500408404695, guid: 2912ff7c35e46814a85b3634c8351b34,
-        type: 3}
-      propertyPath: QuickPlay
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2912ff7c35e46814a85b3634c8351b34, type: 3}
 --- !u!1 &930752349
 GameObject:
   m_ObjectHideFlags: 0
@@ -1623,7 +1549,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 0
-      m_TileSpriteIndex: 0
+      m_TileSpriteIndex: 3
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -1642,15 +1568,15 @@ Tilemap:
   - m_RefCount: 25
     m_Data: {fileID: 11400000, guid: 39ce16c5964cc41458859ed6469b23ce, type: 2}
   m_TileSpriteArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: 3623604698466468670, guid: b33a91be370f64ba28b59e35aa177452,
       type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
   - m_RefCount: 25
     m_Data: {fileID: 8371019140385695755, guid: b33a91be370f64ba28b59e35aa177452,
       type: 3}
@@ -35102,6 +35028,7 @@ MonoBehaviour:
   MapName: Village
   CombatBackground: 
   HeroStartingPosition: {x: 0, y: 0, z: 0}
+  Camera: {fileID: 1812652861}
   NPCParent: {fileID: 452518473}
   MapNPCs:
   - EntityId: golbin

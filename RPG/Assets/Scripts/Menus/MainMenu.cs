@@ -12,9 +12,7 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var gamesExist = ServiceManager.Get<GameStateManager>().GetNumberOfSaves() > 0;
-        if (!gamesExist)
-            ContinueButton.interactable = false;
+        CheckForSaveData();
     }
     
     public void NewGame()
@@ -25,5 +23,20 @@ public class MainMenu : MonoBehaviour
     public void LoadGame()
     {
         ServiceManager.Get<GameLogic>().LoadGame();
+    }
+
+    private void CheckForSaveData()
+    {
+        var gameManager = ServiceManager.Get<GameStateManager>();
+        gameManager.LoadSavedGames();
+        if (gameManager.GetNumberOfSaves() > 0)
+        {
+            gameManager.LoadGameStateData(0);
+            ContinueButton.interactable = true;
+        }
+        else
+        {
+            ContinueButton.interactable = false;
+        }
     }
 }

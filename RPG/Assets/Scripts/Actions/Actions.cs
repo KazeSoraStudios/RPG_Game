@@ -95,6 +95,23 @@ public class Actions
         };
     }
 
+    public static List<IStoryboardEvent> LoadGameEvents(StateStack stack, GameStateData data)
+    {
+        return new List<IStoryboardEvent>
+        {
+            StoryboardEventFunctions.BlackScreen(),
+            StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.LoadScene(data.sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single),
+            //StoryboardEventFunctions.Wait(1.0f),
+            StoryboardEventFunctions.AddExploreStateToCurrentMap(data.sceneName, stack),
+            StoryboardEventFunctions.MoveHeroToPosition(data.sceneName, data.location),
+            //StoryboardEventFunctions.Wait(2.0f),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
+           StoryboardEventFunctions.HandOffToExploreState(data.sceneName)
+        };
+    }
+
     public static Action<Trigger, Entity, int, int, int> AddNPC(Map map, Entity npc)
     {
         LogManager.LogDebug($"Adding NPC [{npc.name}]");

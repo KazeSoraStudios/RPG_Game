@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using RPG_Character;
-using RPG_GameData;
+using Cinemachine;
 
 public class Map : MonoBehaviour
 {
     [SerializeField] public string MapName;
     [SerializeField] public string CombatBackground = Constants.DEFAULT_COMBAT_BACKGROUND;
     [SerializeField] public Vector3 HeroStartingPosition;
-    [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
+    [SerializeField] public CinemachineVirtualCamera Camera;
     [SerializeField] Transform NPCParent;
+    [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
     [SerializeField] List<NPCData> MapNPCs = new List<NPCData>();
 
     private void Start()
