@@ -45,8 +45,12 @@ public class GameLogic : MonoBehaviour
         if (UIController == null)
         {
             UIController = ui.GetComponent<UIController>();
+            DontDestroyOnLoad(UIController);
         }
-        DontDestroyOnLoad(UIController.transform.parent);
+        else
+        {
+            DontDestroyOnLoad(UIController.transform.parent);
+        }
 
         triggerManager = new TriggerManager();
         GameState = new GameState
