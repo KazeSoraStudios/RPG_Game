@@ -29,6 +29,8 @@ public class Constants
 
     // Scenes
     public const string HERO_VILLAGE_SCENE = "Village";
+    public const string FOREST_SCENE = "Forest";
+    public const string WORLD_MAP_SCENE = "World";
 
     // Portraits
     public const string PORTRAIT_PATH = "Textures/Portraits/";

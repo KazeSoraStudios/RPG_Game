@@ -527,6 +527,9 @@ public class StoryboardEventFunctions
             Function = (_) =>
             {
                 var loaded = false;
+                var camera = Camera.main;
+                var listener = camera.GetComponent<AudioListener>();
+                GameObject.Destroy(listener);
                 SceneManager.sceneLoaded += (x, y) => loaded = true;
                 SceneManager.LoadScene(scene, mode);
                 return new BlockUntilEvent

@@ -112,6 +112,24 @@ public class Actions
         };
     }
 
+    public static List<IStoryboardEvent> GoToWorldMapEvents(StateStack stack, string currentScene, string nextScene, Func<Map> function, Vector2 position)
+    {
+        return new List<IStoryboardEvent>
+        {
+            StoryboardEventFunctions.BlackScreen(),
+            StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.LoadScene(nextScene),
+            //StoryboardEventFunctions.Wait(1.0f),
+            StoryboardEventFunctions.ReplaceExploreState(Constants.HANDIN_STATE, stack, function),
+            StoryboardEventFunctions.MoveHeroToPosition(nextScene, position),
+            StoryboardEventFunctions.DeleteScene(currentScene, nextScene),
+            //StoryboardEventFunctions.Wait(2.0f),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
+            StoryboardEventFunctions.HandOffToExploreState()
+        };
+    }
+
     public static Action<Trigger, Entity, int, int, int> AddNPC(Map map, Entity npc)
     {
         LogManager.LogDebug($"Adding NPC [{npc.name}]");

@@ -187,6 +187,13 @@ namespace RPG_Character
             Controller.Change(defaultState);
         }
 
+        public void PrepareForSceneChange()
+        {
+            ResetAnimator();
+            Entity.UpdateMovement(Vector2.zero);
+            Controller.Change(defaultState);
+        }
+
         private void ResetAnimator()
         {
             animator.SetFloat("Horizontal", 0);

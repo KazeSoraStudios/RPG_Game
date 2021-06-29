@@ -126,6 +126,12 @@ namespace RPG_Character
                 character.GetComponent<Character>().ReturnFromCombat();
         }
 
+        public void PrepareForSceneChange()
+        {
+            foreach (var character in Members)
+                character.GetComponent<Character>().PrepareForSceneChange();
+        }
+
         public void GiveExp(int exp)
         {
             foreach (var member in Members)
