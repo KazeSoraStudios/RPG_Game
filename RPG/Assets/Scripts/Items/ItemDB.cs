@@ -5,7 +5,7 @@ using RPG_Character;
 using RPG_Combat;
 using RPG_GameData;
 public enum ItemType { Useable, Key, Accessory, Weapon, Armor, None };
-public enum UseRestriction { None, Hero, Thief, Mage };
+public enum UseRestriction { None, Hero, Samurai, Mage };
 
 public class ItemDB : MonoBehaviour
 {

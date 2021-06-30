@@ -4,7 +4,9 @@ using RPG_Character;
 
 namespace RPG_Combat
 {
-    public enum Selector { WeakestActor, LowestHP, WeakestEnemy, WeakestPartyMember, LowestEnemyHP, LowestPartyHP, LowestMPParty, LowestMPEnemy, FirstDeadParty, FirstDeadEnemy, RandomParty, RandomEnemy }
+    public enum Selector { WeakestActor, LowestHP, WeakestEnemy, WeakestPartyMember, LowestEnemyHP, 
+        LowestPartyHP, LowestMPParty, LowestMPEnemy, FirstDeadParty, FirstDeadEnemy, RandomParty, RandomEnemy,
+        FullParty, FullEnemies }
 
     public sealed class CombatSelector
     {

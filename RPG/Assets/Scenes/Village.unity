@@ -31042,7 +31042,7 @@ TilemapRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 2
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 3.34375, y: 1.5, z: 0}
+  m_ChunkCullingBounds: {x: 3.40625, y: 1.5, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 0
@@ -35177,7 +35177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Amount: 1
-  ItemId: Bone Blade
+  ItemId: Kendo Stick
 --- !u!1 &5848690098905546967
 GameObject:
   m_ObjectHideFlags: 0

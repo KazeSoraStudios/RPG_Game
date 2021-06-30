@@ -68,7 +68,7 @@ namespace RPG_GameData
             var ts = new T[count];
             for (int i = 0; i < count; i++)
             {
-                var t = GetEnum(defaultT, data);
+                var t = GetEnum(defaultT, enums[i]);
                 ts[i] = t;
             }
             return ts;
@@ -106,6 +106,10 @@ namespace RPG_GameData
                     return (state, hurt) => CombatSelector.FindWeakestPartyMember(state);
                 case Selector.RandomEnemy:
                     return (state, hurt) => CombatSelector.RandomEnemy(state);
+                case Selector.FullParty:
+                    return (state, hurt) => CombatSelector.Party(state);
+                case Selector.FullEnemies:
+                    return (state, hurt) => CombatSelector.Enemies(state);
                 case Selector.RandomParty:
                 default:
                     return (state, hurt) => CombatSelector.RandomPlayer(state);

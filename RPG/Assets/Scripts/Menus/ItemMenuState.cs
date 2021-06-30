@@ -139,7 +139,7 @@ namespace RPG_UI
 
         private void SetDescription(int index)
         {
-            var config = index < activeConfigs.Count - 1 ? activeConfigs[index] : ItemListCell.EmptyConfig;
+            var config = index <= activeConfigs.Count - 1 ? activeConfigs[index] : ItemListCell.EmptyConfig;
             var description = config.Description;
             DescriptionText.SetText(ServiceManager.Get<LocalizationManager>().Localize(description));
         }
