@@ -385,8 +385,12 @@ namespace RPG_Combat
             };
             onWin?.Invoke();
             gameObject.SafeSetActive(false);
+            
+            FixCameraPosition();
+
             var storyboard = new Storyboard(gameStack, events);
             gameStack.Push(storyboard);
+
         }
 
         private void OnLose()
@@ -420,6 +424,8 @@ namespace RPG_Combat
             }
             events.Add(StoryboardEventFunctions.Wait(2.0f));
             events.Add(StoryboardEventFunctions.FadeScreenOut("black"));
+
+            FixCameraPosition();
 
             var storyboard = new Storyboard(gameStack, events);
             gameStack.Push(storyboard);
@@ -547,6 +553,12 @@ namespace RPG_Combat
             var mapName = GetName();
             foreach (var enemy in EnemyCharacters)
                 ServiceManager.Get<NPCManager>().AddNPC(mapName, enemy);
+        }
+
+        public void FixCameraPosition()
+        {          
+            UnityEngine.Object.Destroy(Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>().m_Follow.gameObject);
+            Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>().m_Follow = PartyCharacters[0].transform;
         }
     }
 
