@@ -223,12 +223,12 @@ TextureImporter:
       name: Environment_0
       rect:
         serializedVersion: 2
-        x: 58
+        x: 62
         y: 168
-        width: 32
+        width: 24
         height: 45
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.13333334}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -247,9 +247,9 @@ TextureImporter:
         x: 128
         y: 193
         width: 43
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2857143}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -349,12 +349,12 @@ TextureImporter:
       name: Environment_6
       rect:
         serializedVersion: 2
-        x: 215
+        x: 224
         y: 156
-        width: 32
-        height: 32
-      alignment: 6
-      pivot: {x: 0, y: 0}
+        width: 13
+        height: 23
+      alignment: 9
+      pivot: {x: 0.5, y: 0.17391305}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -370,12 +370,12 @@ TextureImporter:
       name: Environment_7
       rect:
         serializedVersion: 2
-        x: 247
+        x: 254
         y: 151
-        width: 32
-        height: 32
+        width: 18
+        height: 29
       alignment: 9
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.20689656}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -391,12 +391,12 @@ TextureImporter:
       name: Environment_8
       rect:
         serializedVersion: 2
-        x: 278
+        x: 285
         y: 155
-        width: 32
-        height: 32
-      alignment: 6
-      pivot: {x: 0, y: 0}
+        width: 18
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5, y: 0.16666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -727,12 +727,12 @@ TextureImporter:
       name: Environment_24
       rect:
         serializedVersion: 2
-        x: 328
+        x: 331
         y: 16
-        width: 32
-        height: 54
+        width: 23
+        height: 52
       alignment: 9
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.2173913, y: 0.115384616}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

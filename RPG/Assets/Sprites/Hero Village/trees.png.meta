@@ -127,57 +127,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: trees_0
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 359
-        width: 134
-        height: 145
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5862069}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e5a8ef372f4b5c8e0800000000000000
-      internalID: -1673732733077124514
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: trees_1
-      rect:
-        serializedVersion: 2
-        x: 161
-        y: 359
-        width: 134
-        height: 145
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5862069}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f8cf8d84bf48d1230800000000000000
-      internalID: 3611188691014843535
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: trees_2
       rect:
         serializedVersion: 2
         x: 304
         y: 320
         width: 134
-        height: 39
+        height: 184
       alignment: 9
-      pivot: {x: 0.5, y: 0.71794873}
+      pivot: {x: 0.5, y: 0.17391305}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -190,57 +148,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: trees_3
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 151
-        width: 134
-        height: 145
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5862069}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cefc04740fccd7840800000000000000
-      internalID: 5223556475179290604
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: trees_4
-      rect:
-        serializedVersion: 2
-        x: 304
-        y: 359
-        width: 134
-        height: 145
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5862069}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 92961a45e73745500800000000000000
-      internalID: 384058854656272681
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: trees_5
       rect:
         serializedVersion: 2
         x: 161
         y: 320
         width: 134
-        height: 39
+        height: 184
       alignment: 9
-      pivot: {x: 0.5, y: 0.71794873}
+      pivot: {x: 0.5, y: 0.17391305}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -259,9 +175,9 @@ TextureImporter:
         x: 16
         y: 320
         width: 134
-        height: 39
+        height: 184
       alignment: 9
-      pivot: {x: 0.5, y: 0.71794873}
+      pivot: {x: 0.5, y: 0.17391305}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -280,9 +196,9 @@ TextureImporter:
         x: 16
         y: 112
         width: 134
-        height: 39
+        height: 184
       alignment: 9
-      pivot: {x: 0.5, y: 0.71794873}
+      pivot: {x: 0.5, y: 0.17391305}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
