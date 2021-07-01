@@ -16,6 +16,7 @@ public class GameLogic : MonoBehaviour
     [SerializeField] public GameState GameState;
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
+  
 
     public StateStack Stack;
 
