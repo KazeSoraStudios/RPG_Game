@@ -59,7 +59,7 @@ public class Actions
     //    ["magic"] = "Magic",
     //    ["special"] = "Special"
     //}
-
+    
     public static void Teleport(Entity hero, Vector2 position)
     {
         ServiceManager.Get<World>().LockInput();
@@ -334,7 +334,7 @@ public class Actions
         public List<Actor> Party = new List<Actor>();
     }
 
-     public static void Combat(StartCombatConfig config)
+     public static void Combat(StartCombatConfig config, Vector3? OverrideCameraPosition = null)
      {
         var uiController = ServiceManager.Get<UIController>();
         var combatUIParent = uiController.CombatLayer;
@@ -369,9 +369,23 @@ public class Actions
             StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
         };
         var storyboard = new Storyboard(config.Stack, events);
+        var VirtualCam = Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>();
+        var CamAim = new GameObject("CameraAimPoint"); 
+        
+        if(OverrideCameraPosition != null)
+           CamAim.transform.position = OverrideCameraPosition.Value;
+       else
+            CamAim.transform.position =  config.Party[0].transform.position + combatConfig.Enemies[0].transform.position/ 2; //this is gonna need some rewriting lol (i think at least).
+        
+        Debug.Log(combatConfig.Enemies[0].name);
+        Debug.Log(combatConfig.Party[0].name);
+        VirtualCam.m_Follow = CamAim.transform;
+        
+        //VirtualCam.PreviousStateIsValid = false;//.position = TargetCameraPosition;
         combat.Init(combatConfig);
         config.Stack.Push(combat);
         config.Stack.Push(storyboard);
+        
     }
 
     private static List<Actor> CreateEnemyList(Map map, List<String> enemyList)
