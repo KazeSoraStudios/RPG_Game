@@ -34,7 +34,6 @@ namespace RPG_Combat
         [SerializeField] TextMeshProUGUI TipText;
         [SerializeField] GameObject NoticeContainer;
         [SerializeField] TextMeshProUGUI NoticeText;
-        [SerializeField] Image Background;
 
         public CombatBrowseListState ActionBrowseList;
         public CombatTargetState TargetState;
@@ -73,9 +72,8 @@ namespace RPG_Combat
             CreateCombatCharacters(true);
             CreateCombatCharacters(false);
             LoadMenuUI(config.Party);
-            if (config.BackgroundPath.IsEmpty())
-                config.BackgroundPath = "Textures/combat_bg_forest";
-            //Background.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.BackgroundPath, () => Background.gameObject.SafeSetActive(true));
+            var backgroundPath = config.BackgroundPath.IsEmpty() ? Constants.DEFAULT_COMBAT_BACKGROUND : config.BackgroundPath;
+            ServiceManager.Get<CombatScene>().SetBackground(backgroundPath);
             PlaceActors();
             AddTurns(PartyActors, true);
             AddTurns(EnemyActors);
@@ -385,9 +383,6 @@ namespace RPG_Combat
             };
             onWin?.Invoke();
             gameObject.SafeSetActive(false);
-            
-            FixCameraPosition();
-
             var storyboard = new Storyboard(gameStack, events);
             gameStack.Push(storyboard);
 
@@ -424,9 +419,6 @@ namespace RPG_Combat
             }
             events.Add(StoryboardEventFunctions.Wait(2.0f));
             events.Add(StoryboardEventFunctions.FadeScreenOut("black"));
-
-            FixCameraPosition();
-
             var storyboard = new Storyboard(gameStack, events);
             gameStack.Push(storyboard);
         }
@@ -553,12 +545,6 @@ namespace RPG_Combat
             var mapName = GetName();
             foreach (var enemy in EnemyCharacters)
                 ServiceManager.Get<NPCManager>().AddNPC(mapName, enemy);
-        }
-
-        public void FixCameraPosition()
-        {          
-            UnityEngine.Object.Destroy(Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>().m_Follow.gameObject);
-            Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>().m_Follow = PartyCharacters[0].transform;
         }
     }
 

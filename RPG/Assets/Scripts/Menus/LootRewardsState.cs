@@ -84,12 +84,13 @@ namespace RPG_UI
                 {
                     StoryboardEventFunctions.BlackScreen(),
                     StoryboardEventFunctions.Wait(1.0f),
-                    StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.3f),
                     StoryboardEventFunctions.Function(() => 
                     {
                         ServiceManager.Get<Party>().ReturnFromCombat();
                         ServiceManager.Get<NPCManager>().ReturnFromCombat();
-                    })
+                        Actions.SetCameraToFollowHero();
+                    }),
+                    StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.3f)
                 };
                 var storyboard = new Storyboard(config.Stack, events);
                 // Draw the black screen this frame
