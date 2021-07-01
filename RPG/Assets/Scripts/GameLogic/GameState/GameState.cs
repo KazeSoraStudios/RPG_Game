@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using RPG_GameData;
 
 namespace RPG_GameState
 {
@@ -9,7 +10,7 @@ namespace RPG_GameState
     {
         public World World;
 
-        // TODO other info for current state of the game
+        public List<Area> Areas = new List<Area>();
 
         public void Start()
         {
@@ -26,6 +27,7 @@ namespace RPG_GameState
                 KeyItems = ItemData.FromItems(World.GetKeyItemsList()),
                 PartyMembers = World.Party.ToCharacterInfoList(),
                 Quests = QuestData.FromQuests(World.GetQuestList()),
+                Areas = Areas,
                 SceneName = SceneManager.GetActiveScene().name,
                 Location = World.Party.Members[0].transform.position
             };

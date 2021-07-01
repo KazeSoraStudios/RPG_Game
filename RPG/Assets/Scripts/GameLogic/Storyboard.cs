@@ -58,7 +58,7 @@ public class Storyboard : IGameState
         }
         if (removeIndex != -1)
             events.RemoveAt(removeIndex);
-        return true;
+        return false;
     }
 
     public string GetName()

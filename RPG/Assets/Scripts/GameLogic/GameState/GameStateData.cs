@@ -18,6 +18,7 @@ namespace RPG_GameState
             public List<ItemData> Items = new List<ItemData>();
             public List<ItemData> KeyItems = new List<ItemData>();
             public List<QuestData> Quests = new List<QuestData>();
+            public List<Area> Areas = new List<Area>();
         }
 
         private static int gid = 0;
@@ -31,6 +32,7 @@ namespace RPG_GameState
         public List<ItemData> items = new List<ItemData>();
         public List<ItemData> keyItems = new List<ItemData>();
         public List<QuestData> quests = new List<QuestData>();
+        public List<Area> areas = new List<Area>();
 
         public GameStateData() { }
 

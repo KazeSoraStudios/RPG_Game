@@ -283,8 +283,8 @@ public class StoryboardEventFunctions
                 var uiController = ServiceManager.Get<UIController>();
                 var renderer = uiController.ScreenImage;
                 var color = renderer.color;
-                uiController.gameObject.SafeSetActive(true);
                 renderer.color = new Color(color.r, color.b, color.g, 0);
+                uiController.gameObject.SafeSetActive(true);
                 var screenState = new ScreenState(renderer, Color.black);
                 storyboard.PushState(id, screenState);
                 return EmptyEvent;

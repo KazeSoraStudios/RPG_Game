@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG_Character;
@@ -16,6 +17,7 @@ namespace RPG_GameData
         public Dictionary<string, Spell> Specials = new Dictionary<string, Spell>();
         public Dictionary<string, Enemy> Enemies = new Dictionary<string, Enemy>();
         public Dictionary<string, Quest> Quests = new Dictionary<string, Quest>();
+        public Dictionary<string, Area> Areas = new Dictionary<string, Area>();
 
         void Awake()
         {
@@ -156,5 +158,14 @@ namespace RPG_GameData
             IsStarted = data.IsStarted;
             IsComplete = data.IsComplete;
         }
+    }
+
+    [Serializable]
+    public class Area
+    {
+        public string Id;
+        public new Dictionary<string, bool> Events = new Dictionary<string, bool>();
+        public new Dictionary<string, bool> Chests = new Dictionary<string, bool>();
+        public new Dictionary<string, bool> Items = new Dictionary<string, bool>();
     }
 }
