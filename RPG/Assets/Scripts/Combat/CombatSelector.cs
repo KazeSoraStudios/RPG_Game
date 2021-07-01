@@ -107,13 +107,13 @@ namespace RPG_Combat
 
         public static List<Actor> Party(CombatGameState state)
         {
-            return state.GetEnemiesActors();
+            return state.GetPartyActors();
         }
 
 
         public static List<Actor> Enemies(CombatGameState state)
         {
-            return state.GetPartyActors();
+            return state.GetEnemiesActors();
         }
 
         public static List<Actor> SelectAll(CombatGameState state)

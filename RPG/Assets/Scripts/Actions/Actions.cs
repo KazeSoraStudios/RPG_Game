@@ -377,11 +377,10 @@ public class Actions
        else
             CamAim.transform.position =  config.Party[0].transform.position + combatConfig.Enemies[0].transform.position/ 2; //this is gonna need some rewriting lol (i think at least).
         
-        Debug.Log(combatConfig.Enemies[0].name);
-        Debug.Log(combatConfig.Party[0].name);
+        
         VirtualCam.m_Follow = CamAim.transform;
         
-        //VirtualCam.PreviousStateIsValid = false;//.position = TargetCameraPosition;
+        
         combat.Init(combatConfig);
         config.Stack.Push(combat);
         config.Stack.Push(storyboard);
