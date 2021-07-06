@@ -22,6 +22,14 @@ namespace RPG_Character
             BuildStatsFromDefinition(statDefinitions);
         }
 
+        public int GetTotalStats()
+        {
+            int total = 0;
+            foreach (var entry in stats)
+                total += Get(entry.Key);
+            return total;
+        }
+
         public bool HasStat(Stat stat)
         {
             return stats.ContainsKey(stat);

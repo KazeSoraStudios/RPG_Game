@@ -165,9 +165,9 @@ public class TimedTextBoxEvent : IStoryboardEvent
     private float countDown;
     private Textbox textbox;
 
-    public TimedTextBoxEvent(Textbox.Config config, float time)
+    public TimedTextBoxEvent(Textbox.Config config, float time, TextBoxAnchor anchor)
     {
-        textbox = ServiceManager.Get<UIController>().GetTextbox();
+        textbox = ServiceManager.Get<UIController>().GetTextbox(anchor);
         textbox.Init(config);
         this.time = time;
         countDown = time;
@@ -281,8 +281,10 @@ public class StoryboardEventFunctions
             Function = (storyboard) =>
             {
                 var uiController = ServiceManager.Get<UIController>();
-                uiController.gameObject.SafeSetActive(true);
                 var renderer = uiController.ScreenImage;
+                var color = renderer.color;
+                renderer.color = new Color(color.r, color.b, color.g, 0);
+                uiController.gameObject.SafeSetActive(true);
                 var screenState = new ScreenState(renderer, Color.black);
                 storyboard.PushState(id, screenState);
                 return EmptyEvent;

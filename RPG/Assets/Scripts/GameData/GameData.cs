@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG_Character;
@@ -16,6 +17,8 @@ namespace RPG_GameData
         public Dictionary<string, Spell> Specials = new Dictionary<string, Spell>();
         public Dictionary<string, Enemy> Enemies = new Dictionary<string, Enemy>();
         public Dictionary<string, Quest> Quests = new Dictionary<string, Quest>();
+        public Dictionary<string, Area> Areas = new Dictionary<string, Area>();
+        public Dictionary<string, Shop> Shops = new Dictionary<string, Shop>();
 
         void Awake()
         {
@@ -155,6 +158,44 @@ namespace RPG_GameData
         {
             IsStarted = data.IsStarted;
             IsComplete = data.IsComplete;
+        }
+    }
+
+    [Serializable]
+    public class Area
+    {
+        public string Id;
+        public new Dictionary<string, bool> Events = new Dictionary<string, bool>();
+        public new Dictionary<string, bool> Chests = new Dictionary<string, bool>();
+        public new Dictionary<string, bool> Items = new Dictionary<string, bool>();
+    }
+
+    public class Shop
+    {
+        public string Id;
+        public new List<string> Items = new List<string>();
+        public new Dictionary<string, List<string>> AdditionalItems = new Dictionary<string, List<string>>();
+
+        public List<string> GetAllAvilableItems()
+        {
+            var items = new List<string>();
+            items.AddRange(Items);
+            var gameState = ServiceManager.Get<GameStateManager>().GetCurrent();
+            if (gameState == null)
+                return items;
+            foreach (var entry in AdditionalItems)
+            {
+                var conditionInfo = entry.Key.Split(':');
+                if (conditionInfo.Length != 2)
+                    continue;
+                var area = gameState.GetArea(conditionInfo[0]);
+                if (area == null)
+                    continue;
+                if (!area.Events.ContainsKey(conditionInfo[1]) || !area.Events[conditionInfo[1]])
+                    continue;
+                items.AddRange(entry.Value);   
+            }
+            return items;
         }
     }
 }

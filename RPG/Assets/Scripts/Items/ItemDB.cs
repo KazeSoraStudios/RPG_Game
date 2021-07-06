@@ -44,6 +44,7 @@ public class ItemInfo
 {
     public int Index;
     public int Price;
+    public int SellPrice;
     public ItemType Type;
     public string Id;
     public string Name;
@@ -57,6 +58,17 @@ public class ItemInfo
     public string GetName()
     {
         return ServiceManager.Get<LocalizationManager>().Localize(Id);
+    }
+
+    public EquipSlot GetEquipSlot()
+    {
+        if (Type == ItemType.Weapon)
+            return EquipSlot.Weapon;
+        if (Type == ItemType.Armor)
+            return EquipSlot.Weapon;
+        if (Type == ItemType.Accessory)
+            return EquipSlot.Accessory1;
+        return EquipSlot.None;
     }
 }
 

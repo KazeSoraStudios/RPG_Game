@@ -24,6 +24,7 @@ namespace RPG_UI
 
         public static readonly ItemListCell.Config EmptyConfig = new ItemListCell.Config
         {
+            Id = string.Empty,
             Name = "--",
             Description = string.Empty,
             Amount = string.Empty,

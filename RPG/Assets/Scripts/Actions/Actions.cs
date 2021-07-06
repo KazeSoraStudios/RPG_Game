@@ -59,7 +59,7 @@ public class Actions
     //    ["magic"] = "Magic",
     //    ["special"] = "Special"
     //}
-
+    
     public static void Teleport(Entity hero, Vector2 position)
     {
         ServiceManager.Get<World>().LockInput();
@@ -323,6 +323,22 @@ public class Actions
             gGame.Stack:Push(storyboard)
      */
 
+
+    public static void SetCameraToCombatPosition()
+    {
+        var camera = Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>();
+        camera.m_Follow = ServiceManager.Get<CombatScene>().CameraPosition;
+        camera.ForceCameraPosition(camera.m_Follow.position, Quaternion.identity);
+    }
+
+    public static void SetCameraToFollowHero()
+    {
+        var camera = Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>();
+        var hero = ServiceManager.Get<Party>().Members[0].transform;;
+        camera.m_Follow = hero;
+        camera.ForceCameraPosition(hero.position, Quaternion.identity);
+    }
+
      public class StartCombatConfig
      {
         public bool CanFlee = true;
@@ -346,6 +362,7 @@ public class Actions
         }
         var combat = GameObject.Instantiate(asset, Vector3.zero, Quaternion.identity);
         combat.transform.SetParent(combatUIParent, false);
+        combat.gameObject.SafeSetActive(false);
         var combatConfig = new CombatGameState.Config
         {
             CanFlee = true,
@@ -360,16 +377,18 @@ public class Actions
         {
             StoryboardEventFunctions.BlackScreen(),
             StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.Wait(0.5f),
             StoryboardEventFunctions.Function(() => 
             {
+                combat.Init(combatConfig);
+                SetCameraToCombatPosition();
                 ServiceManager.Get<Party>().PrepareForCombat();
                 ServiceManager.Get<NPCManager>().PrepareForCombat();
-                uiController.gameObject.SafeSetActive(true);
              }),
             StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => combat.gameObject.SafeSetActive(true))
         };
         var storyboard = new Storyboard(config.Stack, events);
-        combat.Init(combatConfig);
         config.Stack.Push(combat);
         config.Stack.Push(storyboard);
     }

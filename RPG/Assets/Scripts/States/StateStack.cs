@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using RPG_UI;
 
 public class StateStack
@@ -12,6 +10,11 @@ public class StateStack
     public StateStack()
     {
         states.Clear();
+    }
+
+    public bool IsEmpty()
+    {
+        return states.Count < 1;
     }
 
     public void Push(IGameState state)
@@ -76,7 +79,7 @@ public class StateStack
         LogManager.LogDebug($"Failed to remove {state}");
     }
 
-    public void PushTextbox(string text, bool showImage = false, string portrait = "", float advanceTime = 99999)
+    public void PushTextbox(string text, bool showImage = false, string portrait = "", float advanceTime = 99999, TextBoxAnchor anchor = TextBoxAnchor.Bottom)
     {
         var config = new Textbox.Config
         {
@@ -85,7 +88,14 @@ public class StateStack
             AdvanceTime = advanceTime,
             ShowImage = showImage
         };
-        var textbox = ServiceManager.Get<UIController>().GetTextbox();
+        var textbox = ServiceManager.Get<UIController>().GetTextbox(anchor);
+        textbox.Init(config);
+        Push(textbox);
+    }
+
+    public void PushTextbox(Textbox.Config config, TextBoxAnchor anchor = TextBoxAnchor.Bottom)
+    {
+        var textbox = ServiceManager.Get<UIController>().GetTextbox(anchor);
         textbox.Init(config);
         Push(textbox);
     }

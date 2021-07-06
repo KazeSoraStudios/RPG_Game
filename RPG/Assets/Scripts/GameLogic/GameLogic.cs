@@ -16,6 +16,7 @@ public class GameLogic : MonoBehaviour
     [SerializeField] public GameState GameState;
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
+  
 
     public StateStack Stack;
 
@@ -228,4 +229,30 @@ public class GameLogic : MonoBehaviour
                 member.Specials.Add(special.Value);
         }
     }
+
+    #if UNITY_EDITOR
+    public bool ShowStackStates = false;
+
+    public void OnGUI()
+    {
+        if (!ShowStackStates)
+            return;
+        float yDiff = 30.0f;
+        var position = Vector2.zero;
+        GUI.Label(new Rect(position, Vector2.one * 500.0f), "StateStack:");
+        position.y += yDiff;
+        GUI.Label(new Rect(position, Vector2.one * 500.0f), $"Current Event: {Stack.Top().GetName()}");
+        position.y += yDiff;
+
+        if (Stack.IsEmpty())
+            GUI.Label(new Rect(position, Vector2.one * 100.0f), "Empty!");
+        var states = Stack.GetStates();
+        for (int i = states.Count - 1; i >= 0; i--)
+        {
+            var message = $"{i} State: {states[i].GetName()}";
+            GUI.Label(new Rect(position, Vector2.one * 500.0f), message);
+            position.y += yDiff;
+        }
+    }
+#endif
 }

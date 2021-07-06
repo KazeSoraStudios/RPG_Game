@@ -26,6 +26,7 @@ public class Constants
     public const string XP_POPUP_PREFAB = "prefabs/UI/XPPopUp";
     public const string LOOT_REWARDS_PREFAB = "prefabs/UI/Loot Menu";
     public const string UI_SELECTION_CARET_PREFAB = "prefabs/UI/Selection Caret";
+    public const string WEAPON_SHOP_MENU_PREFAB = "prefabs/UI/ArmsShopMenu";
 
     // Scenes
     public const string HERO_VILLAGE_SCENE = "Village";
@@ -64,7 +65,7 @@ public class Constants
     public const int MAX_ENEMIES = 6;
     public const float TEXTBOX_CHARACTER_SPEED = 0.02f;
     public const float SELECT_MARKER_BOUNCE_SPEED = 5.0f;
-    public const string DEFAULT_COMBAT_BACKGROUND = "";
+    public const string DEFAULT_COMBAT_BACKGROUND = "Textures/combat_bg_forest";
     public const string DEFAULT_COMBAT_ENEMY_PREFAB = CHARACTER_PREFAB_PATH + "Goblin";
     public const string CAMERA_NAME = "CM vcam1";
 

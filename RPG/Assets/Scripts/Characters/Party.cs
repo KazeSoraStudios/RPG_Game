@@ -166,5 +166,13 @@ namespace RPG_Character
                     return i;
             return -1;
         }
+
+        public int GetEquippedCount(string itemId)
+        {
+            int count = 0;
+            foreach (var actor in Members)
+                count += actor.EquipCount(itemId);
+            return count;
+        }
     }
 }
