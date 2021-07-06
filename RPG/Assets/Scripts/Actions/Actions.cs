@@ -59,13 +59,23 @@ public class Actions
     //    ["magic"] = "Magic",
     //    ["special"] = "Special"
     //}
-
-    public static Action<Trigger, Entity> Teleport(Map map, int tileX, int tileY, int layer = 1)
+    
+    public static void Teleport(Entity hero, Vector2 position)
     {
-        return (trigger, entity) =>
+        ServiceManager.Get<World>().LockInput();
+        var events = new List<IStoryboardEvent>
         {
-            entity.SetTilePosition(tileX, tileY, layer, map);
+            StoryboardEventFunctions.BlackScreen(),
+            StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => hero.SetTilePosition(position)),
+            StoryboardEventFunctions.Wait(0.5f),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
+            StoryboardEventFunctions.HandOffToExploreState()
         };
+        var stack = ServiceManager.Get<GameLogic>().Stack;
+        var storyboard = new Storyboard(stack, events, true);
+        stack.Push(storyboard);
     }
 
     public static List<IStoryboardEvent> ChangeSceneEvents(StateStack stack, string currentScene, string nextScene, Func<Map> function)
@@ -77,6 +87,41 @@ public class Actions
             StoryboardEventFunctions.LoadScene(nextScene),
             //StoryboardEventFunctions.Wait(1.0f),
             StoryboardEventFunctions.ReplaceExploreState(Constants.HANDIN_STATE, stack, function),
+            StoryboardEventFunctions.DeleteScene(currentScene, nextScene),
+            //StoryboardEventFunctions.Wait(2.0f),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
+            StoryboardEventFunctions.HandOffToExploreState()
+        };
+    }
+
+    public static List<IStoryboardEvent> LoadGameEvents(StateStack stack, GameStateData data)
+    {
+        return new List<IStoryboardEvent>
+        {
+            StoryboardEventFunctions.BlackScreen(),
+            StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.LoadScene(data.sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single),
+            //StoryboardEventFunctions.Wait(1.0f),
+            StoryboardEventFunctions.AddExploreStateToCurrentMap(data.sceneName, stack),
+            StoryboardEventFunctions.MoveHeroToPosition(data.sceneName, data.location),
+            //StoryboardEventFunctions.Wait(2.0f),
+            StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput()),
+           StoryboardEventFunctions.HandOffToExploreState(data.sceneName)
+        };
+    }
+
+    public static List<IStoryboardEvent> GoToWorldMapEvents(StateStack stack, string currentScene, string nextScene, Func<Map> function, Vector2 position)
+    {
+        return new List<IStoryboardEvent>
+        {
+            StoryboardEventFunctions.BlackScreen(),
+            StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.LoadScene(nextScene),
+            //StoryboardEventFunctions.Wait(1.0f),
+            StoryboardEventFunctions.ReplaceExploreState(Constants.HANDIN_STATE, stack, function),
+            StoryboardEventFunctions.MoveHeroToPosition(nextScene, position),
             StoryboardEventFunctions.DeleteScene(currentScene, nextScene),
             //StoryboardEventFunctions.Wait(2.0f),
             StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
@@ -278,6 +323,22 @@ public class Actions
             gGame.Stack:Push(storyboard)
      */
 
+
+    public static void SetCameraToCombatPosition()
+    {
+        var camera = Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>();
+        camera.m_Follow = ServiceManager.Get<CombatScene>().CameraPosition;
+        camera.ForceCameraPosition(camera.m_Follow.position, Quaternion.identity);
+    }
+
+    public static void SetCameraToFollowHero()
+    {
+        var camera = Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>();
+        var hero = ServiceManager.Get<Party>().Members[0].transform;;
+        camera.m_Follow = hero;
+        camera.ForceCameraPosition(hero.position, Quaternion.identity);
+    }
+
      public class StartCombatConfig
      {
         public bool CanFlee = true;
@@ -301,6 +362,7 @@ public class Actions
         }
         var combat = GameObject.Instantiate(asset, Vector3.zero, Quaternion.identity);
         combat.transform.SetParent(combatUIParent, false);
+        combat.gameObject.SafeSetActive(false);
         var combatConfig = new CombatGameState.Config
         {
             CanFlee = true,
@@ -315,16 +377,18 @@ public class Actions
         {
             StoryboardEventFunctions.BlackScreen(),
             StoryboardEventFunctions.FadeScreenIn("blackscreen", 0.5f),
+            StoryboardEventFunctions.Wait(0.5f),
             StoryboardEventFunctions.Function(() => 
             {
+                combat.Init(combatConfig);
+                SetCameraToCombatPosition();
                 ServiceManager.Get<Party>().PrepareForCombat();
                 ServiceManager.Get<NPCManager>().PrepareForCombat();
-                uiController.gameObject.SafeSetActive(true);
              }),
             StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
+            StoryboardEventFunctions.Function(() => combat.gameObject.SafeSetActive(true))
         };
         var storyboard = new Storyboard(config.Stack, events);
-        combat.Init(combatConfig);
         config.Stack.Push(combat);
         config.Stack.Push(storyboard);
     }

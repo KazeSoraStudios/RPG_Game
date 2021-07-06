@@ -1,21 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using RPG_GameData;
 
 namespace RPG_GameState
 {
-    public class GameState : MonoBehaviour
+    public class GameState
     {
         public World World;
 
-        // TODO other info for current state of the game
+        public List<Area> Areas = new List<Area>();
 
         public void Start()
         {
             World.Reset();
         }
 
-        public GameStateData ToGameStateData()
+        public GameStateData Save()
         {
             var config = new GameStateData.Config
             {
@@ -24,7 +26,10 @@ namespace RPG_GameState
                 Items = ItemData.FromItems(World.GetUseItemsList()),
                 KeyItems = ItemData.FromItems(World.GetKeyItemsList()),
                 PartyMembers = World.Party.ToCharacterInfoList(),
-                Quests = QuestData.FromQuests(World.GetQuestList())
+                Quests = QuestData.FromQuests(World.GetQuestList()),
+                Areas = Areas,
+                SceneName = SceneManager.GetActiveScene().name,
+                Location = World.Party.Members[0].transform.position
             };
             return new GameStateData(config);
         }

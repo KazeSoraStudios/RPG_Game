@@ -11,7 +11,9 @@ namespace RPG_UI
         public class Config
         {
             public bool ShowSelection = true;
+            public bool VerticalSelection = true;
             public List<string> Names;
+            public Action<int> OnChange;
             public Action<int> OnClick;
         }
 
@@ -19,9 +21,12 @@ namespace RPG_UI
         [SerializeField] Image SelectionArrow;
         [SerializeField] TextMeshProUGUI[] Options;
 
+        private bool isVertical = true;
         private int numberOfOptions;
         public int currentSelection = 0;
         private float time;
+        private KeyCode increase;
+        private KeyCode decrease;
         private Config config;
 
         public void Init(Config config)
@@ -30,8 +35,20 @@ namespace RPG_UI
             {
                 return;
             }
-
             this.config = config;
+            if (config.VerticalSelection)
+            {
+                isVertical = true;
+                increase = KeyCode.DownArrow;
+                decrease = KeyCode.UpArrow;
+            }
+            else
+            {
+                isVertical = false;
+                increase = KeyCode.RightArrow;
+                decrease = KeyCode.LeftArrow;
+            }
+            currentSelection = 0;
             numberOfOptions = Options.Length - 1;
             time = 0.0f;
             if (config.Names != null)
@@ -40,6 +57,7 @@ namespace RPG_UI
                 ShowCursor();
             else
                 HideCursor();
+            SetSelectionPosition();
         }
         public float sp = 1.0f;
         public void ApplySelectionBounce(float deltaTime)
@@ -71,11 +89,11 @@ namespace RPG_UI
 
         public void HandleInput()
         {
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(increase))
             {
                 IncreaseSelection();
             }
-            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            else if (Input.GetKeyDown(decrease))
             {
                 DecreaseSelection();
             }
@@ -83,7 +101,6 @@ namespace RPG_UI
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 config.OnClick?.Invoke(currentSelection);
-
             }
         }
 
@@ -92,9 +109,8 @@ namespace RPG_UI
             currentSelection++;
             if (currentSelection > numberOfOptions)
                 currentSelection = 0;
-            var y = Options[currentSelection].transform.position.y;
-            var position = new Vector2(SelectionArrow.transform.position.x, y);
-            SelectionArrow.transform.position = position;
+            SetSelectionPosition();
+            config.OnChange?.Invoke(currentSelection);
         }
 
         public void DecreaseSelection()
@@ -102,11 +118,42 @@ namespace RPG_UI
             currentSelection--;
             if (currentSelection < 0)
                 currentSelection = numberOfOptions;
-            var y = Options[currentSelection].transform.position.y;
-            var position = new Vector2(SelectionArrow.transform.position.x, y);
-            SelectionArrow.transform.position = position;
+            SetSelectionPosition();
+            config.OnChange?.Invoke(currentSelection);
         }
 
+        public void SetTextColor(int option, Color color)
+        {
+            if (option < 0 || option >= Options.Length)
+            {
+                LogManager.LogWarn($"Index {option} is larger than OptionList size {Options.Length}");
+                return;
+            }
+            Options[option].color = color;
+        }
+
+        public void OnClick()
+        {
+            config.OnClick?.Invoke(currentSelection);
+        }
+
+        private void SetSelectionPosition()
+        {
+            Vector2 position;
+            if (isVertical)
+            {
+                var y = Options[currentSelection].transform.position.y;
+                position = new Vector2(SelectionArrow.transform.position.x, y);
+            }
+            else
+            {
+                var x = Options[currentSelection].transform.position.x;
+                var rect = (RectTransform)Options[currentSelection].transform;
+                x -= rect.rect.width * 0.5f;
+                position = new Vector2(x, SelectionArrow.transform.position.y);
+            }
+            SelectionArrow.transform.position = position;
+        }
         private void SetText(List<string> names)
         {
             int i = 0;

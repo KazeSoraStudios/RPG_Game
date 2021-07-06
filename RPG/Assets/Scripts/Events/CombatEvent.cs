@@ -211,7 +211,7 @@ namespace RPG_Combat
         private void OnFinish()
         {
             finished = true;
-            state.HideNotice();
+            state.HideNotice();            
         }
 
         private void DoAttack()
@@ -335,6 +335,7 @@ namespace RPG_Combat
                 StoryboardEventFunctions.Wait(0.3f);
                 events.Add(StoryboardEventFunctions.Function(() => FleeSuccessPart2()));
                 StoryboardEventFunctions.Wait(0.6f);
+                
             }
             else
             {

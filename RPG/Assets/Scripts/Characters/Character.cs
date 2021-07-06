@@ -35,7 +35,7 @@ namespace RPG_Character
         {
             var position = (Vector2)transform.position + targetPosition;
             var collision = Physics2D.OverlapCircle(position, 0.2f, collisionLayer);
-            return !collision;
+            return true;//!collision;
         }
 
         public void CombatMovement(Vector2 movement, Direction direction)
@@ -187,6 +187,13 @@ namespace RPG_Character
             Controller.Change(defaultState);
         }
 
+        public void PrepareForSceneChange()
+        {
+            ResetAnimator();
+            Entity.UpdateMovement(Vector2.zero);
+            Controller.Change(defaultState);
+        }
+
         private void ResetAnimator()
         {
             animator.SetFloat("Horizontal", 0);
@@ -215,6 +222,8 @@ namespace RPG_Character
                     return new WaitState(Map, this);
                 case Constants.MOVE_STATE:
                     return new MoveState(Map, this);
+                case Constants.UNIT_MOVE_STATE:
+                    return new UnitMoveState(Map, this);
                 case Constants.COMBAT_MOVE_STATE:
                     return new CSMove(this);
                 case Constants.STROLL_STATE:

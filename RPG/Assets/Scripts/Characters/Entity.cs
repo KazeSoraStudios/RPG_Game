@@ -47,6 +47,11 @@ namespace RPG_Character
             rigidbody.MovePosition(move);
         }
 
+        public void SetTilePosition(Vector2 position)
+        {
+            transform.position = position;
+        }
+
         public void SetTilePosition(int x, int y, int layer, Map map)
         {
             if (map.GetEntity(transform.position))

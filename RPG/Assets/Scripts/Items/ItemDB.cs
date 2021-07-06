@@ -5,7 +5,7 @@ using RPG_Character;
 using RPG_Combat;
 using RPG_GameData;
 public enum ItemType { Useable, Key, Accessory, Weapon, Armor, None };
-public enum UseRestriction { None, Hero, Thief, Mage };
+public enum UseRestriction { None, Hero, Samurai, Mage };
 
 public class ItemDB : MonoBehaviour
 {
@@ -44,6 +44,7 @@ public class ItemInfo
 {
     public int Index;
     public int Price;
+    public int SellPrice;
     public ItemType Type;
     public string Id;
     public string Name;
@@ -57,6 +58,17 @@ public class ItemInfo
     public string GetName()
     {
         return ServiceManager.Get<LocalizationManager>().Localize(Id);
+    }
+
+    public EquipSlot GetEquipSlot()
+    {
+        if (Type == ItemType.Weapon)
+            return EquipSlot.Weapon;
+        if (Type == ItemType.Armor)
+            return EquipSlot.Weapon;
+        if (Type == ItemType.Accessory)
+            return EquipSlot.Accessory1;
+        return EquipSlot.None;
     }
 }
 

@@ -165,9 +165,9 @@ public class TimedTextBoxEvent : IStoryboardEvent
     private float countDown;
     private Textbox textbox;
 
-    public TimedTextBoxEvent(Textbox.Config config, float time)
+    public TimedTextBoxEvent(Textbox.Config config, float time, TextBoxAnchor anchor)
     {
-        textbox = ServiceManager.Get<UIController>().GetTextbox();
+        textbox = ServiceManager.Get<UIController>().GetTextbox(anchor);
         textbox.Init(config);
         this.time = time;
         countDown = time;
@@ -281,8 +281,10 @@ public class StoryboardEventFunctions
             Function = (storyboard) =>
             {
                 var uiController = ServiceManager.Get<UIController>();
-                uiController.gameObject.SafeSetActive(true);
                 var renderer = uiController.ScreenImage;
+                var color = renderer.color;
+                renderer.color = new Color(color.r, color.b, color.g, 0);
+                uiController.gameObject.SafeSetActive(true);
                 var screenState = new ScreenState(renderer, Color.black);
                 storyboard.PushState(id, screenState);
                 return EmptyEvent;
@@ -520,22 +522,55 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent LoadScene(string scene)
+    public static IStoryboardEvent LoadScene(string scene, LoadSceneMode mode = LoadSceneMode.Additive)
     {
         return new StoryboardFunctionEvent
         {
             Function = (_) =>
             {
                 var loaded = false;
+                var camera = Camera.main;
+                var listener = camera.GetComponent<AudioListener>();
+                GameObject.Destroy(listener);
                 SceneManager.sceneLoaded += (x, y) => loaded = true;
-                SceneManager.LoadScene(scene, LoadSceneMode.Additive);
+                SceneManager.LoadScene(scene, mode);
                 return new BlockUntilEvent
                 {
                     UntilFunction = () =>
                     {
-                        return loaded == true;
+                        return loaded;
                     }
                 };
+            }
+        };
+    }
+
+    public static IStoryboardEvent AddExploreStateToCurrentMap(string mapName, StateStack stack)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (_) =>
+            {
+                var obj = GameObject.Find($"{mapName}Map");
+                var map = obj.GetComponent<Map>();
+                var exploreState = map.gameObject.AddComponent<ExploreState>();
+                exploreState.Init(map, stack, Vector2.zero);
+                //stack.Push(exploreState);
+                return EmptyEvent;
+            }
+        };
+    }
+
+    public static IStoryboardEvent MoveHeroToPosition(string mapName, Vector2 positon)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (_) =>
+            {
+                 var map = GameObject.Find($"{mapName}Map");
+                var exploreState = map.gameObject.GetComponent<ExploreState>();
+                exploreState.SetHeroPosition(positon);
+                return EmptyEvent;
             }
         };
     }
@@ -757,6 +792,24 @@ public class StoryboardEventFunctions
             {
                 LogManager.LogDebug($"Handing off to explore state.");
                 var exploreState = (ExploreState)storyboard.States[Constants.HANDIN_STATE];
+                storyboard.Stack.Pop();
+                storyboard.Stack.Push(exploreState);
+                exploreState.stack = ServiceManager.Get<GameLogic>().Stack;
+                return EmptyEvent;
+            }
+        };
+    }
+
+    public static IStoryboardEvent HandOffToExploreState(string mapName)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (storyboard) =>
+            {
+                var obj = GameObject.Find($"{mapName}Map");
+                var map = obj.GetComponent<Map>();
+                var exploreState = map.gameObject.GetComponent<ExploreState>();
+                LogManager.LogDebug($"Handing off to explore state.");
                 storyboard.Stack.Pop();
                 storyboard.Stack.Push(exploreState);
                 exploreState.stack = ServiceManager.Get<GameLogic>().Stack;

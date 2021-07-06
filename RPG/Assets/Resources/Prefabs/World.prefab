@@ -48,7 +48,6 @@ GameObject:
   - component: {fileID: 4474695500408404690}
   - component: {fileID: 4474695500408404689}
   - component: {fileID: 4474695500408404688}
-  - component: {fileID: 4474695500408404703}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -83,11 +82,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c81567c92837349a94b607a63a4cdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  QuickPlay: 0
   LogLevel: 2
-  GameState: {fileID: 4474695500408404703}
   UIController: {fileID: 0}
   GameDataDownloader: {fileID: 4474695500408404693}
-  ScreenImage: {fileID: 0}
 --- !u!114 &4474695500408404648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,18 +191,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BinarySave: 0
-  dirpath: C:\Users\Frank\AppData\Roaming
   filepath: \savedata.rpg
---- !u!114 &4474695500408404703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4474695500408404650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 127483c38106aa745bcfad0b57258a69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  World: {fileID: 4474695500408404648}

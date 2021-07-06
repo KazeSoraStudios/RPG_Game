@@ -2,7 +2,6 @@ using UnityEngine;
 using RPG_UI;
 using RPG_Character;
 using RPG_GameData;
-using Cinemachine;
 
 public class ExploreState : MonoBehaviour, IGameState
 {
@@ -12,6 +11,13 @@ public class ExploreState : MonoBehaviour, IGameState
     public StateStack stack;
     public Map Map;
 
+    private void OnDestroy() 
+    {
+        var npcManager = ServiceManager.Get<NPCManager>();
+        if (npcManager == null)
+            return;
+        npcManager.ClearNpcsForMap(Map.MapName);
+    }
 
     public void Init(Map map, StateStack stack, Vector3 startPosition)
     {
@@ -40,7 +46,7 @@ public class ExploreState : MonoBehaviour, IGameState
 
     public void Exit() 
     {
-        ServiceManager.Get<NPCManager>().ClearNpcsForMap(Map.MapName);
+        
     }
 
     public bool Execute(float deltaTime)
@@ -82,6 +88,13 @@ public class ExploreState : MonoBehaviour, IGameState
         return "ExploreState: " + name;
     }
 
+    public void SetHeroPosition(Vector2 position)
+    {
+        if (Hero == null)
+            return;
+        Hero.transform.position = position;
+    }
+
     private void LoadHero(Vector3 startPosition)
     {
         var game = ServiceManager.Get<GameLogic>().GameState;
@@ -91,6 +104,7 @@ public class ExploreState : MonoBehaviour, IGameState
             Hero = game.World.Party.GetActor(0).GetComponent<Character>();
         Hero.transform.position = startPosition;
         Hero.transform.rotation = Quaternion.identity;
+        Map.Camera.Follow = Hero.transform;
     }
 
     private void LoadHeroPrefab()
@@ -110,6 +124,5 @@ public class ExploreState : MonoBehaviour, IGameState
         var actor = Hero.GetComponent<Actor>();
         actor.Init(ServiceManager.Get<GameData>().PartyDefs["hero"]);
         world.Party.Add(actor);
-        GameObject.Find(Constants.CAMERA_NAME).GetComponent<CinemachineVirtualCamera>().Follow = Hero.transform;
     }
 }

@@ -5,7 +5,7 @@ using RPG_GameData;
 
 namespace RPG_Character
 {
-    public enum EquipSlot { Weapon, Armor, Accessory1, Accessory2 };
+    public enum EquipSlot { Weapon, Armor, Accessory1, Accessory2, None };
     public class Actor : MonoBehaviour
     {
         private static int actorId = 0;
@@ -183,9 +183,14 @@ namespace RPG_Character
 
         public int EquipCount(ItemInfo item)
         {
+            return EquipCount(item.Id);
+        }
+
+        public int EquipCount(string id)
+        {
             int count = 0;
             foreach (var _item in Equipment)
-                if (_item.Id == item.Id)
+                if (_item != null && _item.Id.Equals(id))
                     count++;
             return count;
         }
@@ -204,6 +209,8 @@ namespace RPG_Character
 
         public List<int> PredictStats(EquipSlot slot, ItemInfo item)
         {
+            if (slot == EquipSlot.None)
+                return new List<int>();
             var stats = new List<int>();
             var modifier = item == null ? null : item.Stats.Modifier;
             foreach (var stat in (Stat[])Enum.GetValues(typeof(Stat)))

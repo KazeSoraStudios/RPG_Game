@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using RPG_GameData;
 
 namespace RPG_GameState
@@ -11,10 +12,13 @@ namespace RPG_GameState
         {
             public int Gold;
             public float PlayTime;
+            public Vector2 Location;
+            public string SceneName;
             public List<CharacterInfo> PartyMembers = new List<CharacterInfo>();
             public List<ItemData> Items = new List<ItemData>();
             public List<ItemData> KeyItems = new List<ItemData>();
             public List<QuestData> Quests = new List<QuestData>();
+            public List<Area> Areas = new List<Area>();
         }
 
         private static int gid = 0;
@@ -22,10 +26,13 @@ namespace RPG_GameState
 
         public int gold;
         public float playTime;
+        public Vector2 location;
+        public string sceneName;
         public List<CharacterInfo> partyMembers = new List<CharacterInfo>();
         public List<ItemData> items = new List<ItemData>();
         public List<ItemData> keyItems = new List<ItemData>();
         public List<QuestData> quests = new List<QuestData>();
+        public List<Area> areas = new List<Area>();
 
         public GameStateData() { }
 
@@ -43,6 +50,8 @@ namespace RPG_GameState
             }
             gold = config.Gold;
             playTime = config.PlayTime;
+            sceneName = config.SceneName;
+            location = config.Location;
             partyMembers = config.PartyMembers;
             items = config.Items;
             quests = config.Quests;
@@ -53,6 +62,14 @@ namespace RPG_GameState
             foreach (var quest in quests)
                 if (quest.Id.Equals(id))
                     return quest;
+            return null;
+        }
+
+        public Area GetArea(string areaId)
+        {
+            foreach (var area in areas)
+                if (area.Id.Equals(areaId))
+                    return area;
             return null;
         }
     }

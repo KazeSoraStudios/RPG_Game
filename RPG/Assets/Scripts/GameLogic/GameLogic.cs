@@ -1,20 +1,22 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using RPG_UI;
 using RPG_Combat;
 using RPG_Character;
 using RPG_GameData;
 using RPG_GameState;
-using System.Collections.Generic;
-using System.Collections;
 
 public class GameLogic : MonoBehaviour
 {
+    [SerializeField] bool QuickPlay;
     [SerializeField] LogLevel LogLevel;
     [SerializeField] public GameState GameState;
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
+  
 
     public StateStack Stack;
 
@@ -27,9 +29,35 @@ public class GameLogic : MonoBehaviour
         LogManager.SetLogLevel(LogLevel);
         DontDestroyOnLoad(this);
         //DontDestroyOnLoad(Camera.main);
-        DontDestroyOnLoad(GameObject.Find("UICanvas"));
+        var ui = GameObject.Find("UICanvas");
+        if (ui == null)
+        {
+            if (QuickPlay)
+            {
+                var prefab = Resources.Load<GameObject>("Prefabs/UI/UI");
+                ui = Instantiate(prefab);
+            }
+            if (ui == null)
+            {
+                LogManager.LogError("No UI in scene.");
+                return;
+            }
+        }
+        if (UIController == null)
+        {
+            UIController = ui.GetComponent<UIController>();
+            DontDestroyOnLoad(UIController);
+        }
+        else
+        {
+            DontDestroyOnLoad(UIController.transform.parent);
+        }
 
         triggerManager = new TriggerManager();
+        GameState = new GameState
+        {
+            World = GetComponent<World>()
+        };
     }
 
     private void OnDestroy()
@@ -41,41 +69,47 @@ public class GameLogic : MonoBehaviour
     {
         Stack = new StateStack();
         UIController.InitUI();
-        var gameManager = ServiceManager.Get<GameStateManager>();
-        gameManager.LoadSavedGames();
-        if (gameManager.GetNumberOfSaves() > 0)
-            gameManager.LoadGameStateData(0);
-        SetUpNewGame();
+        LoadData();
+        if (QuickPlay)
+        {
+            var map = GameObject.FindObjectOfType<Map>();
+            if (map == null)
+            {
+                LogManager.LogError("No map found for quick play.");
+                return;
+            }
+            var exploreState = map.gameObject.AddComponent<ExploreState>();
+            exploreState.Init(map, Stack, Vector2.zero);
+            Stack.Push(exploreState);
+        }
     }
 
     public void StartNewGame()
     {
-        SceneManager.LoadScene("Village", LoadSceneMode.Single);
-        StartCoroutine(LoadVillage());
-        //LoadMap();
+        StartCoroutine(LoadScene(Constants.HERO_VILLAGE_SCENE));
     }
 
-    IEnumerator LoadVillage()
+    IEnumerator LoadScene(string scene, Action<ExploreState> callback = null)
     {
+        SceneManager.LoadScene(scene, LoadSceneMode.Single);
         yield return new WaitForSeconds(0.1f);
-        var village = GameObject.Find("VillageMap 2");
+        var village = GameObject.Find($"{scene}Map");
         var map = village.GetComponent<Map>();
         var exploreState = map.gameObject.AddComponent<ExploreState>();
         exploreState.Init(map, Stack, Vector2.zero);
         Stack.Push(exploreState);
+        callback?.Invoke(exploreState);
         yield return null;
-    }
-
-    public void OnMapLoaded(Map map)
-    {
-        //var exploreState = new ExploreState();
-        //exploreState.Init(map, Stack, Vector2.zero);
-        //Stack.Push(exploreState);
     }
 
     public void LoadGame()
     {
-        
+        var gameManager = ServiceManager.Get<GameStateManager>();
+        GameState = gameManager.LoadGameStateFromCurrentData(GetComponent<World>());
+        var savedData = gameManager.GetCurrent();
+        var events = Actions.LoadGameEvents(Stack, savedData);
+        var storyboard = new Storyboard(Stack, events, false);
+        Stack.Push(storyboard);
     }
 
     private void Update()
@@ -149,7 +183,7 @@ public class GameLogic : MonoBehaviour
 
 
         if (Input.GetKeyDown(KeyCode.K))
-            ServiceManager.Get<GameStateManager>().SaveGameStateData(GameState.ToGameStateData());
+            ServiceManager.Get<GameStateManager>().SaveGameStateData(GameState.Save());
 
         if (Input.GetKeyDown(KeyCode.L))
         {
@@ -165,24 +199,9 @@ public class GameLogic : MonoBehaviour
         GameState.World.Execute(deltaTime);
     }
 
-    // TODO change name
-    private void SetUpNewGame()
+    private void LoadData()
     {
         GameDataDownloader.LoadGameData(null);
-    }
-
-    private void LoadMap()
-    {
-        var obj = ServiceManager.Get<AssetManager>().Load<Map>(Constants.FIRST_VILLAGE_PREFAB_PATH);
-        if (obj != null)
-        {
-            var map = Instantiate(obj);
-            map.transform.SetParent(this.transform, false);
-            //var exploreState = map.gameObject.AddComponent<ExploreState>();
-            var exploreState = new ExploreState();
-            exploreState.Init(map, Stack, Vector2.zero);
-            Stack.Push(exploreState);
-        }
     }
 
     private void GiveEverything()
@@ -210,4 +229,30 @@ public class GameLogic : MonoBehaviour
                 member.Specials.Add(special.Value);
         }
     }
+
+    #if UNITY_EDITOR
+    public bool ShowStackStates = false;
+
+    public void OnGUI()
+    {
+        if (!ShowStackStates)
+            return;
+        float yDiff = 30.0f;
+        var position = Vector2.zero;
+        GUI.Label(new Rect(position, Vector2.one * 500.0f), "StateStack:");
+        position.y += yDiff;
+        GUI.Label(new Rect(position, Vector2.one * 500.0f), $"Current Event: {Stack.Top().GetName()}");
+        position.y += yDiff;
+
+        if (Stack.IsEmpty())
+            GUI.Label(new Rect(position, Vector2.one * 100.0f), "Empty!");
+        var states = Stack.GetStates();
+        for (int i = states.Count - 1; i >= 0; i--)
+        {
+            var message = $"{i} State: {states[i].GetName()}";
+            GUI.Label(new Rect(position, Vector2.one * 500.0f), message);
+            position.y += yDiff;
+        }
+    }
+#endif
 }

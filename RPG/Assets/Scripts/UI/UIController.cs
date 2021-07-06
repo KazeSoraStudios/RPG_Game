@@ -14,8 +14,6 @@ namespace RPG_UI
         [SerializeField] public Image ScreenImage;
         [SerializeField] InGameMenu GameMenu;
 
-        private Textbox textbox;
-
         private List<ScrollViewCell> pool = new List<ScrollViewCell>();
 
         private void Awake()
@@ -68,17 +66,15 @@ namespace RPG_UI
             stack.Push(GameMenu);
         }
 
-        public Textbox GetTextbox()
+        public Textbox GetTextbox(TextBoxAnchor anchor)
         {
-            if (textbox == null)
-            {
-                var asset = ServiceManager.Get<AssetManager>().Load<Textbox>(Constants.TEXTBOX_PREFAB);
-                textbox = Instantiate(asset);
-                textbox.transform.SetParent(TextLayer, false);
-                textbox.gameObject.SafeSetActive(false);
-                var stack = ServiceManager.Get<GameLogic>().Stack;
-                textbox.SetUp(stack);
-            }
+            var asset = ServiceManager.Get<AssetManager>().Load<Textbox>(Constants.TEXTBOX_PREFAB);
+            var textbox = Instantiate(asset);
+            textbox.gameObject.SafeSetActive(false);
+            textbox.transform.SetParent(TextLayer, false);
+            textbox.SetTextBoxAnchor(anchor);
+            var stack = ServiceManager.Get<GameLogic>().Stack;
+            textbox.SetUp(stack);
             return textbox;
         }
 

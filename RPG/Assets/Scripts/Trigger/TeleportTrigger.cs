@@ -1,26 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using RPG_Character;
 
-public class TeleportTrigger : Trigger
+public class TeleportTrigger : MonoBehaviour
 {
-    public void OnEnter(TriggerParams triggerParams)
+    [SerializeField] Vector2 TeleportPosition;
+    private void OnTriggerEnter2D(Collider2D other) 
     {
-        LogManager.LogInfo("teleporting");
-    }
-
-    public void OnExit(TriggerParams triggerParams)
-    {
-        LogManager.LogInfo("Finished teleporting.");
-    }
-
-    public void OnStay(TriggerParams triggerParams)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnUse(TriggerParams triggerParams)
-    {
-        throw new System.NotImplementedException();
+        if (!other.tag.Equals("Player"))
+            return;
+        var character = other.GetComponent<Character>();
+        character.ReturnFromCombat();
+        character.UpdateMovement(Vector2.zero);
+        Actions.Teleport(character.Entity, TeleportPosition);
     }
 }

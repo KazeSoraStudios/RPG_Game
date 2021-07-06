@@ -126,6 +126,12 @@ namespace RPG_Character
                 character.GetComponent<Character>().ReturnFromCombat();
         }
 
+        public void PrepareForSceneChange()
+        {
+            foreach (var character in Members)
+                character.GetComponent<Character>().PrepareForSceneChange();
+        }
+
         public void GiveExp(int exp)
         {
             foreach (var member in Members)
@@ -159,6 +165,14 @@ namespace RPG_Character
                 if (Members[i].PartyId.Equals(id))
                     return i;
             return -1;
+        }
+
+        public int GetEquippedCount(string itemId)
+        {
+            int count = 0;
+            foreach (var actor in Members)
+                count += actor.EquipCount(itemId);
+            return count;
         }
     }
 }
