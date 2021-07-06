@@ -107,6 +107,12 @@ namespace RPG_GameData
             cellsProcessed += numberOfColumns;
             index = cellsProcessed;
             var areas = GameDataAreasHandler.ProcessAreas(index, numberOfCells, numberOfColumns, data);
+            cellsProcessed += numberOfColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            cellsProcessed += numberOfColumns;
+            index = cellsProcessed;
+            var shops = GameDataShopHandler.ProcessShops(index, numberOfCells, numberOfColumns, data);
 
             GameData.Items = items;
             GameData.ItemUses = itemUses;
@@ -117,6 +123,7 @@ namespace RPG_GameData
             GameData.Enemies = enemies;
             GameData.Quests = quests;
             GameData.Areas = areas;
+            GameData.Shops = shops;
             ServiceManager.Get<LocalizationManager>().SetLocalization(loc);
             enabled = false;
             OnComplete?.Invoke();

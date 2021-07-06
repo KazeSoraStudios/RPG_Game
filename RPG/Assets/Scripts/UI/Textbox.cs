@@ -6,24 +6,30 @@ using RPG_Character;
 
 namespace RPG_UI
 {
+    public enum TextBoxAnchor { Top, Bottom, Left, Right, Center }
     public class Textbox : ConfigMonoBehaviour, IGameState
     {
         public class Config
         {
+            public bool UseSelectionBox = false;
             public bool ShowImage = false;
             public float AdvanceTime = 2.0f;
             public string ImagePath;
             public string Text;
             public Action OnFinish;
-            public Action OnSelect;
+            public Action<int> OnSelect;
         }
 
         [SerializeField] Image Image;
         [SerializeField] Image ContinueCaret;
         [SerializeField] TextMeshProUGUI Text;
         [SerializeField] MenuOptionsList OptionsList;
+        [SerializeField] RectTransform TextboxContainer;
+        [SerializeField] RectTransform OptionsContainer;
 
         private bool isDead = true;
+        private bool usingSelectionBox = false;
+        private bool callSelectionBoxCallback = false;
         private bool turnOff;
         private int currentPage = 0;
         private int characterIndex = 0;
@@ -35,7 +41,7 @@ namespace RPG_UI
         private string text;
         private TMP_TextInfo textInfo;
         private Action onFinish;
-        private Action onSelect;
+        private Action<int> onSelect;
         private StateStack stack;
 
         public void SetUp(StateStack stack)
@@ -59,6 +65,7 @@ namespace RPG_UI
             onSelect = config.OnSelect;
             Image.gameObject.SafeSetActive(false);
             isDead = false;
+            SetUpSelectionBox(config.UseSelectionBox);
             if (config.ShowImage && config.ImagePath.IsEmptyOrWhiteSpace())
                 Image.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.ImagePath, (_) => Image.gameObject.SafeSetActive(true));
         }
@@ -100,13 +107,19 @@ namespace RPG_UI
         {
             if (Input.GetKeyDown(KeyCode.Space))
                 OnClick();
-            else
-            { }// SelectionMenu.HandleInput();
+            else if (usingSelectionBox)
+            { 
+                OptionsList.HandleInput();
+            }
         }
 
         public void Exit()
         {
+            if (callSelectionBoxCallback)
+                OptionsList.OnClick();
             onFinish?.Invoke();
+            usingSelectionBox = false;
+            callSelectionBoxCallback = false;
             onSelect = null;
             onFinish = null;
             Text.SetText(string.Empty);
@@ -114,10 +127,13 @@ namespace RPG_UI
             ServiceManager.Get<Party>().ReturnFromTextboxState();
             ServiceManager.Get<NPCManager>().ReturnFromTextboxState();
             isDead = true;
+            Destroy(gameObject);
         }
 
         public void OnClick()
         {
+            if (usingSelectionBox)
+                callSelectionBoxCallback = true;
             if (characterIndex < pageEnd)
             {
                 characterIndex = pageEnd;
@@ -157,6 +173,60 @@ namespace RPG_UI
         public string GetName()
         {
             return "Textbox";
+        }
+
+        public void SetTextBoxAnchor(TextBoxAnchor anchor)
+        {
+            switch (anchor)
+            {
+                case TextBoxAnchor.Top:
+                    TextboxContainer.anchorMin = new Vector2(0.5f, 1.0f);
+                    TextboxContainer.anchorMax = new Vector2(0.5f, 1.0f);
+                    break;
+                case TextBoxAnchor.Bottom:
+                    TextboxContainer.anchorMin = new Vector2(0.5f, 0.0f);
+                    TextboxContainer.anchorMax = new Vector2(0.5f, 0.0f);
+                    break;
+                case TextBoxAnchor.Left:
+                    TextboxContainer.anchorMin = new Vector2(0.0f, 0.5f);
+                    TextboxContainer.anchorMax = new Vector2(0.0f, 0.5f);
+                    break;
+                case TextBoxAnchor.Right:
+                    TextboxContainer.anchorMin = new Vector2(1.0f, 0.5f);
+                    TextboxContainer.anchorMax = new Vector2(1.0f, 0.5f);
+                    break;
+                case TextBoxAnchor.Center:
+                    TextboxContainer.anchorMin = new Vector2(0.5f, 0.5f);
+                    TextboxContainer.anchorMax = new Vector2(0.5f, 0.5f);
+                    break;
+            }
+        }
+
+        private void SetUpMenuOptionList()
+        {
+            if (OptionsList == null)
+                return;
+            var config = new MenuOptionsList.Config
+            {
+                OnClick = onSelect,
+                ShowSelection = true
+            };
+            OptionsList.Init(config);
+        }
+
+        private void SetUpSelectionBox(bool useSelection)
+        {
+            if (useSelection)
+            {
+                usingSelectionBox = true;
+                OptionsList.gameObject.SafeSetActive(true);
+                SetUpMenuOptionList();
+            }
+            else
+            {
+                usingSelectionBox = false;
+                OptionsList.gameObject.SafeSetActive(false);
+            }
         }
     }
 }

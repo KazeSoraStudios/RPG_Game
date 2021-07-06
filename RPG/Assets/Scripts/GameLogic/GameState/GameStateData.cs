@@ -64,6 +64,14 @@ namespace RPG_GameState
                     return quest;
             return null;
         }
+
+        public Area GetArea(string areaId)
+        {
+            foreach (var area in areas)
+                if (area.Id.Equals(areaId))
+                    return area;
+            return null;
+        }
     }
 
     [Serializable]

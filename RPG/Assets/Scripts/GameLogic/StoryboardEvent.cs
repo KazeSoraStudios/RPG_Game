@@ -165,9 +165,9 @@ public class TimedTextBoxEvent : IStoryboardEvent
     private float countDown;
     private Textbox textbox;
 
-    public TimedTextBoxEvent(Textbox.Config config, float time)
+    public TimedTextBoxEvent(Textbox.Config config, float time, TextBoxAnchor anchor)
     {
-        textbox = ServiceManager.Get<UIController>().GetTextbox();
+        textbox = ServiceManager.Get<UIController>().GetTextbox(anchor);
         textbox.Init(config);
         this.time = time;
         countDown = time;
