@@ -55,7 +55,7 @@ namespace RPG_Combat
         {
             var stats = attacker.Stats;
             var speed = stats.Get(Stat.Speed);
-            var intelligence = stats.Get(Stat.Intelligence);
+            var intelligence = stats.Get(Stat.Attack);
             // max value is 255 if we add then divide by 255 we get 0-1
             var bonus = ((speed + intelligence) * 0.5f) / 255.0f;
             var chanceToHit = Constants.CHANCE_TO_HIT + bonus * 0.5f;
@@ -88,9 +88,10 @@ namespace RPG_Combat
         public static int BaseAttack(CombatGameState state, Actor attacker, Actor target)
         {
             var stats = attacker.Stats;
-            var strength = stats.Get(Stat.Strength);
+            // var strength = stats.Get(Stat.Strength);
             var attack = stats.Get(Stat.Attack);
-            var attackStrength = (strength * 0.5f) + attack;
+            var attackIncrease = Random.Range(0, attack * 0.5f);
+            var attackStrength = attackIncrease + attack;
             return (int)Random.Range(attackStrength, attackStrength * 2);
 
         }
@@ -147,7 +148,7 @@ namespace RPG_Combat
             var damage = baseDamage * 4;
             var level = attacker.Level;
             var stats = attacker.Stats;
-            var bonus = level * stats.Get(Stat.Intelligence) * (baseDamage / 32);
+            var bonus = level * stats.Get(Stat.Magic) * (baseDamage / 32);
             damage += bonus;
             if (Spell.SpellElement != SpellElement.None)
             {

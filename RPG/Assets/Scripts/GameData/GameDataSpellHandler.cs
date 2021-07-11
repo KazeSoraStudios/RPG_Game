@@ -5,14 +5,12 @@ namespace RPG_GameData
 {
     public class GameDataSpellHandler : GameDataHandler
     {
-        public static (Dictionary<string, Spell> spells, Dictionary<string, Spell> specials) ProcessSpells(int index, int count, int numberOfColumns, string[] data)
+        public static (Dictionary<string, Spell> spells, Dictionary<string, Spell> specials) ProcessSpells(int index, int count, int columnAdvance, string[] data)
         {
             LogManager.LogDebug("Creating GameData Spells.");
             LogManager.LogDebug($"Processing Spells for data {data}");
             var spells = new Dictionary<string, Spell>();
             var specials = new Dictionary<string, Spell>();
-            // Account for difference in columns
-            var columnDifference = numberOfColumns - 11;
             for (int i = 0; i < count; i++)
             {
                 var name = data[index++];
@@ -33,7 +31,7 @@ namespace RPG_GameData
                     },
                     Description = data[index++]
                 };
-                index += columnDifference;
+                index += columnAdvance;
                 if (spell.SpellElement == SpellElement.Special)
                     specials.Add(spell.Id, spell);
                 else

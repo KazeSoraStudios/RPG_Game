@@ -4,13 +4,11 @@ namespace RPG_GameData
 {
     public class GameDataAreasHandler : GameDataHandler
     {
-        public static Dictionary<string, Area> ProcessAreas(int index, int count, int numberOfColumns, string[] data)
+        public static Dictionary<string, Area> ProcessAreas(int index, int count, int columnAdvance, string[] data)
         {
             LogManager.LogDebug("Creating GameData Areas.");
             LogManager.LogDebug($"Processing Areas for data {data}");
             var areas = new Dictionary<string, Area>();
-            // Account for difference in columns
-            var columnDifference = numberOfColumns - 4;
             for (int i = 0; i < count; i++)
             {
                 var area = new Area()
@@ -20,7 +18,7 @@ namespace RPG_GameData
                     Chests = BuildDictionary(data[index++]),
                     Items = BuildDictionary(data[index++])
                 };
-                index += columnDifference;
+                index += columnAdvance;
                 areas.Add(area.Id, area);
             }
             LogManager.LogDebug("Processing Gamedata Areas finished.");

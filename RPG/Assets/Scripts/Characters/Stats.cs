@@ -5,7 +5,7 @@ using RPG_GameData;
 using RPG_GameState;
 namespace RPG_Character
 {
-    public enum Stat { HP, MaxHP, MP, MaxMP, Strength, Speed, Intelligence, Dodge, Counter, Attack, Defense, Resist, Magic };
+    public enum Stat { HP, MaxHP, MP, MaxMP, Speed, Strength, Intelligence, Dodge, Counter, Attack, Defense, Resist, Magic };
 
     public class Stats
     {

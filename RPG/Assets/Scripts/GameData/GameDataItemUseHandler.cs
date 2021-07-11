@@ -8,13 +8,11 @@ namespace RPG_GameData
 {
     public class GameDataItemUseHandler : GameDataHandler
     {
-        public static Dictionary<string, ItemUse> ProcessItems(int index, int count, int numberOfColumns, string[] data)
+        public static Dictionary<string, ItemUse> ProcessItems(int index, int count, int columnAdvance, string[] data)
         {
             LogManager.LogDebug("Creating GameData ItemUses.");
             LogManager.LogDebug($"Processing ItemUse for data {data}");
             var items = new Dictionary<string, ItemUse>();
-            // Account for difference in columns
-            var columnDifference = numberOfColumns - 8;
             for (int i = 0; i < count; i++)
             {
                 var name = data[index++];
@@ -32,7 +30,7 @@ namespace RPG_GameData
                         Type = GetEnum(CombatTargetType.One, data[index++])
                     }
                 };
-                index += columnDifference;
+                index += columnAdvance;
                 items.Add(name, itemUse);
             }
             LogManager.LogDebug("Processing Gamedata ItemUses finished.");

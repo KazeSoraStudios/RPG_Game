@@ -12,7 +12,7 @@ namespace RPG_UI
         [SerializeField] public Transform TextLayer;
         [SerializeField] public Transform CombatLayer;
         [SerializeField] public Image ScreenImage;
-        [SerializeField] InGameMenu GameMenu;
+        private InGameMenu gameMenu;
 
         private List<ScrollViewCell> pool = new List<ScrollViewCell>();
 
@@ -28,10 +28,7 @@ namespace RPG_UI
 
         public void InitUI()
         {
-            // have awake run
-            GameMenu.SetUpUI(this);
-            gameObject.SafeSetActive(true);
-            gameObject.SafeSetActive(false);
+            LoadGameMenu();
         }
 
         public bool HasCell()
@@ -62,8 +59,8 @@ namespace RPG_UI
         public void OpenMenu(Map map, StateStack stack)
         {
             Show();
-            GameMenu.Init(map, stack);
-            stack.Push(GameMenu);
+            gameMenu.Init(map, stack);
+            stack.Push(gameMenu);
         }
 
         public Textbox GetTextbox(TextBoxAnchor anchor)
@@ -125,6 +122,20 @@ namespace RPG_UI
 
         public void Hide()
         {
+            gameObject.SafeSetActive(false);
+        }
+
+        private void LoadGameMenu()
+        {
+            var asset = ServiceManager.Get<AssetManager>().Load<InGameMenu>(Constants.IN_GAME_MENU_PREFAB);
+            if (asset == null)
+            {
+                LogManager.LogError("Unable to load InGameMenu.");
+                return;
+            }
+            gameMenu = Instantiate(asset, Vector3.zero, Quaternion.identity);
+            gameMenu.transform.SetParent(MenuLayer);
+            gameMenu.SetUpUI(this);
             gameObject.SafeSetActive(false);
         }
     }

@@ -5,19 +5,17 @@ namespace RPG_GameData
 {
     public class GameDataEnemyHandler : GameDataHandler
     {
-        public static Dictionary<string, Enemy> PrcoessEnemies(int index, int count, int numberOfColumns, string[] data)
+        public static Dictionary<string, Enemy> PrcoessEnemies(int index, int count, int columnAdvance, string[] data)
         {
             LogManager.LogDebug("Creating GameData Enemies.");
             LogManager.LogDebug($"Processing Enemies for data {data}");
             var enemies = new Dictionary<string, Enemy>();
-            // Account for difference in columns
-            var columnDifference = numberOfColumns - 9;
             for (int i = 0; i < count; i++)
             {
                 var enemy = new Enemy()
                 {
                     Id = data[index++],
-                    Stats = GetStats(data[index++]),
+                    StatsId = data[index++],
                     Name = data[index++],
                     Portrait = data[index++],
                     PrefabPath = data[index++],
@@ -28,37 +26,37 @@ namespace RPG_GameData
                     Gold = GetVector2FromCell(data[index++]),
                     ItemDrops = GetItemDrops(data[index++])
                 };
-                index += columnDifference;
+                index += columnAdvance;
                 enemies.Add(enemy.Id, enemy);
             }
             LogManager.LogDebug("Processing Gamedata Enemies finished.");
             return enemies;
         }
 
-        private static Dictionary<RPG_Character.Stat, int> GetStats(string data)
-        {
-            var stats = new Dictionary<RPG_Character.Stat, int>();
-            if (data.IsEmpty())
-            {
-                LogManager.LogError($"Invalid data passed to GetStats in GameDataEnemyHandler.");
-                return stats;
-            }
-            var statData = data.Split(';');
-            foreach (var value in statData)
-            {
-                var info = value.Split(':');
-                if (info.Length != 2)
-                {
+        // private static Dictionary<RPG_Character.Stat, int> GetStats(string data)
+        // {
+        //     var stats = new Dictionary<RPG_Character.Stat, int>();
+        //     if (data.IsEmpty())
+        //     {
+        //         LogManager.LogError($"Invalid data passed to GetStats in GameDataEnemyHandler.");
+        //         return stats;
+        //     }
+        //     var statData = data.Split(';');
+        //     foreach (var value in statData)
+        //     {
+        //         var info = value.Split(':');
+        //         if (info.Length != 2)
+        //         {
 
-                    LogManager.LogError($"Info [{string.Join(", ", info)}] is in invalid format in GetStats in GameDataEnemyHandler.");
-                    continue;
-                }
-                var stat = GetEnum(RPG_Character.Stat.HP, info[0]);
-                var amount = GetIntFromCell(info[1]);
-                stats.Add(stat, amount);
-            }
-            return stats;
-        }
+        //             LogManager.LogError($"Info [{string.Join(", ", info)}] is in invalid format in GetStats in GameDataEnemyHandler.");
+        //             continue;
+        //         }
+        //         var stat = GetEnum(RPG_Character.Stat.HP, info[0]);
+        //         var amount = GetIntFromCell(info[1]);
+        //         stats.Add(stat, amount);
+        //     }
+        //     return stats;
+        // }
 
         private static List<string> GetSpells(string data)
         {

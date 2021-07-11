@@ -4,13 +4,11 @@ namespace RPG_GameData
 {
     public class GameDataQuestHandler : GameDataHandler
     {
-        public static Dictionary<string, Quest> ProcessQuests(int index, int count, int numberOfColumns, string[] data)
+        public static Dictionary<string, Quest> ProcessQuests(int index, int count, int columnAdvance, string[] data)
         {
             LogManager.LogDebug("Creating GameData Quests.");
             LogManager.LogDebug($"Processing quests for data {data}");
             var quests = new Dictionary<string, Quest>();
-            // Account for difference in columns
-            var columnDifference = numberOfColumns - 6;
             for (int i = 0; i < count; i++)
             {
                 var id = data[index++];
@@ -23,7 +21,7 @@ namespace RPG_GameData
                     Condition = BuildCondition(data[index++]),
                     IsStoryQuest = data[index++].Equals("1")
                 };
-                index += columnDifference;
+                index += columnAdvance;
                 quests.Add(id, quest);
             }
             LogManager.LogDebug("Processing Gamedata Quests finished.");

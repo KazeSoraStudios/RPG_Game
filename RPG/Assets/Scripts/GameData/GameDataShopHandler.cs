@@ -6,13 +6,11 @@ namespace RPG_GameData
 {
     public class GameDataShopHandler : GameDataHandler
         {
-            public static Dictionary<string, Shop> ProcessShops(int index, int count, int numberOfColumns, string[] data)
+            public static Dictionary<string, Shop> ProcessShops(int index, int count, int columnAdvance, string[] data)
             {
                 LogManager.LogDebug("Creating GameData 'Shops'.");
                 LogManager.LogDebug($"Processing Shops for data {data}");
                 var shops = new Dictionary<string, Shop>();
-                // Account for difference in columns
-                var columnDifference = numberOfColumns - 3;
                 for (int i = 0; i < count; i++)
                 {
                     var id = data[index++];
@@ -22,7 +20,7 @@ namespace RPG_GameData
                         Items = GetListFromCell(data[index++]),
                         AdditionalItems = GetAdditionalItems(data[index++])
                     };
-                    index += columnDifference;
+                    index += columnAdvance;
                     shops.Add(id, shop);
                 }
                 LogManager.LogDebug("Processing Gamedata Quests finished.");

@@ -34,11 +34,11 @@ namespace RPG_Combat
         [SerializeField] TextMeshProUGUI TipText;
         [SerializeField] GameObject NoticeContainer;
         [SerializeField] TextMeshProUGUI NoticeText;
+        [SerializeField] public EventQueue EventQueue;
 
         public CombatBrowseListState ActionBrowseList;
         public CombatTargetState TargetState;
         public CombatChoiceState CombatChoice;
-        public EventQueue EventQueue;
         public Actor SelectedActor;
         public StateStack CombatStack = new StateStack();
         public List<Actor> PartyActors = new List<Actor>();
@@ -53,7 +53,6 @@ namespace RPG_Combat
         private bool canEscape = true;
         private bool escaped = false;
         private StateStack gameStack = new StateStack();
-        private EventQueue eventQueue = new EventQueue();
         private Action onWin;
         private Action onDie;
 

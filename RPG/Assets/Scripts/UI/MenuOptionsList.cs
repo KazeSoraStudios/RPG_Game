@@ -139,6 +139,8 @@ namespace RPG_UI
 
         private void SetSelectionPosition()
         {
+            if (SelectionArrow == null)
+                return;
             Vector2 position;
             if (isVertical)
             {

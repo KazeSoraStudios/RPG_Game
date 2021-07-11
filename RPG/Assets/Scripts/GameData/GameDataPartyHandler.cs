@@ -6,13 +6,11 @@ namespace RPG_GameData
 {
     public class GameDataPartyHandler : GameDataHandler
     {
-        public static Dictionary<string, PartyMemeberDefintion> ProcessParty(int index, int count, int numberOfColumns, string[] data)
+        public static Dictionary<string, PartyMemeberDefintion> ProcessParty(int index, int count, int columnAdvance, string[] data)
         {
             LogManager.LogDebug("Creating GameData Items.");
             LogManager.LogDebug($"Processing items for data {data}");
             var items = new Dictionary<string, PartyMemeberDefintion>();
-            // Account for difference in columns
-            var columnDifference = numberOfColumns - 7;
             for (int i = 0; i < count; i++)
             {
                 var partyMember = new PartyMemeberDefintion()
@@ -25,7 +23,7 @@ namespace RPG_GameData
                     Name = data[index++],
                     Level = int.Parse(data[index++])
                 };
-                index += columnDifference;
+                index += columnAdvance;
                 items.Add(partyMember.Id, partyMember);
             }
             LogManager.LogDebug("Processing Gamedata Items finished.");

@@ -51,68 +51,78 @@ namespace RPG_GameData
         {
             // First row is total number of rows and columns
             var cells = new Dictionary<string, List<List<string>>>();
-            int numberOfColumns = int.Parse(data[1]);
-            int index = numberOfColumns;
+            int maxColumns = int.Parse(data[1]);
+            int index = maxColumns;
             // Second row is sheet name, number of rows and columns
             int numberOfCells = int.Parse(data[index + 1]);
+            int numberOfColumns = int.Parse(data[index + 2]);
             int cellsProcessed = 0;
-            index = numberOfColumns * 2;
-            var items = GameDataItemHandler.ProcessItems(index, numberOfCells, numberOfColumns, data);
+            index = maxColumns * 2;
+            var items = GameDataItemHandler.ProcessItems(index, numberOfCells, maxColumns - numberOfColumns, data);
             // Count the cells we just processed plus the two rows we skipped
-            cellsProcessed = numberOfColumns * 2 + numberOfColumns * numberOfCells;
+            cellsProcessed = maxColumns * 2 + maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var itemUses = GameDataItemUseHandler.ProcessItems(index, numberOfCells, numberOfColumns, data);
-            cellsProcessed += numberOfColumns * numberOfCells;
+            var itemUses = GameDataItemUseHandler.ProcessItems(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var loc = GameDataLocalizationHandler.ProcessLocaliation(index, numberOfCells, numberOfColumns, data);
-            cellsProcessed += numberOfColumns * numberOfCells;
+            var loc = GameDataLocalizationHandler.ProcessLocaliation(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var party = GameDataPartyHandler.ProcessParty(index, numberOfCells, numberOfColumns, data);
-            cellsProcessed += numberOfColumns * numberOfCells;
+            var party = GameDataPartyHandler.ProcessParty(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var stats = GameDataStatsHandler.ProcessStats(index, numberOfCells, numberOfColumns, data);
-            cellsProcessed += numberOfColumns * numberOfCells;
+            var stats = GameDataStatsHandler.ProcessStats(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var spells = GameDataSpellHandler.ProcessSpells(index, numberOfCells, numberOfColumns, data);
-            cellsProcessed += numberOfColumns * numberOfCells;
+            var spells = GameDataSpellHandler.ProcessSpells(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var enemies = GameDataEnemyHandler.PrcoessEnemies(index, numberOfCells, numberOfColumns, data);
-            cellsProcessed += numberOfColumns * numberOfCells;
+            var enemies = GameDataEnemyHandler.PrcoessEnemies(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var quests = GameDataQuestHandler.ProcessQuests(index, numberOfCells, numberOfColumns, data);
-            cellsProcessed += numberOfColumns * numberOfCells;
+            var quests = GameDataQuestHandler.ProcessQuests(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var areas = GameDataAreasHandler.ProcessAreas(index, numberOfCells, numberOfColumns, data);
-            cellsProcessed += numberOfColumns * numberOfCells;
+            var areas = GameDataAreasHandler.ProcessAreas(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
             // Get the new number of cells to process and skip the row
             numberOfCells = int.Parse(data[cellsProcessed + 1]);
-            cellsProcessed += numberOfColumns;
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
             index = cellsProcessed;
-            var shops = GameDataShopHandler.ProcessShops(index, numberOfCells, numberOfColumns, data);
+            var shops = GameDataShopHandler.ProcessShops(index, numberOfCells, maxColumns - numberOfColumns, data);
 
             GameData.Items = items;
             GameData.ItemUses = itemUses;

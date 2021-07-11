@@ -27,6 +27,7 @@ public class Constants
     public const string LOOT_REWARDS_PREFAB = "prefabs/UI/Loot Menu";
     public const string UI_SELECTION_CARET_PREFAB = "prefabs/UI/Selection Caret";
     public const string WEAPON_SHOP_MENU_PREFAB = "prefabs/UI/ArmsShopMenu";
+    public const string IN_GAME_MENU_PREFAB = "prefabs/UI/InGameMenu";
 
     // Scenes
     public const string HERO_VILLAGE_SCENE = "Village";

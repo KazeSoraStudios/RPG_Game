@@ -2,13 +2,11 @@
 {
     public class GameDataItemHandler : GameDataHandler
     {
-        public static DictionaryList<string, ItemInfo> ProcessItems(int index, int count, int numberOfColumns, string[] data)
+        public static DictionaryList<string, ItemInfo> ProcessItems(int index, int count, int columnAdvance, string[] data)
         {
             LogManager.LogDebug("Creating GameData Items.");
             LogManager.LogDebug($"Processing items for data {data}");
             var items = new DictionaryList<string, ItemInfo>();
-            // Account for difference in columns
-            var columnDifference = numberOfColumns - 8;
             for (int i = 0; i < count; i++)
             {
                 var id = data[index++];
@@ -24,7 +22,7 @@
                     Use = data[index++],
                     Price = GetIntFromCell(data[index++])
                 };
-                index += columnDifference;
+                index += columnAdvance;
                 items.Add(id, itemInfo);
             }
             LogManager.LogDebug("Processing Gamedata Items finished.");

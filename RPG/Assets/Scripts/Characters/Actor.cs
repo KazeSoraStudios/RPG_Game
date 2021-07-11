@@ -100,7 +100,8 @@ namespace RPG_Character
             Specials.AddRange(GetSpecialsForLevelUp(enemy.Specials));
             StealItem = enemy.StealItem;
             Loot = CreateLoot(enemy);
-            Stats = new Stats(enemy.Stats, name);
+            var gameData = ServiceManager.Get<GameData>();
+            Stats = Stats = new Stats(gameData.Stats[enemy.StatsId], name);
         }
 
         private void DoInitialLeveling()

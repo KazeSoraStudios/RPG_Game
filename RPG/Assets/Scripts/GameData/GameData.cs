@@ -86,12 +86,12 @@ namespace RPG_GameData
         public Vector2 Gold;
         public string Id;
         public string Name;
+        public string StatsId;
         public string Portrait;
         public string PrefabPath;
         public List<string> Spells = new List<string>();
         public List<string> Specials = new List<string>();
         public List<Vector3> ItemDrops = new List<Vector3>();
-        public Dictionary<Stat, int> Stats;
 
         public string GetName()
         {

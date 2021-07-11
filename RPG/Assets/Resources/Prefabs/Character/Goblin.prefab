@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 3057305007961802950}
   - component: {fileID: 6918768904403121363}
   m_Layer: 4
-  m_Name: Golbin
+  m_Name: Goblin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,6 +52,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -97,7 +98,7 @@ Animator:
   m_GameObject: {fileID: 3057305007961802813}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d8656d667ca56994cba9985cca1aafb1, type: 2}
+  m_Controller: {fileID: 22100000, guid: 46e0fb15fb5c3c746a22d2ab656e4e19, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
