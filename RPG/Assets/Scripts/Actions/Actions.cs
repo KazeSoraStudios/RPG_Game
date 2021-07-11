@@ -380,10 +380,10 @@ public class Actions
             StoryboardEventFunctions.Wait(0.5f),
             StoryboardEventFunctions.Function(() => 
             {
-                combat.Init(combatConfig);
                 SetCameraToCombatPosition();
                 ServiceManager.Get<Party>().PrepareForCombat();
                 ServiceManager.Get<NPCManager>().PrepareForCombat();
+                combat.Init(combatConfig);
              }),
             StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.5f),
             StoryboardEventFunctions.Function(() => combat.gameObject.SafeSetActive(true))

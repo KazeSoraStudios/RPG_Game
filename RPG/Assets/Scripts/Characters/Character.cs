@@ -22,6 +22,7 @@ namespace RPG_Character
 
         private bool hasSpeedBeforeText = false;
         private Vector2 movementBeforeTextbox = Vector2.zero;
+        private Vector2 locationBeforeCombat = Vector2.zero;
 
         public void Init(Map map, List<string> states, string defaultState = Constants.STAND_STATE)
         {
@@ -176,6 +177,7 @@ namespace RPG_Character
 
         public void PrepareForCombat()
         {
+            locationBeforeCombat = transform.position;
             ResetAnimator();
             Controller.Change(Constants.EMPTY_STATE);
             Entity.UpdateMovement(Vector2.zero);
@@ -185,6 +187,7 @@ namespace RPG_Character
         {
             ResetAnimator();
             Controller.Change(defaultState);
+            transform.position = locationBeforeCombat;
         }
 
         public void PrepareForSceneChange()

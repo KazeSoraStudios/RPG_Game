@@ -59,7 +59,7 @@ public class EventQueue : MonoBehaviour
         e.SetPriority(points);
         int index = 0;
         for (; index < events.Count; index++)
-            if (points > events[index].GetPriority())
+            if (points < events[index].GetPriority())
                 break;
         events.Insert(index, e);
     }
