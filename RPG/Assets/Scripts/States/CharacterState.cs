@@ -167,9 +167,11 @@ public class UnitMoveState : CharacterState
         var triggerPosition = Character.transform.position;
         Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)triggerPosition.x, (int)triggerPosition.y);
         Trigger.OnExit(new TriggerParams((int)triggerPosition.x, (int)triggerPosition.y, Character));
-        //else
-        //    Map.TryEncounter(x,y,layer)
         targetPosition = (Vector2)triggerPosition + movement;
+        if (Map.TryEncounter(new Vector3Int((int)targetPosition.x, (int)targetPosition.y, 0)))
+        {
+
+        }
         Character.UpdateMovement(movement);
     }
 
@@ -203,6 +205,10 @@ public class MoveState : CharacterState
         {
             Character.Controller.Change(Character.defaultState);
             return;
+        }
+        if (Map.TryEncounter(new Vector3Int((int)moveParams.MovePosition.x, (int)moveParams.MovePosition.y, 0)))
+        {
+
         }
         Character.UpdateMovement(moveParams.MovePosition);
     }

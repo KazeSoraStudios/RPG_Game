@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using RPG_Character;
+using RPG_GameData;
 using Cinemachine;
 
 public class Map : MonoBehaviour
@@ -10,12 +12,19 @@ public class Map : MonoBehaviour
     [SerializeField] public Vector3 HeroStartingPosition;
     [SerializeField] public CinemachineVirtualCamera Camera;
     [SerializeField] Transform NPCParent;
+    [SerializeField] Tilemap Encounters;
     [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
     [SerializeField] List<NPCData> MapNPCs = new List<NPCData>();
 
+    private Encounter Encounter = new Encounter();
+
     private void Start()
     {
-        
+        var encounters = ServiceManager.Get<GameData>().Encounters;
+        if (encounters.ContainsKey(MapName))
+        {
+            Encounter = encounters[MapName];
+        }
     }
 
     public void LoadNpcs()
@@ -92,6 +101,35 @@ public class Map : MonoBehaviour
         if (!Entities.ContainsKey(position))
             return null;
         return Entities[position];
+    }
+
+    public bool TryEncounter(Vector3Int position)
+    {
+        if (Encounters == null)
+            return false;
+        if (!Encounters.HasTile(position))
+            return false;
+        var tile = Encounters.GetTile(position) as EncounterTile;
+        if (tile == null)
+            return false;
+        var encounter = Encounter.GetEncounter(tile.EncounterId).Pick();
+        if (encounter.Items.Count == 0)
+            return false;
+        StartCombat(encounter.Items);
+        return true;
+    }
+
+    private void StartCombat(List<string> enemies)
+    {
+        var gameLogic = ServiceManager.Get<GameLogic>();
+        var config = new Actions.StartCombatConfig
+        { 
+            CanFlee = true,
+            Map = this,
+            Stack = gameLogic.Stack,
+            Party = gameLogic.GameState.World.Party.Members,
+            Enemies  = enemies
+        };
     }
 
     /*

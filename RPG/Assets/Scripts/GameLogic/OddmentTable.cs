@@ -6,7 +6,7 @@ public class Oddment : ScriptableObject
 {
     public int Chance;
     public int Count = 1;
-    public string Item;
+    public List<string> Items = new List<string>();
 }
 
 public class OddmentItem : ScriptableObject
@@ -35,13 +35,13 @@ public class OddmentTable
 
     public void SetOddments(List<Oddment> oddments)
     {
-        oddments.Clear();
+        this.oddments.Clear();
         if (oddments == null)
         {
             LogManager.LogError("Null oddments passed to SetOddments.");
             return;
         }
-        oddments.AddRange(oddments);
+        this.oddments.AddRange(oddments);
         oddmentTotal = CalcOddment();
     }
 

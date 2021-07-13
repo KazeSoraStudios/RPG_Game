@@ -297,7 +297,7 @@ namespace RPG_Character
                 {
                     var oddment = new Oddment
                     {
-                        Item = item.Id,
+                        Items = new List<string> { item.Id },
                         Chance = (int)itemDrop.y,
                         Count = (int)itemDrop.z
                     };

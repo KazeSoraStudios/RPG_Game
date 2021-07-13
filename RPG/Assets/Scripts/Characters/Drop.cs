@@ -16,7 +16,7 @@ namespace RPG_Character
             var oddment =  ChanceDrop.Pick();
             if (oddment == null)
                 return null;
-            var item = ServiceManager.Get<GameData>().Items[oddment.Item] as ItemInfo;
+            var item = ServiceManager.Get<GameData>().Items[oddment.Items[0]] as ItemInfo;
             return new Item { Count = oddment.Count, ItemInfo = item };
         }
     }

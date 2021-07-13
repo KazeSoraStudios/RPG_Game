@@ -19,6 +19,7 @@ namespace RPG_GameData
         public Dictionary<string, Quest> Quests = new Dictionary<string, Quest>();
         public Dictionary<string, Area> Areas = new Dictionary<string, Area>();
         public Dictionary<string, Shop> Shops = new Dictionary<string, Shop>();
+        public Dictionary<string, Encounter> Encounters = new Dictionary<string, Encounter>();
 
         void Awake()
         {
@@ -196,6 +197,29 @@ namespace RPG_GameData
                 items.AddRange(entry.Value);   
             }
             return items;
+        }
+    }
+
+    public class Encounter
+    {
+        public string Id;
+        public List<string> Backgrounds = new List<string>();
+        public List<OddmentTable> Encounters = new List<OddmentTable>();
+        
+        public string GetBackground(int encounter)
+        {
+            if (Backgrounds.Count < 1)
+                return Constants.DEFAULT_COMBAT_BACKGROUND;
+            if (encounter < 0 || encounter > Backgrounds.Count)
+                return Backgrounds[0];
+            return Backgrounds[encounter];
+        }
+
+        public OddmentTable GetEncounter(int encounter)
+        {
+            if (encounter < 0 || encounter > Encounters.Count)
+                return new OddmentTable();
+            return Encounters[encounter];
         }
     }
 }
