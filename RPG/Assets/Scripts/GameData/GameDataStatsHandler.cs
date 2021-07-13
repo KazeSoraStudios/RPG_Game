@@ -17,7 +17,7 @@ namespace RPG_GameData
                 {
                     { Stat.HP, int.Parse(data[index++])},
                     { Stat.MP, int.Parse(data[index++])},
-                    { Stat.Strength, int.Parse(data[index++])},
+                    { Stat.Attack, int.Parse(data[index++])},
                     { Stat.Defense, int.Parse(data[index++])},
                     { Stat.Magic, int.Parse(data[index++])},
                     { Stat.Resist, int.Parse(data[index++])},

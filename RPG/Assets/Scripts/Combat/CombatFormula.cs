@@ -87,11 +87,10 @@ namespace RPG_Combat
 
         public static int BaseAttack(CombatGameState state, Actor attacker, Actor target)
         {
-            var stats = attacker.Stats;
-            // var strength = stats.Get(Stat.Strength);
-            var attack = stats.Get(Stat.Attack);
+            var attack = attacker.Stats.Get(Stat.Attack);
+            var defense = target.Stats.Get(Stat.Defense);
             var attackIncrease = Random.Range(0, attack * 0.5f);
-            var attackStrength = attackIncrease + attack;
+            var attackStrength = attack * attack  / (attack - defense);// + attackIncrease;
             return (int)Random.Range(attackStrength, attackStrength * 2);
 
         }

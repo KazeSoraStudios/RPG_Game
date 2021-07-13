@@ -91,7 +91,7 @@ namespace RPG_Combat
                 return;
             }
             targetPosition = (Vector2)character.transform.position + combatParams.MovePosition;
-            direction = combatParams.Direction == 0 ? Direction.West : Direction.East;
+            direction = combatParams.Direction == 0 ? Direction.South : Direction.North;
             if (combatParams.MoveTime > 0.0f)
                 moveTime = combatParams.MoveTime;
             character.CombatMovement(combatParams.MovePosition, direction);

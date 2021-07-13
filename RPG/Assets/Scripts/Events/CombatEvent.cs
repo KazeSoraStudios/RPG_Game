@@ -147,12 +147,12 @@ namespace RPG_Combat
                 var attackMoveParams = new CombatStateParams
                 {
                     Direction = 1,
-                    MovePosition = Vector2.left * 2.0f
+                    MovePosition = Vector2.up * 2.0f
                 };
                 var returnMoveParams = new CombatStateParams
                 {
                     Direction = 1,
-                    MovePosition = Vector2.right * 2.0f
+                    MovePosition = Vector2.down * 2.0f
                 };
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, attackMoveParams));
                 // TODO remove Temp for testing
@@ -173,13 +173,13 @@ namespace RPG_Combat
                 targetPosition.y = actor.transform.position.y;
                 var attackMoveParams = new CombatStateParams
                 {
-                    Direction = 1,
-                    MovePosition = Vector2.right
+                    Direction = 0,
+                    MovePosition = Vector2.down
                 };
                 var returnMoveParams = new CombatStateParams
                 {
-                    Direction = -1,
-                    MovePosition = Vector2.left
+                    Direction = 0,
+                    MovePosition = Vector2.right
                 };
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, attackMoveParams));
                 // TODO remove Temp for testing

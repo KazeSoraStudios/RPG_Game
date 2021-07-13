@@ -21,6 +21,7 @@ namespace RPG_Character
         public Direction direction;
 
         private bool hasSpeedBeforeText = false;
+        private Direction directionBeforeCombat = Direction.South;
         private Vector2 movementBeforeTextbox = Vector2.zero;
         private Vector2 locationBeforeCombat = Vector2.zero;
 
@@ -42,7 +43,7 @@ namespace RPG_Character
         public void CombatMovement(Vector2 movement, Direction direction)
         {
             Entity.UpdateMovement(movement, null);
-            var directionMovement = direction == Direction.West ? Vector2.right : Vector2.left;
+            var directionMovement = direction == Direction.South ? Vector2.down : Vector2.up;
             UpdateAnimation(directionMovement);
         }
 
@@ -178,6 +179,7 @@ namespace RPG_Character
         public void PrepareForCombat()
         {
             locationBeforeCombat = transform.position;
+            directionBeforeCombat = direction;
             ResetAnimator();
             Controller.Change(Constants.EMPTY_STATE);
             Entity.UpdateMovement(Vector2.zero);
@@ -188,6 +190,7 @@ namespace RPG_Character
             ResetAnimator();
             Controller.Change(defaultState);
             transform.position = locationBeforeCombat;
+            animator.SetInteger("Direction", (int)directionBeforeCombat);
         }
 
         public void PrepareForSceneChange()
