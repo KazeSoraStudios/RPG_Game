@@ -48,6 +48,8 @@ GameObject:
   - component: {fileID: 4474695500408404690}
   - component: {fileID: 4474695500408404689}
   - component: {fileID: 4474695500408404688}
+  - component: {fileID: 479541656208436725}
+  - component: {fileID: 3995481562109197520}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -86,6 +88,7 @@ MonoBehaviour:
   LogLevel: 2
   UIController: {fileID: 0}
   GameDataDownloader: {fileID: 4474695500408404693}
+  ShowStackStates: 0
 --- !u!114 &4474695500408404648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,3 +195,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BinarySave: 0
   filepath: \savedata.rpg
+--- !u!114 &479541656208436725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4474695500408404650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52d03fc6f631a154c93f00df2d0b5bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AvailableSources: []
+  BackgroundAudio: {fileID: 0}
+  AllSources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &3995481562109197520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4474695500408404650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c7862855d449f5448378fb287d8e160, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
