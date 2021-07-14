@@ -3,14 +3,12 @@ using RPG_Character;
 
 public abstract class CharacterState : IState
 {
-    public Map Map;
     public Character Character;
 
     public CharacterState() { }
 
-    public CharacterState(Map map, Character character)
+    public CharacterState(Character character)
     {
-        Map = map;
         Character = character;
     }
 
@@ -35,8 +33,8 @@ public class PlanStrollState : CharacterState
     private float CountDown;
     private float FrameResetSpeed = 0.05f;
 
-    public PlanStrollState(Map map, Character character)
-        : base(map, character)
+    public PlanStrollState(Character character)
+        : base(character)
     {
         CountDown = Random.Range(0, 3);
     }
@@ -77,8 +75,8 @@ public class WaitState : CharacterState
 {
     private const string Name = "WaitState";
 
-    public WaitState(Map map, Character character)
-        : base(map, character) { }
+    public WaitState(Character character)
+        : base(character) { }
 
     public override string GetName() { return Name; }
 
@@ -118,8 +116,8 @@ public class UnitMoveState : CharacterState
     private Trigger Trigger;
     private Vector2 targetPosition = Vector2.zero;
 
-    public UnitMoveState(Map map, Character character)
-        : base(map, character) { }
+    public UnitMoveState(Character character)
+        : base(character) { }
 
     public override string GetName()
     {
@@ -168,10 +166,10 @@ public class UnitMoveState : CharacterState
         Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)triggerPosition.x, (int)triggerPosition.y);
         Trigger.OnExit(new TriggerParams((int)triggerPosition.x, (int)triggerPosition.y, Character));
         targetPosition = (Vector2)triggerPosition + movement;
-        if (Map.TryEncounter(new Vector3Int((int)targetPosition.x, (int)targetPosition.y, 0)))
-        {
+        // if (Map.TryEncounter(new Vector3Int((int)targetPosition.x, (int)targetPosition.y, 0)))
+        // {
 
-        }
+        // }
         Character.UpdateMovement(movement);
     }
 
@@ -191,8 +189,8 @@ public class MoveState : CharacterState
     private const string Name = "MoveState";
     private Trigger Trigger;
 
-    public MoveState(Map map, Character character)
-        : base(map, character) { }
+    public MoveState(Character character)
+        : base(character) { }
 
     public override string GetName()
     {
@@ -206,7 +204,10 @@ public class MoveState : CharacterState
             Character.Controller.Change(Character.defaultState);
             return;
         }
-        if (Map.TryEncounter(new Vector3Int((int)moveParams.MovePosition.x, (int)moveParams.MovePosition.y, 0)))
+        int x = (int)Character.transform.position.x + (int)moveParams.MovePosition.x;
+        int y = (int)Character.transform.position.y + (int)moveParams.MovePosition.y;
+        var map = Character.Map;
+        if (map.TryEncounter(new Vector3Int(x, y, 0)))
         {
 
         }

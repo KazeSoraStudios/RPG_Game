@@ -21,9 +21,10 @@ public class Map : MonoBehaviour
     private void Start()
     {
         var encounters = ServiceManager.Get<GameData>().Encounters;
-        if (encounters.ContainsKey(MapName))
+        var map = MapName.ToLower();
+        if (encounters.ContainsKey(map))
         {
-            Encounter = encounters[MapName];
+            Encounter = encounters[map];
         }
     }
 
@@ -59,12 +60,6 @@ public class Map : MonoBehaviour
     }
 
     public void RemoveNPC(Character npc)
-    {
-        var character = ServiceManager.Get<NPCManager>().RemoveNPC(MapName, npc);
-        Destroy(character.gameObject);
-    }
-
-    public void RemoveNPC(string npc)
     {
         var character = ServiceManager.Get<NPCManager>().RemoveNPC(MapName, npc);
         Destroy(character.gameObject);
@@ -130,6 +125,7 @@ public class Map : MonoBehaviour
             Party = gameLogic.GameState.World.Party.Members,
             Enemies  = enemies
         };
+        Actions.Combat(config);
     }
 
     /*

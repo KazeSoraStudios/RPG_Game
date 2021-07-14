@@ -34,15 +34,15 @@ namespace RPG_Character
 
         public bool HasNPC(string map, Character character)
         {
-            return HasNPC(map, character.name);
+            return HasNPC(map, character.GetHashCode());
         }
 
-        public bool HasNPC(string map, string name)
+        public bool HasNPC(string map, int hash)
         {
             if (!npcsByMap.ContainsKey(map))
                 return false;
             foreach (var npc in npcsByMap[map])
-                if (npc.name.Equals(name))
+                if (npc.GetHashCode() == hash)
                     return true;
             return false;
         }
@@ -51,7 +51,7 @@ namespace RPG_Character
         {
             if (!npcsByMap.ContainsKey(map))
                 npcsByMap.Add(map, new List<Character>());
-            if (HasNPC(map, character.name))
+            if (HasNPC(map, character.GetHashCode()))
             {
                 LogManager.LogError($"Character {character.name} is already present in NPCsByMap for Map: {map}. Cannot add.");
                 return;
@@ -61,14 +61,14 @@ namespace RPG_Character
 
         public Character RemoveNPC(string map, Character character)
         {
-            return RemoveNPC(map, character.name);
+            return RemoveNPC(map, character.GetHashCode(), character.name);
         }
 
-        public Character RemoveNPC(string map, string name)
+        public Character RemoveNPC(string map, int hash, string npcName)
         {
-            if (!HasNPC(map, name))
+            if (!HasNPC(map, hash))
             {
-                LogManager.LogError($"Map {map} is not present in NPCsByMap. Cannot remove NPC: {name}.");
+                LogManager.LogError($"Map {map} is not present in NPCsByMap. Cannot remove NPC: {npcName}.");
                 return null;
             }
             var index = FindNpcIndex(map, name);
@@ -80,13 +80,13 @@ namespace RPG_Character
 
         public Character GetNPC(string map, Character character)
         {
-            return GetNPC(map, character.name);
+            return GetNPC(map, character.GetHashCode());
         }
 
 
-        public Character GetNPC(string map, string name)
+        public Character GetNPC(string map, int hash)
         {
-            if (!HasNPC(map, name))
+            if (!HasNPC(map, hash))
             {
                 LogManager.LogError($"Character {name} is not present in NPCsForMap for Map: {map}. Cannot get NPC.");
                 return null;

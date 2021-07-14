@@ -225,19 +225,19 @@ namespace RPG_Character
             switch (state)
             {
                 case Constants.WAIT_STATE:
-                    return new WaitState(Map, this);
+                    return new WaitState(this);
                 case Constants.MOVE_STATE:
-                    return new MoveState(Map, this);
+                    return new MoveState(this);
                 case Constants.UNIT_MOVE_STATE:
-                    return new UnitMoveState(Map, this);
+                    return new UnitMoveState(this);
                 case Constants.COMBAT_MOVE_STATE:
                     return new CSMove(this);
                 case Constants.STROLL_STATE:
-                    return new PlanStrollState(Map, this);
+                    return new PlanStrollState(this);
                 case Constants.STAND_STATE:
                     return new NpcStandState();
                 case Constants.FOLLOW_PATH_STATE:
-                    return new FollowPathState(Map, this);
+                    return new FollowPathState(this);
                 case Constants.HURT_STATE:
                     return new CSHurt(this);
                 // Constants.HURT_ENEMY_STATE: // TODO fix

@@ -244,13 +244,15 @@ public class GameLogic : MonoBehaviour
         GUI.Label(new Rect(position, Vector2.one * 500.0f), $"Current Event: {Stack.Top().GetName()}");
         position.y += yDiff;
 
+        var style = new GUIStyle();
+        style.fontSize = 24;
         if (Stack.IsEmpty())
-            GUI.Label(new Rect(position, Vector2.one * 100.0f), "Empty!");
+            GUI.Label(new Rect(position, Vector2.one * 100.0f), "Empty!", style);
         var states = Stack.GetStates();
         for (int i = states.Count - 1; i >= 0; i--)
         {
             var message = $"{i} State: {states[i].GetName()}";
-            GUI.Label(new Rect(position, Vector2.one * 500.0f), message);
+            GUI.Label(new Rect(position, Vector2.one * 500.0f), message, style);
             position.y += yDiff;
         }
     }

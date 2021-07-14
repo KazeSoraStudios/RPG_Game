@@ -142,11 +142,11 @@ public class Actions
         };
     }
 
-    public static Action<Trigger, Entity> RemoveNPC(Map map, string npcId)
+    public static Action<Trigger, Entity> RemoveNPC(Map map, Character npc)
     {
         return (trigger, entity) =>
         {
-            map.RemoveNPC(npcId);
+            map.RemoveNPC(npc);
         };
     }
 

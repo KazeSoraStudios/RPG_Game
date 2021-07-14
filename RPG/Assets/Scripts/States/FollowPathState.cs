@@ -4,8 +4,8 @@ using RPG_Character;
 public class FollowPathState : CharacterState
 {
 
-    public FollowPathState(Map map, Character character)
-        : base(map, character) { }
+    public FollowPathState(Character character)
+        : base(character) { }
 
     public override void Enter(object stateParams)
     {

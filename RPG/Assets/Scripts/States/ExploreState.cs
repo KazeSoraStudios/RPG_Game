@@ -102,6 +102,7 @@ public class ExploreState : MonoBehaviour, IGameState
             LoadHeroPrefab();
         else
             Hero = game.World.Party.GetActor(0).GetComponent<Character>();
+        Hero.Map = Map;
         Hero.transform.position = startPosition;
         Hero.transform.rotation = Quaternion.identity;
         Map.Camera.Follow = Hero.transform;

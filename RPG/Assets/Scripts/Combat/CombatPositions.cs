@@ -6,14 +6,14 @@ namespace RPG_Combat
 {
     public class CombatPositions : MonoBehaviour
     {
-        private float heightMultiplier1;
-        private float heightMultiplier2;
-        private float partySingle = 0.3f;
-        private float partyMultiOne = 0.30f;
-        private float partyMultiTwo = 0.30f;
-        private float enemySingle = 0.7f;
-        private float enemyMultiOne = 0.65f;
-        private float enemyMultiTwo = 0.75f;
+        private int heightValue1;
+        private int heightMultiplier2;
+        private int partySingle = -3;
+        private int partyMultiOne = -3;
+        private int partyMultiTwo = -3;
+        private int enemySingle = 2;
+        private int enemyMultiOne = 2;
+        private int enemyMultiTwo = 4;
 
         private Transform combatLocation;
 
@@ -24,21 +24,21 @@ namespace RPG_Combat
 
         public void PlaceParty(List<Actor> actors)
         {
-            heightMultiplier1 = partyMultiOne;
+            heightValue1 = partyMultiOne;
             heightMultiplier2 = partyMultiTwo;
             var size = actors.Count;
             if (size == 1)
-                heightMultiplier1 = partySingle;
+                heightValue1 = partySingle;
             PlaceActors(actors);
         }
 
         public void PlaceEnemies(List<Actor> actors)
         {
-            heightMultiplier1 = enemyMultiOne;
+            heightValue1 = enemyMultiOne;
             heightMultiplier2 = enemyMultiTwo;
             var size = actors.Count;
             if (size == 1)
-                heightMultiplier1 = enemySingle;
+                heightValue1 = enemySingle;
             PlaceActors(actors);
         }
 
@@ -79,90 +79,63 @@ namespace RPG_Combat
 
         private Vector2[] GetOneActorLocation()
         {
-            int x = (int)(Screen.width * 0.5f);
-            int y = (int)(Screen.height * heightMultiplier1);
-            var position = CreateVector(x,y);
-            return new Vector2[] { position };
+            return new Vector2[] { new Vector2(0, heightValue1) };
         }
 
         private Vector2[] GetTwoActorLocations()
         {
-            int x1 = (int)(Screen.width * 0.33f);
-            int x2 = (int)(Screen.width * 0.66f);
-            int y = (int)(Screen.height * heightMultiplier1);
-            var position1 = CreateVector(x1, y);
-            var position2 = CreateVector(x2, y);
-            return new Vector2[] { position1, position2 };
+            int x1 = -2;
+            int x2 = 2;
+            int y = heightValue1;
+            return new Vector2[] { new Vector2(x1, y), new Vector2(x2, y) };
         }
 
         private Vector2[] GetThreeActorLocations()
         {
             var combatPosition = combatLocation.position;
-            int x1 = (int)(Screen.width * 0.25f + combatPosition.x);
-            int x2 = (int)(Screen.width * 0.50f + combatPosition.x);
-            int x3 = (int)(Screen.width * 0.75f + combatPosition.x);
-            int y = (int)(Screen.height * heightMultiplier1);
-            var position1 = CreateVector(x1, y);
-            var position2 = CreateVector(x2, y);
-            var position3 = CreateVector(x3, y);
-            return new Vector2[] { position1, position2, position3 };
+            int x1 = -2;
+            int x2 = 0;
+            int x3 = 2;
+            int y = heightValue1;
+            return new Vector2[] { new Vector2(x1, y), new Vector2(x2, y), new Vector2(x3, y) };
         }
 
         private Vector2[] GetFourActorLocations()
         {
-            int x1 = (int)(Screen.width * 0.20f);
-            int x2 = (int)(Screen.width * 0.60f);
-            int x3 = (int)(Screen.width * 0.40f);
-            int x4 = (int)(Screen.width * 0.80f);
-            int y1 = (int)(Screen.height * heightMultiplier1);
-            int y2 = (int)(Screen.height * heightMultiplier2);
-            var position1 = CreateVector(x1, y1);
-            var position2 = CreateVector(x2, y1);
-            var position3 = CreateVector(x3, y2);
-            var position4 = CreateVector(x4, y2);
-            return new Vector2[] { position1, position2, position3, position4 };
+            int x1 = -2;
+            int x2 = -1;
+            int x3 = 1;
+            int x4 = 2;
+            int y1 = heightValue1;
+            int y2 = heightMultiplier2;
+            return new Vector2[] { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x3, y2), new Vector2(x4, y2) };
         }
 
         private Vector2[] GetFiveActorLocations()
         {
-            int x1 = (int)(Screen.width * 0.20f);
-            int x2 = (int)(Screen.width * 0.33f);
-            int x3 = (int)(Screen.width * 0.40f);
-            int x4 = (int)(Screen.width * 0.66f);
-            int x5 = (int)(Screen.width * 0.80f);
-            int y1 = (int)(Screen.height * heightMultiplier1);
-            int y2 = (int)(Screen.height * heightMultiplier2);
-            var position1 = CreateVector(x1, y1);
-            var position2 = CreateVector(x2, y2);
-            var position3 = CreateVector(x3, y1);
-            var position4 = CreateVector(x4, y2);
-            var position5 = CreateVector(x5, y1);
-            return new Vector2[] { position1, position2, position3, position4, position5 };
+            int x1 = -2;
+            int x2 = -1;
+            int x3 = 0;
+            int x4 = 1;
+            int x5 = 2;
+            int y1 = heightValue1;
+            int y2 = heightMultiplier2;
+            return new Vector2[] { new Vector2(x1, y1), new Vector2(x2, y2), 
+                new Vector2(x3, y1), new Vector2(x4, y2), new Vector2(x5, y1) };
         }
 
         private Vector2[] GetSixActorLocations()
         {
-            int x1 = (int)(Screen.width * 0.20f);
-            int x2 = (int)(Screen.width * 0.30f);
-            int x3 = (int)(Screen.width * 0.40f);
-            int x4 = (int)(Screen.width * 0.50f);
-            int x5 = (int)(Screen.width * 0.60f);
-            int x6 = (int)(Screen.width * 0.70f);
-            int y1 = (int)(Screen.height * heightMultiplier1);
-            int y2 = (int)(Screen.height * heightMultiplier2);
-            var position1 = CreateVector(x1, y1);
-            var position2 = CreateVector(x2, y2);
-            var position3 = CreateVector(x3, y1);
-            var position4 = CreateVector(x4, y2);
-            var position5 = CreateVector(x6, y1);
-            var position6 = CreateVector(x2, y2);
-            return new Vector2[] { position1, position2, position3, position4, position5, position6 };
-        }
-
-        private Vector2 CreateVector(int x, int y)
-        {
-            var position = new Vector2(x, y);
-            return Camera.main.ScreenToWorldPoint(position);
+            int x1 = -3;
+            int x2 = -2;
+            int x3 = -1;
+            int x4 = 1;
+            int x5 = 2;
+            int x6 = 3;
+            int y1 = heightValue1;
+            int y2 = heightMultiplier2;
+            return new Vector2[] { new Vector2(x1, y1), new Vector2(x2, y2), new Vector2(x3, y1), 
+                new Vector2(x4, y2), new Vector2(x5, y1), new Vector2(x6, y2) };
         }
     }
 }
