@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_AI;
 using RPG_Character;
 using RPG_Combat;
 using RPG_GameData;

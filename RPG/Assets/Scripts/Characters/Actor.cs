@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RPG_GameData;
+using RPG_Combat;
 
 namespace RPG_Character
 {
@@ -30,7 +31,7 @@ namespace RPG_Character
         [SerializeField] public string Name;
         [SerializeField] public string Portrait;
         [SerializeField] public int Id;
-        [SerializeField] public string PartyId;
+        [SerializeField] public string GameDataId;
         [SerializeField] public int Exp;
         [SerializeField] public int Level;
         [SerializeField] public int NextLevelExp;
@@ -38,7 +39,7 @@ namespace RPG_Character
         [SerializeField] public UseRestriction UseRestriction;
         [SerializeField] public List<Spell> Spells = new List<Spell>();
         [SerializeField] public List<Spell> Specials = new List<Spell>();
-        //[SerializeField] MenuActions MenuActions SerializeObject
+        [SerializeField] public List<string> HeldItems = new List<string>();
         [SerializeField] public Stats Stats;
         [SerializeField] public LevelFunction LevelFunction;
         [SerializeField] public StatGrowth StatGrowth = new StatGrowth();
@@ -61,7 +62,7 @@ namespace RPG_Character
             Portrait = partyMemeber.Portrait;
             Name = ServiceManager.Get<LocalizationManager>().Localize(partyMemeber.Name);
             Level = partyMemeber.Level;
-            PartyId = partyMemeber.Id;
+            GameDataId = partyMemeber.Id;
             var spells = partyMemeber.ActionGrowth.Spells;
             foreach (var spell in spells)
             {
@@ -99,6 +100,7 @@ namespace RPG_Character
             Spells.AddRange(GetSpellsForLevelUp(enemy.Spells));
             Specials.AddRange(GetSpecialsForLevelUp(enemy.Specials));
             StealItem = enemy.StealItem;
+            GameDataId = enemy.Id;
             Loot = CreateLoot(enemy);
             var gameData = ServiceManager.Get<GameData>();
             Stats = Stats = new Stats(gameData.Stats[enemy.StatsId], name);
@@ -107,7 +109,7 @@ namespace RPG_Character
         private void DoInitialLeveling()
         {
             // Only party members need to level up
-            if (!ServiceManager.Get<World>().Party.HasMemeber(PartyId))
+            if (!ServiceManager.Get<World>().Party.HasMemeber(GameDataId))
                 return;
 
             for (int i = 1; i < Level; i++)
@@ -138,7 +140,7 @@ namespace RPG_Character
             foreach (var growth in StatGrowth.Growths)
                 levelUp.Stats.SetStat(growth.Key, growth.Value.RollDice());
             var level = Level + levelUp.Level;
-            var partyDefinition = ServiceManager.Get<GameData>().PartyDefs[PartyId];
+            var partyDefinition = ServiceManager.Get<GameData>().PartyDefs[GameDataId];
             var actionGrow = partyDefinition.ActionGrowth;
             if (actionGrow.Spells.ContainsKey(level))
                 levelUp.Spells = GetSpellsForLevelUp(actionGrow.Spells[level]);
@@ -245,6 +247,62 @@ namespace RPG_Character
             Stats.SetStat(Stat.MP, mp);
         }
 
+        public bool HasMpMove()
+        {
+            return Spells.Count > 0 || Specials.Count > 0;
+        }
+
+        public bool TryHeal()
+        {
+            if (HeldItems.Count > 0)
+            {
+                return TryToFindHealItem();
+            }
+            var spell = HasHealSpell();
+            if (spell != null && CanCast(spell))
+            {
+                var config = new CombatActionConfig
+                {
+                    Owner = this,
+                    StateId = "magic",
+                    Targets = new List<Actor> { this },
+                    Def = spell
+                };
+                CombatActions.RunAction(spell.Action, config);
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryToFindHealItem()
+        {
+            bool usedItem = false;
+            var index = -1;
+            var items = ServiceManager.Get<GameData>().Items;
+            for (int i = 0; i < HeldItems.Count; i++)
+            {
+                if (!items.Contains(HeldItems[i]))
+                    continue;
+                var item = items[HeldItems[i]];
+                if (item.Use.Contains("hp"))
+                {
+                    usedItem = true;
+                    var config = new CombatActionConfig
+                    {
+                        Owner = this,
+                        StateId = "item",
+                        Targets = new List<Actor> { this },
+                        Def = item
+                    };
+                    CombatActions.RunAction(item.Use, config);
+                    break;
+                }
+            }
+            if (index != -1)
+                HeldItems.RemoveAt(index);
+            return usedItem;
+        }
+
         private List<Spell> GetSpellsForLevelUp(List<string> spells)
         {
             var gamedata = ServiceManager.Get<GameData>().Spells;
@@ -275,6 +333,14 @@ namespace RPG_Character
                 list.Add(gamedata[special]);
             }
             return list;
+        }
+
+        private Spell HasHealSpell()
+        {
+            foreach (var spell in Spells)
+                if (spell.SpellElement == SpellElement.Heal)
+                    return spell;
+            return null;
         }
 
         private Drop CreateLoot(Enemy enemy)

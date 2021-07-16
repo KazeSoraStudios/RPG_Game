@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RPG_AI;
 using RPG_Character;
+using RPG_GameData;
 using RPG_UI;
 using TMPro;
 
@@ -47,6 +49,7 @@ namespace RPG_Combat
         public List<Character> PartyCharacters = new List<Character>();
         public List<Character> EnemyCharacters = new List<Character>();
         public Dictionary<int, Character> ActorToCharacterMap = new Dictionary<int, Character>();
+        public Dictionary<AIType, Node> BehaviorTrees = new Dictionary<AIType, Node>();
         public List<object> Effects = new List<object>();
         public List<Drop> Drops = new List<Drop>();
 
@@ -70,12 +73,13 @@ namespace RPG_Combat
             onDie = config.OnDie;
             CreateCombatCharacters(true);
             CreateCombatCharacters(false);
+            LoadBehaviors();
             LoadMenuUI(config.Party);
             var backgroundPath = config.BackgroundPath.IsEmpty() ? Constants.DEFAULT_COMBAT_BACKGROUND : config.BackgroundPath;
             ServiceManager.Get<CombatScene>().SetBackground(backgroundPath);
             PlaceActors();
-            AddTurns(PartyActors, true);
-            AddTurns(EnemyActors);
+            AddPlayerTurns(PartyActors, true);
+            AddEnemyTurns(EnemyActors);
             RegisterEnemies();
         }
 
@@ -101,8 +105,8 @@ namespace RPG_Combat
             {
                 EventQueue.Execute();
 
-                AddTurns(PartyActors);
-                AddTurns(EnemyActors);
+                AddPlayerTurns(PartyActors);
+                AddEnemyTurns(EnemyActors);
 
                 if (PartyWins() || PartyFled())
                 {
@@ -290,6 +294,12 @@ namespace RPG_Combat
             escaped = true;
         }
 
+        public Node GetBehaviorTreeForAIType(AIType type)
+        {
+            return BehaviorTrees.ContainsKey(type) ?
+                BehaviorTrees[type] : null;
+        }
+
         private void PlaceActors()
         {
             if (Positions == null)
@@ -447,7 +457,7 @@ namespace RPG_Combat
             }
         }
 
-        private void AddTurns(List<Actor> actors, bool forceFirst = false)
+        private void AddPlayerTurns(List<Actor> actors, bool forceFirst = false)
         {
             foreach (var actor in actors)
             {
@@ -459,6 +469,21 @@ namespace RPG_Combat
                     var speed = forceFirst ? firstSpeed : turn.CalculatePriority(EventQueue);
                     EventQueue.Add(turn, speed);
                     LogManager.LogDebug($"Adding turn for {actor.name}");
+                }
+            }
+        }
+
+        private void AddEnemyTurns(List<Actor> actors)
+        {
+            foreach (var actor in actors)
+            {
+                var isAlive = actor.Stats.Get(Stat.HP) > 0;
+                if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
+                {
+                    var turn = new CEAITurn(actor, this);
+                    var speed = turn.CalculatePriority(EventQueue);
+                    EventQueue.Add(turn, speed);
+                    LogManager.LogDebug($"Adding AI turn for {actor.name}");
                 }
             }
         }
@@ -544,6 +569,12 @@ namespace RPG_Combat
             var mapName = GetName();
             foreach (var enemy in EnemyCharacters)
                 ServiceManager.Get<NPCManager>().AddNPC(mapName, enemy);
+        }
+
+        private void LoadBehaviors()
+        {
+            BehaviorTrees.Clear();
+            BehaviorTrees = AIBehaviors.LoadEnemyBehaviors(this, EnemyActors);
         }
     }
 

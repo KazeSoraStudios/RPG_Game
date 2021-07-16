@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_AI;
 using RPG_Character;
 using RPG_GameData;
 
@@ -63,10 +64,13 @@ namespace RPG_Combat
         {
             LogManager.LogDebug($"Executing CETurn for {actor.name}");
             // Player first
-            if (state.IsPartyMember(actor))
-                HandlePlayerTurn();
-            else
-                HandleEnemyTurn();
+            if (!state.IsPartyMember(actor))
+            {
+                LogManager.LogError($"AI Character {actor.name} has player turn event.");
+                finished = true;
+                return;
+            }
+            HandlePlayerTurn();
         }
 
         private void HandlePlayerTurn()
@@ -104,6 +108,84 @@ namespace RPG_Combat
         public override string GetName()
         {
             return $"CombatEventTurn for {actor.name}";
+        }
+    }
+
+    public class CEAITurn : CombatEvent
+    {
+        public CEAITurn(Actor actor, CombatGameState state)
+            : base(actor, state) { }
+
+        public override void Execute(EventQueue queue)
+        {
+            LogManager.LogDebug($"Executing CETurn for {actor.name}");
+            // Player first
+            if (state.IsPartyMember(actor))
+            {
+                LogManager.LogError($"Player Character {actor.name} has AI turn event.");
+                finished = true;
+                return;
+            }
+            HandleEnemyTurn();
+        }
+
+        private void HandleEnemyTurn()
+        {
+            var ai = ServiceManager.Get<GameData>().EnemyAI;
+            if (!ai.ContainsKey(actor.GameDataId))
+            {
+                LogManager.LogError($"Actor {actor.name} GameDataId {actor.GameDataId} not found in EnemyAI.");
+                finished = true;
+                return;
+            }
+            var aiData = ai[actor.GameDataId];
+            var tree = state.GetBehaviorTreeForAIType(aiData.Type);
+            if (tree == null)
+            {
+                LogManager.LogError($"Behavior Tree type {aiData.Type} not found in CombatGameState for Actor{actor.name}.");
+                finished = true;
+                return;
+            }
+            state.SelectedActor = actor;
+            if (tree.Evaluate(actor) == NodeState.Failure)
+            {
+                LogManager.LogError($"Actor [{actor.name}] decision tree failed. Attacking random enemy.");
+                var targets = new List<Actor>();
+                targets.AddRange(CombatSelector.RandomPlayer(state));
+                var config = new CEAttack.Config
+                {
+                    IsCounter = false,
+                    IsPlayer = false,
+                    Actor = actor,
+                    CombatState = state,
+                    Targets = targets
+                };
+                var attackEvent = new CEAttack(config);
+                var queue = state.EventQueue;
+                var priority = attackEvent.CalculatePriority(queue);
+                queue.Add(attackEvent, priority);
+            }
+            state.SelectedActor = null;
+            finished = true;
+        }
+
+        // private Node BuildDecisionTree()
+        // {
+        //     var attackNode = new EasyAttackNode(actor, state);
+        //     var magicNode = new MpAttackNode(actor, state);
+        //     Func<bool> condition = () => actor.Stats.Get(Stat.MP) > 0 && actor.HasMpMove();
+        //     var actionDecisionNode = new BinaryDecisionNode(0.5f, actor.name, magicNode, attackNode, condition);
+        //     var healNode = new HealNode(actor);
+        //     int healthThreshold = (int)(actor.Stats.Get(Stat.MaxHP) * 0.15f);
+        //     var healthCheckNode = new HealthCheckNode(healthThreshold, actor);
+        //     var healthCondition = new ConditionNode(actor.name, healthCheckNode, healNode);
+        //     var baseNode = new SelectorNode(actor.name, new List<Node> { healthCondition, actionDecisionNode });
+        //     return new AITurnNode(state, actor, baseNode);
+        // }
+
+        public override string GetName()
+        {
+            return $"CombatEventAITurn for {actor.name}";
         }
     }
 
@@ -179,7 +261,7 @@ namespace RPG_Combat
                 var returnMoveParams = new CombatStateParams
                 {
                     Direction = 0,
-                    MovePosition = Vector2.right
+                    MovePosition = Vector2.up
                 };
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, attackMoveParams));
                 // TODO remove Temp for testing

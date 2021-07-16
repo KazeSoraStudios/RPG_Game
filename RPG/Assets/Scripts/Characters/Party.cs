@@ -55,7 +55,7 @@ namespace RPG_Character
 
         public void Add(Actor member)
         {
-            if (IndexOf(member.PartyId) != -1)
+            if (IndexOf(member.GameDataId) != -1)
                 return;
             Members.Add(member);
         }
@@ -162,7 +162,7 @@ namespace RPG_Character
         public int IndexOf(string id)
         {
             for(int i = 0; i <Members.Count; i++)
-                if (Members[i].PartyId.Equals(id))
+                if (Members[i].GameDataId.Equals(id))
                     return i;
             return -1;
         }
