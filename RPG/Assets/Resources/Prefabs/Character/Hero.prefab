@@ -146,7 +146,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1.5}
+    oldSize: {x: 1.5, y: 2}
     newSize: {x: 1, y: 1.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -193,7 +193,7 @@ MonoBehaviour:
   height: 0
   width: 0
   selectPadding: 16
-  speed: 3.5
+  speed: 5
   movement: {x: 0, y: 0}
   rigidbody: {fileID: 5883101160653709398}
 --- !u!114 &8475761078481550912
@@ -211,10 +211,11 @@ MonoBehaviour:
   Name: Hero
   Portrait: 
   Id: 0
-  PartyId: 
+  GameDataId: 
   Exp: 0
   Level: 0
   NextLevelExp: 0
   StealItem: 0
   UseRestriction: 1
+  HeldItems: []
   LevelFunction: {fileID: 11400000, guid: 93d7434e411cbb049b14f80c02ca0847, type: 2}

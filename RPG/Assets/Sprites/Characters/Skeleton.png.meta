@@ -1,49 +1,70 @@
 fileFormatVersion: 2
-guid: a88fcb3ae872243f188bfc35e2af1ea0
+guid: 73baa01626b8d45d98fe500327b2c887
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3825356340981982277
-    second: OLD_FIRE_SPIRIT_0
+      213: 4354231566380549168
+    second: Skeleton_0
   - first:
-      213: -7034309559040792033
-    second: OLD_FIRE_SPIRIT_1
+      213: 5809030516613042957
+    second: Skeleton_1
   - first:
-      213: 5441507389060864770
-    second: OLD_FIRE_SPIRIT_2
+      213: 6682473901004932845
+    second: Skeleton_2
   - first:
-      213: 1840300431150543277
-    second: OLD_FIRE_SPIRIT_3
+      213: -6895646428441557691
+    second: Skeleton_3
   - first:
-      213: -5644539443858266792
-    second: OLD_FIRE_SPIRIT_4
+      213: 8681928648562347177
+    second: Skeleton_4
   - first:
-      213: 5550830843562936940
-    second: OLD_FIRE_SPIRIT_5
+      213: -6534455043122499310
+    second: Skeleton_5
   - first:
-      213: 6492608427041691728
-    second: OLD_FIRE_SPIRIT_6
+      213: -7021505876318606439
+    second: Skeleton_6
   - first:
-      213: 2569408045518204095
-    second: OLD_FIRE_SPIRIT_7
+      213: 653362398722190026
+    second: Skeleton_7
   - first:
-      213: -3595178769126119815
-    second: OLD_FIRE_SPIRIT_8
+      213: -9021820611684853211
+    second: Skeleton_8
   - first:
-      213: -6875204412395311633
-    second: OLD_FIRE_SPIRIT_9
+      213: -1443268486790046223
+    second: Skeleton_9
   - first:
-      213: -5444683770064467717
-    second: OLD_FIRE_SPIRIT_10
+      213: -3968840907078709152
+    second: Skeleton_10
   - first:
-      213: 5602195967095130305
-    second: OLD_FIRE_SPIRIT_11
+      213: -2164511808432914653
+    second: Skeleton_11
   - first:
-      213: 5885325732143982932
-    second: OLD_FIRE_SPIRIT_12
+      213: -7000201611338815235
+    second: Skeleton_12
   - first:
-      213: 4952759924913038945
-    second: OLD_FIRE_SPIRIT_13
+      213: -4022789504429121826
+    second: Skeleton_13
+  - first:
+      213: 8650110944895953673
+    second: Skeleton_14
+  - first:
+      213: 4520074865302796247
+    second: Skeleton_15
+  - first:
+      213: -1325205120640645288
+    second: Skeleton_16
+  - first:
+      213: 6219686596316222553
+    second: Skeleton_17
+  - first:
+      213: 2058306284268228198
+    second: Skeleton_18
+  - first:
+      213: -6896880325500990939
+    second: Skeleton_19
+  - first:
+      213: 8495289983822508492
+    second: Skeleton_20
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -145,7 +166,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_0
+      name: Skeleton_0
       rect:
         serializedVersion: 2
         x: 0
@@ -159,14 +180,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 544e4831355661530800000000000000
-      internalID: 3825356340981982277
+      spriteID: 034c7e73a865d6c30800000000000000
+      internalID: 4354231566380549168
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_1
+      name: Skeleton_1
       rect:
         serializedVersion: 2
         x: 32
@@ -180,14 +201,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f1a2d35b9bc116e90800000000000000
-      internalID: -7034309559040792033
+      spriteID: d03df103a72dd9050800000000000000
+      internalID: 5809030516613042957
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_2
+      name: Skeleton_2
       rect:
         serializedVersion: 2
         x: 64
@@ -201,14 +222,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 20bd2a7d32e148b40800000000000000
-      internalID: 5441507389060864770
+      spriteID: de6c7329b9aecbc50800000000000000
+      internalID: 6682473901004932845
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_3
+      name: Skeleton_3
       rect:
         serializedVersion: 2
         x: 96
@@ -222,14 +243,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: da1f9b6ed7f0a8910800000000000000
-      internalID: 1840300431150543277
+      spriteID: 545cc08ab1ebd40a0800000000000000
+      internalID: -6895646428441557691
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_4
+      name: Skeleton_4
       rect:
         serializedVersion: 2
         x: 128
@@ -243,14 +264,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 855a52828419aa1b0800000000000000
-      internalID: -5644539443858266792
+      spriteID: 9ac88d66b186c7870800000000000000
+      internalID: 8681928648562347177
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_5
+      name: Skeleton_5
       rect:
         serializedVersion: 2
         x: 160
@@ -264,14 +285,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c6ac9de1e33880d40800000000000000
-      internalID: 5550830843562936940
+      spriteID: 2117ce162c3f055a0800000000000000
+      internalID: -6534455043122499310
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_6
+      name: Skeleton_6
       rect:
         serializedVersion: 2
         x: 192
@@ -285,14 +306,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 058178f07f06a1a50800000000000000
-      internalID: 6492608427041691728
+      spriteID: 99b26b56b999e8e90800000000000000
+      internalID: -7021505876318606439
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_7
+      name: Skeleton_7
       rect:
         serializedVersion: 2
         x: 224
@@ -306,14 +327,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fbca42c010f58a320800000000000000
-      internalID: 2569408045518204095
+      spriteID: acaee65d3a5311900800000000000000
+      internalID: 653362398722190026
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_8
+      name: Skeleton_8
       rect:
         serializedVersion: 2
         x: 256
@@ -327,14 +348,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 976263225fb5b1ec0800000000000000
-      internalID: -3595178769126119815
+      spriteID: 52a1a3d04fd0cc280800000000000000
+      internalID: -9021820611684853211
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_9
+      name: Skeleton_9
       rect:
         serializedVersion: 2
         x: 288
@@ -348,14 +369,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fedaaf8630e5690a0800000000000000
-      internalID: -6875204412395311633
+      spriteID: 1fd1d5145fa78fbe0800000000000000
+      internalID: -1443268486790046223
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_10
+      name: Skeleton_10
       rect:
         serializedVersion: 2
         x: 320
@@ -369,14 +390,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bf809f255f89074b0800000000000000
-      internalID: -5444683770064467717
+      spriteID: 060d88b0938dbe8c0800000000000000
+      internalID: -3968840907078709152
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_11
+      name: Skeleton_11
       rect:
         serializedVersion: 2
         x: 352
@@ -390,14 +411,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1c8c4d4ec8ffebd40800000000000000
-      internalID: 5602195967095130305
+      spriteID: 32fb7327afb16f1e0800000000000000
+      internalID: -2164511808432914653
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_12
+      name: Skeleton_12
       rect:
         serializedVersion: 2
         x: 384
@@ -411,14 +432,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 45968e35290eca150800000000000000
-      internalID: 5885325732143982932
+      spriteID: df8680029b94ade90800000000000000
+      internalID: -7000201611338815235
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: OLD_FIRE_SPIRIT_13
+      name: Skeleton_13
       rect:
         serializedVersion: 2
         x: 416
@@ -432,8 +453,155 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1666b3e29ecbbb440800000000000000
-      internalID: 4952759924913038945
+      spriteID: ede1556624e2c28c0800000000000000
+      internalID: -4022789504429121826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_14
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90bed3af21e5b0870800000000000000
+      internalID: 8650110944895953673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_15
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d77b8044288abe30800000000000000
+      internalID: 4520074865302796247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_16
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8578fa9c6fceb9de0800000000000000
+      internalID: -1325205120640645288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_17
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 954dfab8104c05650800000000000000
+      internalID: 6219686596316222553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_18
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66e03c009a2909c10800000000000000
+      internalID: 2058306284268228198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_19
+      rect:
+        serializedVersion: 2
+        x: 608
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52a022c92eb5940a0800000000000000
+      internalID: -6896880325500990939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skeleton_20
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc1bca5fa3555e570800000000000000
+      internalID: 8495289983822508492
       vertices: []
       indices: 
       edges: []
