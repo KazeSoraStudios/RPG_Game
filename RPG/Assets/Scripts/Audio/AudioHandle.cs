@@ -63,7 +63,6 @@ public class AudioHandle
         IsFading = false;
         volume = 0.0f;
         source.volume = volume;
-        OnComplete.Invoke();
         source.Stop();
         source.clip = null;
         fadeOutCoroutineHandle = null;

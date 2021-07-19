@@ -31,12 +31,19 @@ public class AudioManager : MonoBehaviour
 			ShouldFadeOut = false,
 			fadeDuration = 2f,
 			volume = 0.1f,
-			isValid = true
+			isValid = true,
 		};
+
 		AddAudio(bonk);
-		//played like PlaySound("bonk");
 		PlaySound("bonk");
+		bonk.OnCompleted += test;
 	}
+
+	private void test()
+	{
+		LogManager.LogInfo("finished playing sound");
+	}
+
 	void OnDestroy()    
     {
 		foreach(var source in AllSources)
@@ -58,7 +65,7 @@ public class AudioManager : MonoBehaviour
 				AvailableSources.Remove(source);
 			else if (!source.isPlaying && !AvailableSources.Contains(source))
 			{
-				Sounds[source.clip.name].OnComplete?.Invoke();
+				Sounds[source.clip.name].OnCompleted?.Invoke();
 				AvailableSources.Add(source);
 			}
 			
