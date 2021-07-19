@@ -18,26 +18,35 @@ public class AudioManager : MonoBehaviour
 		{
 			AllSources[i] = gameObject.AddComponent<AudioSource>();
 			AvailableSources.Add(AllSources[i]);
-		}
-
+		}	
+	}
+	private void Start()
+	{
 		//EXAMPLE SOUND REMOVE LATER(or dont lol, maybe a fun surprise if someone ever decompiles this)
 		var bonk = new AudioHandle
 		{
-			clip = LoadAudioFromResources("bonk"),
+			clip = ServiceManager.Get<AssetManager>().Load<AudioClip>("Sounds/bonk"),
 			Delay = 0,
 			ShouldFadeIn = true,
 			ShouldFadeOut = false,
 			fadeDuration = 2f,
-			volume = 1,
+			volume = 0.1f,
 			isValid = true
 		};
 		AddAudio(bonk);
 		//played like PlaySound("bonk");
 		PlaySound("bonk");
 	}
-
 	void OnDestroy()    
     {
+		foreach(var source in AllSources)
+		{
+			source.Stop();
+		}
+		BackgroundAudio.Stop();
+		AvailableSources.Clear();
+		Array.Clear(AllSources, 0, AllSources.Length);
+		Sounds.Clear();
         ServiceManager.Unregister(this);
     }
 
@@ -45,10 +54,13 @@ public class AudioManager : MonoBehaviour
     {
         foreach (AudioSource source in AllSources)
         {
-            if (source.isPlaying && AvailableSources.Contains(source))
-                AvailableSources.Remove(source);
-            else if (!source.isPlaying && !AvailableSources.Contains(source))
-                AvailableSources.Add(source);
+			if (source.isPlaying && AvailableSources.Contains(source))
+				AvailableSources.Remove(source);
+			else if (!source.isPlaying && !AvailableSources.Contains(source))
+			{
+				Sounds[source.clip.name].OnComplete?.Invoke();
+				AvailableSources.Add(source);
+			}
 			
 			if(!AvailableSources.Contains(source))
 			{	
@@ -66,17 +78,6 @@ public class AudioManager : MonoBehaviour
         }
 
     }
-
-	public AudioClip LoadAudioFromResources(string name)
-	{
-		if (Resources.Load<AudioClip>("Sounds/" + name) != null)
-		{
-			return Resources.Load<AudioClip>("Sounds/" + name);
-		}
-		else
-			LogManager.LogError("Sound not found in sounds directory");
-		return null;
-	}
 
 	/// <summary>
 	/// To get the handles clip use AudioManager.LoadAudioFromResources("AudioName")
@@ -131,7 +132,7 @@ public class AudioManager : MonoBehaviour
 	}
 
 
-	public void PlaySound(string SoundName)
+	public AudioHandle PlaySound(string SoundName)
 	{
 		if (Sounds[SoundName].isValid)
 		{
@@ -144,13 +145,14 @@ public class AudioManager : MonoBehaviour
 					
 				if (Sounds[SoundName].ShouldFadeIn && Sounds[SoundName].fadeDuration > 0 && !Sounds[SoundName].IsFading)
 						StartCoroutine(Sounds[SoundName].fadeIn());
-
+				return Sounds[SoundName];
 			}
 			else
 				LogManager.LogError("Could not play specified sound because it does not exist in the sounds array.");
 		}
 		else
 			LogManager.LogWarn($"{SoundName} is currently not valid.");
+		return null;
 	}
 
 	public void ForceFadeOut(string SoundName)
