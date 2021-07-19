@@ -390,7 +390,6 @@ public class Actions
             StoryboardEventFunctions.Function(() => combat.gameObject.SafeSetActive(true))
         };
         var storyboard = new Storyboard(config.Stack, events);
-        ServiceManager.Get<AudioHandle>().PlaySound("bonk");
         config.Stack.Push(combat);
         config.Stack.Push(storyboard);
     }

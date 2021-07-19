@@ -2,111 +2,79 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioHandle : MonoBehaviour
+public class AudioHandle 
 {
-    AudioManager manager;
-	private bool BackgroundPaused = false;
-	private void Awake()
-	{
-        ServiceManager.Register(this);
-	}
+    public string AudioName { get; private set; }
+    public AudioClip clip;
 
-	void Start()
+    public float volume = 1.0f;
+    public float fadeDuration = 1.0f;
+    public float Delay = 0;
+
+    public bool ShouldFadeOut = false;
+    public bool ShouldFadeIn = false;
+    public bool isValid = true;
+    public bool IsFading { get; private set; }
+
+    private Coroutine fadeInCoroutineHandle = null;
+    private Coroutine fadeOutCoroutineHandle = null;
+
+    public void Init()
+	{
+        AudioName = clip.name;
+	}
+        
+    public IEnumerator fadeIn()
     {
-        manager = ServiceManager.Get<AudioManager>();   
+        IsFading = true;
+        volume = 0;
+        var source = ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(AudioName);
+        while (volume < 1.0f)
+        {
+            
+            volume += (1.0f / fadeDuration) * Time.fixedDeltaTime;
+            source.volume = volume;
+            yield return null;
+        }
+
+        IsFading = false;
+        volume = 1.0f;
+        source.volume = volume;
+        fadeInCoroutineHandle = null;
     }
 
-	private void Update()
-	{
-		foreach (AudioSource source in manager.AllSources)
-		{
-			if (source.isPlaying && manager.AvailableSources.Contains(source))
-				manager.AvailableSources.Remove(source);
-			else if (!source.isPlaying && !manager.AvailableSources.Contains(source))
-				manager.AvailableSources.Add(source);
-		}
-
-		if (!BackgroundPaused && !manager.BackgroundAudio.isPlaying && manager.BackgroundAudio.clip != null)
-		{
-			if(manager.BackgroundAudio.clip != null)
-				manager.BackgroundAudio.Play();
-		}
-		
-	}
-
-	public void PauseBackground()
-	{
-		BackgroundPaused = true;
-		manager.BackgroundAudio.Pause();		
-	}
-
-	public void UnPauseBackground()
-	{
-		manager.BackgroundAudio.UnPause();
-		BackgroundPaused = false;
-	}
-
-	public AudioClip AddAudio(string clip)
+    public IEnumerator fadeOut()
     {
+        IsFading = true;
+        var source = ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(AudioName);
+        while (volume > 0.0f)
+        {
+            volume -= (1.0f / fadeDuration) * Time.fixedDeltaTime;
+            source.volume = volume;
+            yield return null;
+        }
 
-        if (!manager.Sounds.ContainsKey(clip))
-        {
-			if (Resources.Load<AudioClip>("Sounds/" + clip) != null)
-			{
-				manager.Sounds.Add(clip, Resources.Load<AudioClip>("Sounds/" + clip));
-				return Resources.Load<AudioClip>("Sounds/" + clip);
-			}
-			else
-				LogManager.LogError("Sound not found in sounds directory");
-        }
-        else
-        {
-            LogManager.LogError("Sounds list already contains specified sound!");
-        }
-		return null;
+        IsFading = false;
+        volume = 0.0f;
+        source.volume = volume;
+        fadeOutCoroutineHandle = null;
     }
 
-	public void SetBackgroundAudio(string SoundName)
-	{
-		if (manager.Sounds.ContainsKey(SoundName))
-		{
-			manager.BackgroundAudio.clip = manager.Sounds[SoundName];
-			manager.BackgroundAudio.Play();
-		}
-		else
-		{
-			if (Resources.Load<AudioClip>("Sounds/" + SoundName) != null)
-			{
-				AddAudio(SoundName);
-				manager.AvailableSources[0].clip = manager.Sounds[SoundName];
-				manager.BackgroundAudio.Play();
-			}
-			else
-				LogManager.LogError("Could not play specified sound because it does not exist in the sounds array, nor could it be found in the Resources/Sounds directory.");
-		}
-	}
+    public void Reset()
+    {
+        volume = 1.0f;
+        fadeDuration = 1.0f;
+        if (fadeInCoroutineHandle != null)
+        {
+            fadeInCoroutineHandle = null;
+        }
 
-    public void PlaySound(string SoundName, float volume = 1.0f, float delay = 0)
-	{
-		if (manager.Sounds.ContainsKey(SoundName))
-		{
-			manager.AvailableSources[0].clip = manager.Sounds[SoundName];
-			manager.AvailableSources[0].volume = volume;
-			manager.AvailableSources[0].PlayDelayed(delay);
-			
-		}
-		else
-		{
-			if (Resources.Load<AudioClip>("Sounds/" + SoundName) != null)
-			{
-				AddAudio(SoundName);
-				manager.AvailableSources[0].clip = manager.Sounds[SoundName];
-				manager.AvailableSources[0].volume = volume;
-				manager.AvailableSources[0].PlayDelayed(delay);
-			}
-			else
-				LogManager.LogError("Could not play specified sound because it does not exist in the sounds array, nor could it be found in the Resources/Sounds directory.");
-		}
-	}
+        if (fadeOutCoroutineHandle != null)
+        {
+            fadeOutCoroutineHandle = null;
+        }
+    }
+    
 
+    
 }
