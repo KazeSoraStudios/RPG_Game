@@ -110,7 +110,9 @@ public class Constants
     // Storyboard states
     public const string SCREEN_STATE = "screenstate";
 
-    // Combat Actions
+    // Combat
+    public const float AI_NORMAL_HP_CHECK = 0.2f;
+    public const float AI_CONVSERVATIVE_HP_CHECK = 0.3f;
     public const string HP_RESTORE_COMBAT_ACTION = "hp_restore";
     public const string MP_RESTORE_COMBAT_ACTION = "mp_restore";
     public const string REVIVE_COMBAT_ACTION = "revive";

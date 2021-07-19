@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_AI;
 using RPG_Character;
 using RPG_Combat;
 using RPG_GameState;
@@ -20,6 +21,7 @@ namespace RPG_GameData
         public Dictionary<string, Area> Areas = new Dictionary<string, Area>();
         public Dictionary<string, Shop> Shops = new Dictionary<string, Shop>();
         public Dictionary<string, Encounter> Encounters = new Dictionary<string, Encounter>();
+        public Dictionary<string, EnemyAIData> EnemyAI = new Dictionary<string, EnemyAIData>();
 
         void Awake()
         {
@@ -221,5 +223,14 @@ namespace RPG_GameData
                 return new OddmentTable();
             return Encounters[encounter];
         }
+    }
+
+    public class EnemyAIData
+    {
+        public AIType Type;
+        public float HpThreshold;
+        public float MeleeLean;
+        public string Id;
+
     }
 }

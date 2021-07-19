@@ -130,6 +130,13 @@ namespace RPG_GameData
             cellsProcessed += maxColumns;
             index = cellsProcessed;
             var encounters = GameDataEncounterHandler.ProcessEncounters(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
+            index = cellsProcessed;
+            var aiData = EnemyAIGameDataHandler.PrcoessEnemyAI(index, numberOfCells, maxColumns - numberOfColumns, data);
 
             GameData.Items = items;
             GameData.ItemUses = itemUses;
@@ -142,9 +149,20 @@ namespace RPG_GameData
             GameData.Areas = areas;
             GameData.Shops = shops;
             GameData.Encounters = encounters;
+            GameData.EnemyAI = aiData;
             ServiceManager.Get<LocalizationManager>().SetLocalization(loc);
             enabled = false;
             OnComplete?.Invoke();
+        }
+
+        private void AdvanceValues(ref int cellsProcessed, ref int maxColumns, ref int numberOfCells, ref int numberOfColumns, ref int index, string data1, string data2)
+        {
+            cellsProcessed += maxColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data1);
+            numberOfColumns = int.Parse(data2);
+            cellsProcessed += maxColumns;
+            index = cellsProcessed;
         }
     }
 }

@@ -54,6 +54,7 @@ public class EventQueue : MonoBehaviour
         {
             e.SetPriority(-1);
             events.Insert(0, e);
+            LogManager.LogDebug($"Adding event [{e.GetName()}] with priority -1 at index 0");
             return;
         }
         e.SetPriority(points);
@@ -61,6 +62,7 @@ public class EventQueue : MonoBehaviour
         for (; index < events.Count; index++)
             if (points < events[index].GetPriority())
                 break;
+        LogManager.LogDebug($"Adding event [{e.GetName()}] with priority {points} at index {index}");
         events.Insert(index, e);
     }
 
