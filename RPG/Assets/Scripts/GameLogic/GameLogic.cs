@@ -99,6 +99,20 @@ public class GameLogic : MonoBehaviour
         exploreState.Init(map, Stack, Vector2.zero);
         Stack.Push(exploreState);
         callback?.Invoke(exploreState);
+
+        var library = ServiceManager.Get<AudioLibrary>();
+        var manager = ServiceManager.Get<AudioManager>();
+        switch (scene)
+		{
+            case Constants.HERO_VILLAGE_SCENE:
+                manager.SetBackgroundAudio(library.HeroVillageTheme.AudioName);
+                break;
+            default:
+                manager.SetBackgroundAudio(null);
+                break;
+
+
+        }
         yield return null;
     }
 

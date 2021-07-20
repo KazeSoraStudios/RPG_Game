@@ -20,29 +20,7 @@ public class AudioManager : MonoBehaviour
 			AvailableSources.Add(AllSources[i]);
 		}	
 	}
-	private void Start()
-	{
-		//EXAMPLE SOUND REMOVE LATER(or dont lol, maybe a fun surprise if someone ever decompiles this)
-		var bonk = new AudioHandle
-		{
-			clip = ServiceManager.Get<AssetManager>().Load<AudioClip>("Sounds/bonk"),
-			Delay = 0,
-			ShouldFadeIn = true,
-			ShouldFadeOut = false,
-			fadeDuration = 2f,
-			volume = 0.1f,
-			isValid = true,
-		};
 
-		AddAudio(bonk);
-		PlaySound("bonk");
-		bonk.OnCompleted += test;
-	}
-
-	private void test()
-	{
-		LogManager.LogInfo("finished playing sound");
-	}
 
 	void OnDestroy()    
     {
@@ -116,12 +94,16 @@ public class AudioManager : MonoBehaviour
 			{
 				BackgroundAudio.clip = Sounds[SoundName].clip;
 				BackgroundAudio.volume = Sounds[SoundName].volume;
-
 				BackgroundAudio.Play();
+				if (Sounds[SoundName].ShouldFadeIn && Sounds[SoundName].fadeDuration > 0 && !Sounds[SoundName].IsFading)
+					StartCoroutine(Sounds[SoundName].fadeIn());
 			}
 			else
 				LogManager.LogWarn($"{SoundName} is currently not valid.");
 		}
+		else if (SoundName == null)
+			BackgroundAudio.clip = null;
+		else
 			LogManager.LogError("Could not play specified sound because it does not exist in the sounds array.");
 
 	}
@@ -132,12 +114,15 @@ public class AudioManager : MonoBehaviour
 		BackgroundAudio.Pause();
 	}
 
-	public void UnPauseBackground()
+	public void UnPauseBackground(bool fadeIn = false)
 	{
 		BackgroundAudio.UnPause();
+		if (fadeIn)
+			Sounds[BackgroundAudio.clip.name].fadeIn();
 		BackgroundPaused = false;
 	}
 
+	
 
 	public AudioHandle PlaySound(string SoundName)
 	{
@@ -148,7 +133,7 @@ public class AudioManager : MonoBehaviour
 				
 					AvailableSources[0].clip = Sounds[SoundName].clip;
 					AvailableSources[0].volume = Sounds[SoundName].volume;
-					AvailableSources[0].PlayDelayed(Sounds[SoundName].Delay);
+					AvailableSources[0].PlayDelayed(Sounds[SoundName].delay);
 					
 				if (Sounds[SoundName].ShouldFadeIn && Sounds[SoundName].fadeDuration > 0 && !Sounds[SoundName].IsFading)
 						StartCoroutine(Sounds[SoundName].fadeIn());
@@ -184,6 +169,10 @@ public class AudioManager : MonoBehaviour
 				return source;
 			}
 		}
+		if (BackgroundAudio.clip == Sounds[AudioName].clip)
+			return BackgroundAudio;
+
 		return null;
 	}
+	
 }

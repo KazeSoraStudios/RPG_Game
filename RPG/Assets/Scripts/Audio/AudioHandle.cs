@@ -5,28 +5,41 @@ using UnityEngine;
 
 public class AudioHandle 
 {
-    public string AudioName { get; private set; }
+    public string AudioName { 
+        get => clip.name; }
     public AudioClip clip;
 
-    public float volume = 1.0f;
-    
-    public float fadeDuration = 1.0f;
-    public float Delay = 0;
+    public float volume;
 
-    public bool ShouldFadeOut = false;
-    public bool ShouldFadeIn = false;
-    public bool isValid = true;
+    public float fadeDuration;
+    public float delay;
+
+    public bool ShouldFadeOut;
+    public bool ShouldFadeIn;
+    public bool isValid;
     public bool IsFading { get; private set; }
 
     public Action OnCompleted;
 
-    private float origVolume = 1.0f;
-    private Coroutine fadeInCoroutineHandle = null;
-    private Coroutine fadeOutCoroutineHandle = null;
+    private float origVolume;
+    private Coroutine fadeInCoroutineHandle;
+    private Coroutine fadeOutCoroutineHandle;
+    public AudioHandle()
+	{
+        origVolume = 1.0f;
+        fadeInCoroutineHandle = null;
+        fadeOutCoroutineHandle = null;
+        volume = 1;
+        fadeDuration = 1;
+        delay = 0;
+        ShouldFadeIn = false;
+        ShouldFadeOut = false; 
+        fadeDuration = 1;
+        isValid = true;
+    }
 
     public void Init()
     {
-        AudioName = clip.name;
         origVolume = volume;
     }
 
