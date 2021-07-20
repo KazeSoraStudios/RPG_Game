@@ -18,11 +18,7 @@ public class GameLogic : MonoBehaviour
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
   
-
     public StateStack Stack;
-
-    private TriggerManager triggerManager;
-    private LocalizationManager localizationManager;
 
     private void Awake()
     {
@@ -54,7 +50,6 @@ public class GameLogic : MonoBehaviour
             DontDestroyOnLoad(UIController.transform.parent);
         }
 
-        triggerManager = new TriggerManager();
         GameState = new GameState
         {
             World = GetComponent<World>()
@@ -100,19 +95,6 @@ public class GameLogic : MonoBehaviour
         exploreState.Init(map, Stack, Vector2.zero);
         Stack.Push(exploreState);
         callback?.Invoke(exploreState);
-
-        var manager = ServiceManager.Get<AudioManager>();
-        switch (scene)
-		{
-            case Constants.HERO_VILLAGE_SCENE:
-                manager.SetBackgroundAudio("village_background");
-                break;
-            default:
-                manager.SetBackgroundAudio(null);
-                break;
-
-
-        }
         yield return null;
     }
 

@@ -19,7 +19,7 @@ namespace RPG_Character
         private void Start()
         {
             var position = Vector2Int.RoundToInt((Vector2)transform.position);
-            ServiceManager.Get<TriggerManager>().AddTrigger(position, this);
+            //ServiceManager.Get<TriggerManager>().AddTrigger(position, this);
 
             quest = GetQuest();
             if (quest == null)

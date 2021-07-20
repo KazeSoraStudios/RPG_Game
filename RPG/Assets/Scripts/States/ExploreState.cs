@@ -24,7 +24,7 @@ public class ExploreState : MonoBehaviour, IGameState
         this.Map = map;
         this.stack = stack;
         LoadHero(startPosition);
-        Map.LoadNpcs();
+        Map.Init();
     }
 
     public void HideHero()

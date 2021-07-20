@@ -16,7 +16,8 @@ namespace RPG_GameData
                     Id = data[index++],
                     Events = BuildDictionary(data[index++]),
                     Chests = BuildDictionary(data[index++]),
-                    Items = BuildDictionary(data[index++])
+                    Items = BuildDictionary(data[index++]),
+                    BackgroundMusic = data[index++]
                 };
                 index += columnAdvance;
                 areas.Add(area.Id, area);

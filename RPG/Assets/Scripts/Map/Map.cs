@@ -17,18 +17,30 @@ public class Map : MonoBehaviour
     [SerializeField] List<NPCData> MapNPCs = new List<NPCData>();
 
     private Encounter Encounter = new Encounter();
+    private Area Area = new Area();
 
     private void Start()
     {
-        var encounters = ServiceManager.Get<GameData>().Encounters;
+        var gameData = ServiceManager.Get<GameData>();
         var map = MapName.ToLower();
-        if (encounters.ContainsKey(map))
+        if (gameData.Encounters.ContainsKey(map))
         {
-            Encounter = encounters[map];
+            Encounter = gameData.Encounters[map];
+        }
+        if (gameData.Areas.ContainsKey(map))
+        {
+            Area = gameData.Areas[map];
         }
     }
 
-    public void LoadNpcs()
+    public void Init()
+    {
+        var background = !Area.BackgroundMusic.IsEmptyOrWhiteSpace() ? Area.BackgroundMusic : Constants.DEFAULT_BACKGROUND_MUSIC;
+        ServiceManager.Get<RPG_Audio.AudioManager>().SetBackgroundAudio(background);
+        LoadNpcs();
+    }
+
+    private void LoadNpcs()
     {
         var assetManager = ServiceManager.Get<AssetManager>();
         foreach (var data in MapNPCs)
@@ -127,40 +139,4 @@ public class Map : MonoBehaviour
         };
         Actions.Combat(config);
     }
-
-    /*
-    local encounterData = mapDef.encounters or {}
-    this.mEncounters = {}
-    for k, v in ipairs(encounterData) do
-        local oddTable = OddmentTable:Create(v)
-        this.mEncounters[k] = oddTable
-    end
-function Map:TryEncounter(x, y, layer)
-
-    local tile = self:GetTile(x, y, layer + 2)
-    if tile <= self.mBlockingTile then
-        return
-    end
-
-    local index = tile - self.mBlockingTile
-    local odd = self.mEncounters[index]
-
-    if not odd then
-        return
-    end
-
-    local encounter = odd:Pick()
-
-    if not next(encounter) then
-        return
-    end
-
-    print(string.format("%d tile id. index: %d", tile, index))
-    local action = Actions.Combat(self, encounter)
-    action(nil, nil, x, y, layer)
-
-end
-
-
-     */
 }

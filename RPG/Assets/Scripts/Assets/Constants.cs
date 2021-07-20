@@ -124,4 +124,5 @@ public class Constants
 
     // Sounds
     public const string SOUND_FOLDER = "Sounds/";
+    public const string DEFAULT_BACKGROUND_MUSIC = "village_background";
 }

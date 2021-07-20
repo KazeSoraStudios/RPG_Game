@@ -36,7 +36,7 @@ namespace RPG_Character
         public bool CanMove(Vector2 targetPosition)
         {
             var position = (Vector2)transform.position + targetPosition;
-            var collision = Physics2D.OverlapCircle(position, 0.2f, collisionLayer);
+            //var collision = Physics2D.OverlapCircle(position, 0.2f, collisionLayer);
             return true;//!collision;
         }
 

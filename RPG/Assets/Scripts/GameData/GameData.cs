@@ -168,6 +168,7 @@ namespace RPG_GameData
     public class Area
     {
         public string Id;
+        public string BackgroundMusic;
         public new Dictionary<string, bool> Events = new Dictionary<string, bool>();
         public new Dictionary<string, bool> Chests = new Dictionary<string, bool>();
         public new Dictionary<string, bool> Items = new Dictionary<string, bool>();

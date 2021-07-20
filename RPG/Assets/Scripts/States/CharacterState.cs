@@ -217,8 +217,8 @@ public class MoveState : CharacterState
     public override void Exit()
     {
         var position = Character.transform.position;
-        Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
-        Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
+        // Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
+        // Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
         Trigger = null;
     }
 
