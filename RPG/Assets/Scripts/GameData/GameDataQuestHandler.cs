@@ -19,7 +19,7 @@ namespace RPG_GameData
                     Exp = GetIntFromCell(data[index++]),
                     Rewards = GetRewards(data[index++]),
                     Condition = BuildCondition(data[index++]),
-                    IsStoryQuest = data[index++].Equals("1")
+                    IsStoryQuest = data[index++].Equals("TRUE")
                 };
                 index += columnAdvance;
                 quests.Add(id, quest);

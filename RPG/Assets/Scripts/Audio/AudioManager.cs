@@ -102,7 +102,7 @@ namespace RPG_Audio
 				{
 					BackgroundAudio.clip = handle.clip;
 					BackgroundAudio.volume = handle.volume;
-					BackgroundAudio.Play();
+					BackgroundAudio.PlayDelayed(handle.delay);
 					if (handle.ShouldFadeIn && handle.FadeDuration > 0 && !handle.IsFading)
 						StartCoroutine(handle.fadeIn());
 				}
@@ -139,6 +139,7 @@ namespace RPG_Audio
 			{
 				AvailableSources[0].clip = handle.clip;
 				AvailableSources[0].volume = handle.volume;
+				Debug.Log(handle.delay);
 				AvailableSources[0].PlayDelayed(handle.delay);
 					
 				if (handle.ShouldFadeIn && handle.FadeDuration > 0 && !handle.IsFading)
@@ -163,7 +164,7 @@ namespace RPG_Audio
 
 		public AudioSource GetAudioSourceOfHandle(string AudioName)
 		{
-			foreach(AudioSource source in AllSources)
+			foreach (AudioSource source in AllSources)
 			{
 				if(source.clip == Library.GetHandleForSound(AudioName).clip)
 				{

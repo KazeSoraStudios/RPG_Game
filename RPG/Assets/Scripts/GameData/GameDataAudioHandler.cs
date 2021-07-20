@@ -16,9 +16,11 @@ namespace RPG_GameData
                     Id = data[index++],
                     SoundName = data[index++],
                     FadeDuration = GetFloatFromCell(data[index++]),
-                    FadeIn = data[index++].Equals("1"),
-                    FadeOut = data[index++].Equals("1")
+                    FadeIn = data[index++].Equals("TRUE"),
+                    FadeOut = data[index++].Equals("TRUE"),
+                    delay = GetFloatFromCell(data[index++])
                 };
+
                 audio.Add(audioData.Id, audioData);
                 index += columnAdvance;
             }

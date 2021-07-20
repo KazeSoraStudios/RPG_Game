@@ -241,5 +241,6 @@ namespace RPG_GameData
         public float FadeDuration;
         public string Id;
         public string SoundName;
+        public float delay;
     }
 }

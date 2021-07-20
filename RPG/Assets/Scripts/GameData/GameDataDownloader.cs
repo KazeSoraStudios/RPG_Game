@@ -15,7 +15,7 @@ namespace RPG_GameData
         [SerializeField] GameData GameData;
 
         private const string sheetID = "1bmAVofqQuVjT_QvqyrGK6_vwzcdfymHfTYjUSSrgjQY";
-        private readonly string gameDataPath = "GameData/gamedata";
+        private readonly string gameDataPath = "/Resources/GameData/gamedata.txt";
         private Action OnComplete;
 
         public void LoadGameData(Action callback = null)
@@ -35,8 +35,8 @@ namespace RPG_GameData
         private void LoadFromSavedFile()
         {
             //var data = File.ReadAllText(Application.dataPath + gameDataPath);
-            var data = Resources.Load<TextAsset>(gameDataPath);
-            var cells = data.text.Split(',');
+            var data = File.ReadAllText(Application.dataPath + gameDataPath);
+            var cells = data.Split(',');
             HandleData(cells);
         }
 
@@ -48,7 +48,7 @@ namespace RPG_GameData
             var cells = content.Split(',');
             HandleData(cells);
             #if UNITY_EDITOR
-            File.WriteAllText(Application.dataPath + gameDataPath + ".txt", content);
+            File.WriteAllText(Application.dataPath + ".txt", content);
             #endif
         }
 

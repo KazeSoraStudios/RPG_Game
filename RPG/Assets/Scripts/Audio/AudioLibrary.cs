@@ -63,7 +63,9 @@ namespace RPG_Audio
 					clip = clip,
 					ShouldFadeIn = data.FadeIn,
 					ShouldFadeOut = data.FadeOut,
-					FadeDuration = data.FadeDuration
+					FadeDuration = data.FadeDuration,
+					delay = data.delay,
+					Id = data.Id
 				};
 				audio[entry.Key] = handle;
 			}

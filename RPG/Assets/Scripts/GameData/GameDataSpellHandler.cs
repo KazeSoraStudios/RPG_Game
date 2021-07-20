@@ -26,7 +26,7 @@ namespace RPG_GameData
                     ItemTarget = new ItemTarget
                     {
                         Selector = GetTarget(name, data[index++]),
-                        SwitchSides = data[index++].Equals("1"),
+                        SwitchSides = data[index++].Equals("TRUE"),
                         Type = GetEnum(CombatTargetType.One, data[index++])
                     },
                     Description = data[index++]

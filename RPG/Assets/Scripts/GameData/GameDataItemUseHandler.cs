@@ -22,11 +22,11 @@ namespace RPG_GameData
                     Amount = GetIntFromCell(data[index++]),
                     Hint = data[index++],
                     Action = data[index++],
-                    UseOnMap = data[index++].Equals("1"),
+                    UseOnMap = data[index++].Equals("TRUE"),
                     Target = new ItemTarget
                     {
                         Selector = GetTarget(name, data[index++]),
-                        SwitchSides = data[index++].Equals("1"),
+                        SwitchSides = data[index++].Equals("TRUE"),
                         Type = GetEnum(CombatTargetType.One, data[index++])
                     }
                 };
