@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace RPG_GameData
 {
-    public class GameDataEncounterHandler
+    public class GameDataEncounterHandler : GameDataHandler
     {
         public static Dictionary<string, Encounter> ProcessEncounters(int index, int count, int columnAdvance, string[] data)
         {

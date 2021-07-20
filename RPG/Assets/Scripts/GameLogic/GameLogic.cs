@@ -101,12 +101,11 @@ public class GameLogic : MonoBehaviour
         Stack.Push(exploreState);
         callback?.Invoke(exploreState);
 
-        var library = ServiceManager.Get<AudioLibrary>();
         var manager = ServiceManager.Get<AudioManager>();
         switch (scene)
 		{
             case Constants.HERO_VILLAGE_SCENE:
-                manager.SetBackgroundAudio(library.HeroVillageTheme.AudioName);
+                manager.SetBackgroundAudio("village_background");
                 break;
             default:
                 manager.SetBackgroundAudio(null);

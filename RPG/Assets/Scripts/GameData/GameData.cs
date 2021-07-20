@@ -231,6 +231,14 @@ namespace RPG_GameData
         public float HpThreshold;
         public float MeleeLean;
         public string Id;
+    }
 
+    public class AudioData
+    {
+        public bool FadeIn;
+        public bool FadeOut;
+        public float FadeDuration;
+        public string Id;
+        public string SoundName;
     }
 }

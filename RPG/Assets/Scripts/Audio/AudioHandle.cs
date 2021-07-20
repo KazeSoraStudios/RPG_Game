@@ -12,7 +12,7 @@ namespace RPG_Audio
 
         public float volume;
 
-        public float fadeDuration;
+        public float FadeDuration;
         public float delay;
 
         public bool ShouldFadeOut;
@@ -31,11 +31,10 @@ namespace RPG_Audio
             fadeInCoroutineHandle = null;
             fadeOutCoroutineHandle = null;
             volume = 1;
-            fadeDuration = 1;
+            FadeDuration = 1;
             delay = 0;
             ShouldFadeIn = false;
             ShouldFadeOut = false; 
-            fadeDuration = 1;
             isValid = true;
         }
 
@@ -51,7 +50,7 @@ namespace RPG_Audio
             var source = ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(AudioName);
             while (volume < origVolume)
             {
-                volume += (1.0f / fadeDuration) * Time.fixedDeltaTime;
+                volume += (1.0f / FadeDuration) * Time.fixedDeltaTime;
                 source.volume = volume;
                 yield return null;
             }
@@ -68,7 +67,7 @@ namespace RPG_Audio
             var source = ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(AudioName);
             while (volume > 0.0f)
             {
-                volume -= (1.0f / fadeDuration) * Time.fixedDeltaTime;
+                volume -= (1.0f / FadeDuration) * Time.fixedDeltaTime;
                 source.volume = volume;
                 yield return null;
             }
@@ -86,7 +85,7 @@ namespace RPG_Audio
             volume = 1.0f;
             origVolume = 1.0f;
             ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(AudioName).volume = volume;
-            fadeDuration = 1.0f;
+            FadeDuration = 1.0f;
             if (fadeInCoroutineHandle != null)
             {
                 fadeInCoroutineHandle = null;

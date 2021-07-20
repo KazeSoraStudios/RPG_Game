@@ -121,4 +121,7 @@ public class Constants
     // Text constants
     public const string ID_QUEST_NAME_FORMAT = "ID_{0}_NAME_TEXT";
     public const string ID_QUEST_DESCRIPTION_FORMAT = "ID_{0}_NAME_TEXT";
+
+    // Sounds
+    public const string SOUND_FOLDER = "Sounds/";
 }

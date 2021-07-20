@@ -8,8 +8,9 @@ namespace RPG_Audio
 	{
 		public List<AudioSource> AvailableSources = new List<AudioSource>();
 		public AudioSource BackgroundAudio;
-		public Dictionary<string, AudioHandle> Sounds = new Dictionary<string, AudioHandle>();
 		public AudioSource[] AllSources = new AudioSource[8];
+
+		private AudioLibrary Library;
 		private bool BackgroundPaused = false;
 		void Awake()
 		{
@@ -19,7 +20,7 @@ namespace RPG_Audio
 			{
 				AllSources[i] = gameObject.AddComponent<AudioSource>();
 				AvailableSources.Add(AllSources[i]);
-			}	
+			}
 		}
 
 
@@ -32,8 +33,13 @@ namespace RPG_Audio
 			BackgroundAudio.Stop();
 			AvailableSources.Clear();
 			Array.Clear(AllSources, 0, AllSources.Length);
-			Sounds.Clear();
+			Library.ClearLibrary();
 			ServiceManager.Unregister(this);
+		}
+
+		public void LoadLibrary(Dictionary<string, RPG_GameData.AudioData> audioData)
+		{
+			Library = new AudioLibrary(audioData);
 		}
 
 		private void Update()
@@ -44,15 +50,15 @@ namespace RPG_Audio
 					AvailableSources.Remove(source);
 				else if (!source.isPlaying && !AvailableSources.Contains(source))
 				{
-					Sounds[source.clip.name].OnCompleted?.Invoke();
+					Library.GetHandleForSound(source.clip.name).OnCompleted?.Invoke();
 					AvailableSources.Add(source);
 				}
 				
 				if(!AvailableSources.Contains(source))
 				{	
-					if((source.clip.length - source.time ) <= Sounds[source.clip.name].fadeDuration && !Sounds[source.clip.name].IsFading && Sounds[source.clip.name].ShouldFadeOut)
+					if((source.clip.length - source.time ) <= Library.GetHandleForSound(source.clip.name).FadeDuration && !Library.GetHandleForSound(source.clip.name).IsFading && Library.GetHandleForSound(source.clip.name).ShouldFadeOut)
 					{
-						StartCoroutine(Sounds[source.clip.name].fadeOut());
+						StartCoroutine(Library.GetHandleForSound(source.clip.name).fadeOut());
 					}
 				}
 			}
@@ -65,39 +71,40 @@ namespace RPG_Audio
 
 		}
 
-		/// <summary>
-		/// To get the handles clip use AudioManager.LoadAudioFromResources("AudioName")
-		/// </summary>
-		/// <param name="handle"></param>
-		public void AddAudio(AudioHandle handle)
-		{
-			if (handle.clip != null)
-			{
-				if (!Sounds.ContainsValue(handle))
-				{
-					Sounds.Add(handle.clip.name, handle);
-					handle.Init();
-				}
-				else
-				{
-					LogManager.LogError("Sounds list already contains specified sound!");
-				}
-			}
-			else
-				LogManager.LogError("AudioHandle's clip is null!");
-		}
+		// /// <summary>
+		// /// To get the handles clip use AudioManager.LoadAudioFromResources("AudioName")
+		// /// </summary>
+		// /// <param name="handle"></param>
+		// public void AddAudio(AudioHandle handle)
+		// {
+		// 	if (handle.clip != null)
+		// 	{
+		// 		if (!Sounds.HasHandle(handle))
+		// 		{
+		// 			Sounds..Add(handle.clip.name, handle);
+		// 			handle.Init();
+		// 		}
+		// 		else
+		// 		{
+		// 			LogManager.LogError("Sounds list already contains specified sound!");
+		// 		}
+		// 	}
+		// 	else
+		// 		LogManager.LogError("AudioHandle's clip is null!");
+		// }
 
 		public void SetBackgroundAudio(string SoundName)
 		{
-			if (Sounds.ContainsKey(SoundName))
+			if (Library.HasSound(SoundName))
 			{
-				if (Sounds[SoundName].isValid)
+				var handle = Library.GetHandleForSound(SoundName);
+				if (handle.isValid)
 				{
-					BackgroundAudio.clip = Sounds[SoundName].clip;
-					BackgroundAudio.volume = Sounds[SoundName].volume;
+					BackgroundAudio.clip = handle.clip;
+					BackgroundAudio.volume = handle.volume;
 					BackgroundAudio.Play();
-					if (Sounds[SoundName].ShouldFadeIn && Sounds[SoundName].fadeDuration > 0 && !Sounds[SoundName].IsFading)
-						StartCoroutine(Sounds[SoundName].fadeIn());
+					if (handle.ShouldFadeIn && handle.FadeDuration > 0 && !handle.IsFading)
+						StartCoroutine(handle.fadeIn());
 				}
 				else
 					LogManager.LogWarn($"{SoundName} is currently not valid.");
@@ -119,7 +126,7 @@ namespace RPG_Audio
 		{
 			BackgroundAudio.UnPause();
 			if (fadeIn)
-				Sounds[BackgroundAudio.clip.name].fadeIn();
+				Library.GetHandleForSound(BackgroundAudio.clip.name).fadeIn();
 			BackgroundPaused = false;
 		}
 
@@ -127,20 +134,16 @@ namespace RPG_Audio
 
 		public AudioHandle PlaySound(string SoundName)
 		{
-			if (Sounds[SoundName].isValid)
+			var handle = Library.GetHandleForSound(SoundName);
+			if (handle.isValid)
 			{
-				if (Sounds.ContainsValue(Sounds[SoundName]))
-				{
-					AvailableSources[0].clip = Sounds[SoundName].clip;
-					AvailableSources[0].volume = Sounds[SoundName].volume;
-					AvailableSources[0].PlayDelayed(Sounds[SoundName].delay);
-						
-					if (Sounds[SoundName].ShouldFadeIn && Sounds[SoundName].fadeDuration > 0 && !Sounds[SoundName].IsFading)
-							StartCoroutine(Sounds[SoundName].fadeIn());
-					return Sounds[SoundName];
-				}
-				else
-					LogManager.LogError("Could not play specified sound because it does not exist in the sounds array.");
+				AvailableSources[0].clip = handle.clip;
+				AvailableSources[0].volume = handle.volume;
+				AvailableSources[0].PlayDelayed(handle.delay);
+					
+				if (handle.ShouldFadeIn && handle.FadeDuration > 0 && !handle.IsFading)
+						StartCoroutine(handle.fadeIn());
+				return handle;
 			}
 			else
 				LogManager.LogWarn($"{SoundName} is currently not valid.");
@@ -149,12 +152,10 @@ namespace RPG_Audio
 
 		public void ForceFadeOut(string SoundName)
 		{
-			if (Sounds[SoundName].isValid)
+			var handle = Library.GetHandleForSound(SoundName);
+			if (handle.isValid)
 			{
-				if (Sounds.ContainsKey(SoundName))
-					StartCoroutine(Sounds[SoundName].fadeOut());
-				else
-					LogManager.LogError("Could not play specified sound because it does not exist in the sounds array.");
+				StartCoroutine(handle.fadeOut());
 			}
 			else
 				LogManager.LogWarn($"{SoundName} is currently not valid.");
@@ -164,12 +165,12 @@ namespace RPG_Audio
 		{
 			foreach(AudioSource source in AllSources)
 			{
-				if(source.clip == Sounds[AudioName].clip)
+				if(source.clip == Library.GetHandleForSound(AudioName).clip)
 				{
 					return source;
 				}
 			}
-			if (BackgroundAudio.clip == Sounds[AudioName].clip)
+			if (BackgroundAudio.clip == Library.GetHandleForSound(AudioName).clip)
 				return BackgroundAudio;
 
 			return null;
