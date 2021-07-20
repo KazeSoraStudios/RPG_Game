@@ -1,33 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioLibrary : MonoBehaviour
+namespace RPG_Audio
 {
-	public AudioHandle HeroVillageTheme;
-
-
-
-	private void Awake()
+	public class AudioLibrary : MonoBehaviour
 	{
-		ServiceManager.Register(this);
-	}
-	void OnDestroy()
-	{
-		ServiceManager.Unregister(this);
-	}
+		public AudioHandle HeroVillageTheme;
 
-	void Start()
-    {
-		HeroVillageTheme = new AudioHandle
+		private void Awake()
 		{
-			clip = ServiceManager.Get<AssetManager>().Load<AudioClip>("Sounds/HeroVillageTheme"),
-			ShouldFadeIn = true,
-			fadeDuration = 100,
-		};
-		ServiceManager.Get<AudioManager>().AddAudio(HeroVillageTheme);
+			ServiceManager.Register(this);
+		}
+		void OnDestroy()
+		{
+			ServiceManager.Unregister(this);
+		}
 
+		void Start()
+		{
+			HeroVillageTheme = new AudioHandle
+			{
+				clip = ServiceManager.Get<AssetManager>().Load<AudioClip>("Sounds/HeroVillageTheme"),
+				ShouldFadeIn = true,
+				fadeDuration = 100,
+			};
+			ServiceManager.Get<AudioManager>().AddAudio(HeroVillageTheme);
+
+		}
 	}
-
-
 }

@@ -8,6 +8,7 @@ using RPG_Combat;
 using RPG_Character;
 using RPG_GameData;
 using RPG_GameState;
+using RPG_Audio;
 
 public class GameLogic : MonoBehaviour
 {
