@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Net.Mime;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -14,7 +15,7 @@ namespace RPG_GameData
         [SerializeField] GameData GameData;
 
         private const string sheetID = "1bmAVofqQuVjT_QvqyrGK6_vwzcdfymHfTYjUSSrgjQY";
-        private readonly string gameDataPath = "/Resources/GameData/gamedata.txt";
+        private readonly string gameDataPath = "GameData/gamedata";
         private Action OnComplete;
 
         public void LoadGameData(Action callback = null)
@@ -33,8 +34,9 @@ namespace RPG_GameData
 
         private void LoadFromSavedFile()
         {
-            var data = File.ReadAllText(Application.dataPath + gameDataPath);
-            var cells = data.Split(',');
+            //var data = File.ReadAllText(Application.dataPath + gameDataPath);
+            var data = Resources.Load<TextAsset>(gameDataPath);
+            var cells = data.text.Split(',');
             HandleData(cells);
         }
 
@@ -45,7 +47,9 @@ namespace RPG_GameData
             content = Regex.Replace(content, @"\r\n?|\n", ",");
             var cells = content.Split(',');
             HandleData(cells);
-            File.WriteAllText(Application.dataPath + gameDataPath, content);
+            #if UNITY_EDITOR
+            File.WriteAllText(Application.dataPath + gameDataPath + ".txt", content);
+            #endif
         }
 
         private void HandleData(string[] data)
