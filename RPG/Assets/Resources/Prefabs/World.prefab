@@ -48,7 +48,6 @@ GameObject:
   - component: {fileID: 4474695500408404690}
   - component: {fileID: 4474695500408404689}
   - component: {fileID: 4474695500408404688}
-  - component: {fileID: 3370426879342994453}
   - component: {fileID: 479541656208436725}
   m_Layer: 0
   m_Name: World
@@ -195,18 +194,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BinarySave: 0
   filepath: \savedata.rpg
---- !u!114 &3370426879342994453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4474695500408404650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: beefe2648b6718e419d54504962b90ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &479541656208436725
 MonoBehaviour:
   m_ObjectHideFlags: 0
