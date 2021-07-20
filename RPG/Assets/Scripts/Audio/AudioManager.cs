@@ -139,7 +139,6 @@ namespace RPG_Audio
 			{
 				AvailableSources[0].clip = handle.clip;
 				AvailableSources[0].volume = handle.volume;
-				Debug.Log(handle.delay);
 				AvailableSources[0].PlayDelayed(handle.delay);
 					
 				if (handle.ShouldFadeIn && handle.FadeDuration > 0 && !handle.IsFading)
