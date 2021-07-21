@@ -134,6 +134,33 @@ TextureImporter:
   - first:
       213: -5603108324122132132
     second: KAITO_43
+  - first:
+      213: 6519817808710202373
+    second: KAITO_44
+  - first:
+      213: -9092764853742478807
+    second: KAITO_45
+  - first:
+      213: 1695140602806273570
+    second: KAITO_46
+  - first:
+      213: -7077573606149093113
+    second: KAITO_47
+  - first:
+      213: -9029657609110651196
+    second: KAITO_48
+  - first:
+      213: 1479576586572426395
+    second: KAITO_49
+  - first:
+      213: -8926591910674527195
+    second: KAITO_50
+  - first:
+      213: 8819275363891901846
+    second: KAITO_51
+  - first:
+      213: 7249302160835226743
+    second: KAITO_52
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1154,6 +1181,195 @@ TextureImporter:
       bones: []
       spriteID: c518aae6aa2cd32b0800000000000000
       internalID: -5603108324122132132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_44
+      rect:
+        serializedVersion: 2
+        x: 2112
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 504ff68e0cb0b7a50800000000000000
+      internalID: 6519817808710202373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_45
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92ad5828a8200d180800000000000000
+      internalID: -9092764853742478807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_46
+      rect:
+        serializedVersion: 2
+        x: 2208
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2260c92a569568710800000000000000
+      internalID: 1695140602806273570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_47
+      rect:
+        serializedVersion: 2
+        x: 2256
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7098dc5cd4867cd90800000000000000
+      internalID: -7077573606149093113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_48
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ce7e85ee3630b280800000000000000
+      internalID: -9029657609110651196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_49
+      rect:
+        serializedVersion: 2
+        x: 2352
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9c62acf013888410800000000000000
+      internalID: 1479576586572426395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_50
+      rect:
+        serializedVersion: 2
+        x: 2400
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52c8e5dc3ff5e1480800000000000000
+      internalID: -8926591910674527195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_51
+      rect:
+        serializedVersion: 2
+        x: 2448
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6957129873c546a70800000000000000
+      internalID: 8819275363891901846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KAITO_52
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 0
+        width: 48
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77c2e0628e1ba9460800000000000000
+      internalID: 7249302160835226743
       vertices: []
       indices: 
       edges: []
