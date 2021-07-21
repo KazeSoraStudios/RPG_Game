@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using RPG_Character;
 
@@ -128,6 +129,8 @@ namespace RPG_Combat
         public class Config : StateParams
         {
             public string Animation;
+            public Action StartAnimation;
+            public Action EndAnimation;
         }
 
         private string animationName;
@@ -143,7 +146,7 @@ namespace RPG_Combat
                 return;
             }
             animationName = config.Animation;
-            character.PlayAnimation(config.Animation);
+            config.StartAnimation?.Invoke();
         }
 
         public override string GetName()

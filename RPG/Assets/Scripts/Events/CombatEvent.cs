@@ -240,7 +240,17 @@ namespace RPG_Combat
                 // TODO remove Temp for testing
                 events.Add(StoryboardEventFunctions.Wait(1.0f));
                 //
-                events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.RUN_ANIMATION_STATE, new CSRunAnimation.Config { Animation = Constants.ATTACK_ANIMATION }));
+                events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.RUN_ANIMATION_STATE, 
+                    new CSRunAnimation.Config 
+                    { 
+                        Animation = Constants.ATTACK_ANIMATION, 
+                        StartAnimation = () => 
+                        {
+                            character.animator.SetInteger("Attack Value", 1);
+                            character.animator.SetTrigger("Attack");
+                        }
+                    }));
+                events.Add(StoryboardEventFunctions.Wait(1.0f));
                 events.Add(StoryboardEventFunctions.Function(DoAttack));
                 events.Add(StoryboardEventFunctions.Function(ShowResult));
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, returnMoveParams));
@@ -266,7 +276,17 @@ namespace RPG_Combat
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, attackMoveParams));
                 // TODO remove Temp for testing
                 events.Add(StoryboardEventFunctions.Wait(1.0f));
-                events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.RUN_ANIMATION_STATE, new CSRunAnimation.Config { Animation = Constants.ATTACK_ANIMATION }));
+                events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.RUN_ANIMATION_STATE, 
+                    new CSRunAnimation.Config 
+                    { 
+                        Animation = Constants.ATTACK_ANIMATION, 
+                        StartAnimation = () => 
+                        {
+                            character.animator.SetInteger("Attack Value", 1);
+                            character.animator.SetTrigger("Attack");
+                        }
+                    }));
+                events.Add(StoryboardEventFunctions.Wait(1.0f));
                 events.Add(StoryboardEventFunctions.Function(DoAttack));
                 events.Add(StoryboardEventFunctions.Function(ShowResult));
                 events.Add(StoryboardEventFunctions.RunCombatState(character.Controller, Constants.COMBAT_MOVE_STATE, returnMoveParams));

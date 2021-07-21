@@ -172,7 +172,7 @@ public class GameLogic : MonoBehaviour
                 Map = ((ExploreState)Stack.Top()).Map,
                 Stack = Stack,
                 Party = GameState.World.Party.Members,
-                Enemies  = new List<string> { "goblin" }
+                Enemies  = new List<string> { "firespirit" }
             };
             Actions.Combat(config);
         }

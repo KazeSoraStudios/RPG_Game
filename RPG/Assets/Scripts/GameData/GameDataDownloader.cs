@@ -48,7 +48,7 @@ namespace RPG_GameData
             var cells = content.Split(',');
             HandleData(cells);
             #if UNITY_EDITOR
-            File.WriteAllText(Application.dataPath + ".txt", content);
+            File.WriteAllText(Application.dataPath + gameDataPath, content);
             #endif
         }
 
