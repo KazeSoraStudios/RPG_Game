@@ -9,7 +9,7 @@ public class TeleportTrigger : MonoBehaviour
         if (!other.tag.Equals("Player"))
             return;
         var character = other.GetComponent<Character>();
-        character.ReturnFromCombat();
+        character.PrepareForSceneChange();
         character.UpdateMovement(Vector2.zero);
         Actions.Teleport(character.Entity, TeleportPosition);
     }

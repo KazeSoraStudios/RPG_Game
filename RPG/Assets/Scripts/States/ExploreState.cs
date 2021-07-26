@@ -71,7 +71,7 @@ public class ExploreState : MonoBehaviour, IGameState
             var x = (int)facingTile.x;
             var y = (int)facingTile.y;
             var targetPosition = new Vector2(x,y);
-            var collision = Physics2D.OverlapCircle(targetPosition, 0.2f, Hero.collisionLayer);
+            var collision = Physics2D.OverlapCircle(targetPosition, 0.5f, Hero.collisionLayer);
             if (collision?.GetComponent<Trigger>() is var trigger && trigger != null)
             {
                 trigger.OnUse(new TriggerParams(x,y,Hero.GetComponent<Character>()));

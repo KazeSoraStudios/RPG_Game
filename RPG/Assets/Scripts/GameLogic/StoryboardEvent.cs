@@ -169,12 +169,15 @@ public class TimedTextBoxEvent : IStoryboardEvent
     {
         textbox = ServiceManager.Get<UIController>().GetTextbox(anchor);
         textbox.Init(config);
+        textbox.Enter();
         this.time = time;
         countDown = time;
     }
 
     public void Execute(float deltaTime)
     {
+        textbox.Execute(deltaTime);
+        textbox.HandleInput();
         countDown -= deltaTime;
         if (countDown <= 0)
         {
@@ -259,6 +262,34 @@ public class NonBlockingEvent : IStoryboardEvent
     {
         return Event.Transform(storyboard);
     }
+}
+
+public class FollowPathEvent : IStoryboardEvent
+{
+    private Character character;
+
+    public FollowPathEvent(Character character)
+    {
+        this.character = character;
+    }
+
+    public void Execute(float deltaTime)
+    {
+        character.Controller.Update(deltaTime);
+    }
+
+    public bool IsBlocking()
+    {
+        return true;
+    }
+
+    public bool IsFinished()
+    {
+        return character.PathIndex > character.PathToMove.Count;
+    }
+
+    public bool HasEventFunction() { return false; }
+    public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
 public class StoryboardEventFunctions
@@ -468,8 +499,8 @@ public class StoryboardEventFunctions
         return FadeScreen(1, 0, duration, state);
     }
 
-    //function SOP.Caption(id, style, text)
-
+    // public static IStoryboardEventCaption(string text)
+    // {
     //    return function(storyboard)
     //        local style = ShallowClone(CaptionStyles [style])
     //        local caption = CaptionState:Create(style, text)
@@ -481,8 +512,7 @@ public class StoryboardEventFunctions
     //                style.ApplyFunc)
 
     //    end
-
-    //end
+    // }
 
     //function SOP.FadeOutCaption(id, duration)
     //    return function(storyboard)
@@ -568,6 +598,19 @@ public class StoryboardEventFunctions
             Function = (_) =>
             {
                  var map = GameObject.Find($"{mapName}Map");
+                var exploreState = map.gameObject.GetComponent<ExploreState>();
+                exploreState.SetHeroPosition(positon);
+                return EmptyEvent;
+            }
+        };
+    }
+
+    public static IStoryboardEvent MoveHeroToPosition(Map map, Vector2 positon)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (_) =>
+            {
                 var exploreState = map.gameObject.GetComponent<ExploreState>();
                 exploreState.SetHeroPosition(positon);
                 return EmptyEvent;
@@ -713,44 +756,24 @@ public class StoryboardEventFunctions
         };
     }
 
-//    public static IStoryboardEvent Say(string mapId, string npcId, string text, Textbox.Config config, float time = 1.0f)
-//    {
-//        return new StoryboardFunctionEvent
-//        {
-//            Function = (storyboard) =>
-//            {
-//                var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
-//                if (npcId.Equals("hero"))
-//                {
-//                    if (!storyboard.States.ContainsKey(mapId))
-//                    {
-//                        LogManager.LogError($"Storyboard States [{storyboard.States}] does not contain map id: {mapId}");
-//                        return EmptyEvent;
-//                    }
-//                    npc = ((ExploreState)storyboard.States[mapId]).Hero;
-//                }
-//                return new TimedTextBoxEvent(config, time);
-//            }
-//            /*
-//                         local map = GetMapRef(storyboard, mapId)
-//            local npc = map.mNPCbyId[npcId]
-//if npcId == "hero" then
-//   npc = storyboard.mStates[mapId].mHero
-//            end
-//            local pos = npc.mEntity.mSprite:GetPosition()
-//            storyboard.mStack:PushFit(
-//                gRenderer,
-//                -map.mCamX + pos:X(), -map.mCamY + pos:Y() + 32,
-//                text, -1, params)
-//            local box = storyboard.mStack:Top()
-//            return TimedTextboxEvent:Create(box, time)
-//        end
-//    end
-//             */
-//        };
-//    }
-
-
+   public static IStoryboardEvent Say(string text, float time = Constants.DEFAULT_TIMED_TEXTBOX_TIME, TextBoxAnchor anchor = TextBoxAnchor.Bottom)
+   {
+       return new StoryboardFunctionEvent
+       {
+           Function = (storyboard) =>
+           {
+               
+               var config = new Textbox.Config 
+                {
+                    InitialDelay = 0.5f,
+                    AdvanceTime = time,
+                    Text = ServiceManager.Get<LocalizationManager>().Localize(text)
+                };
+               ServiceManager.Get<GameLogic>().Stack.PushTextbox(config, anchor);
+               return EmptyEvent;
+           }
+       };
+   }
 
     public static IStoryboardEvent RunAction(RunAction action, List<object> def)
     {
@@ -765,24 +788,29 @@ public class StoryboardEventFunctions
         };
     }
 
-    //public static IStoryboardEvent MoveNPC(string npcId, List<Direction> path)
-    //{
-    //    return new StoryboardFunctionEvent
-    //    {
-    //        Function = (storyboard) =>
-    //        {
-    //            var npc = ServiceManager.Get<NPCManager>().GetNPC(npcId);
-    //            npc.FollowPath(path);
-    //            return new BlockUntilEvent
-    //            {
-    //                UntilFunction = () =>
-    //                {
-    //                    return npc.PathIndex > npc.PathToMove.Count;
-    //                }
-    //            };
-    //        }
-    //    };
-    //}
+    public static IStoryboardEvent MoveCharacter(Character character, List<Direction> path)
+    {
+       return new StoryboardFunctionEvent
+       {
+           Function = (storyboard) =>
+           {
+               character.FollowPath(path);
+               return new FollowPathEvent(character);
+           }
+       };
+    }
+
+    public static IStoryboardEvent SetCharacterDirection(Character character, Direction direction)
+    {
+       return new StoryboardFunctionEvent
+       {
+           Function = (storyboard) =>
+           {
+               character.UpdateDirection(direction);
+               return EmptyEvent;
+           }
+       };
+    }
 
     public static IStoryboardEvent HandOffToExploreState()
     {

@@ -13,11 +13,13 @@ public class Map : MonoBehaviour
     [SerializeField] public CinemachineVirtualCamera Camera;
     [SerializeField] Transform NPCParent;
     [SerializeField] Tilemap Encounters;
-    [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
+    [SerializeField] CheckConditionTrigger Conditions;
     [SerializeField] List<NPCData> MapNPCs = new List<NPCData>();
+    [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
+    
 
-    private Encounter Encounter = new Encounter();
-    private Area Area = new Area();
+    protected Encounter Encounter = new Encounter();
+    protected Area Area = new Area();
 
     private void Start()
     {
@@ -33,11 +35,12 @@ public class Map : MonoBehaviour
         }
     }
 
-    public void Init()
+    public virtual void Init()
     {
         var background = !Area.BackgroundMusic.IsEmptyOrWhiteSpace() ? Area.BackgroundMusic : Constants.DEFAULT_BACKGROUND_MUSIC;
         ServiceManager.Get<RPG_Audio.AudioManager>().SetBackgroundAudio(background);
         LoadNpcs();
+        Conditions?.Init(Area);
     }
 
     private void LoadNpcs()

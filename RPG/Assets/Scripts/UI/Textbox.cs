@@ -13,6 +13,7 @@ namespace RPG_UI
         {
             public bool UseSelectionBox = false;
             public bool ShowImage = false;
+            public float InitialDelay = 0.2f;
             public float AdvanceTime = 2.0f;
             public string ImagePath;
             public string Text;
@@ -37,6 +38,7 @@ namespace RPG_UI
         private int pageEnd = 0;
         private float nextCharTime;
         private float totalTime;
+        private float initialDelay = 0.0f;
         private float advanceTime = 0.0f;
         private string text;
         private TMP_TextInfo textInfo;
@@ -55,6 +57,7 @@ namespace RPG_UI
             if (config == null)
                 return;
             gameObject.SafeSetActive(true);
+            initialDelay = config.InitialDelay;
             advanceTime = config.AdvanceTime;
             text = config.Text;
             Text.maxVisibleCharacters = 0;
@@ -70,7 +73,7 @@ namespace RPG_UI
                 Image.sprite = ServiceManager.Get<AssetManager>().Load<Sprite>(config.ImagePath, (_) => Image.gameObject.SafeSetActive(true));
         }
 
-        public void Enter(object o)
+        public void Enter(object o = null)
         {
             ServiceManager.Get<Party>().PrepareForTextboxState();
             ServiceManager.Get<NPCManager>().PrepareForTextboxState();
@@ -105,6 +108,8 @@ namespace RPG_UI
 
         public void HandleInput()
         {
+            if (totalTime < initialDelay)
+                return;
             if (Input.GetKeyDown(KeyCode.Space))
                 OnClick();
             else if (usingSelectionBox)

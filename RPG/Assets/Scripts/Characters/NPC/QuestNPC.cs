@@ -42,6 +42,7 @@ namespace RPG_Character
 
         public void OnUse(TriggerParams triggerParams)
         {
+            ServiceManager.Get<GameLogic>().GameState.CompleteEventInArea("village", "visited_temple");
             if (quest == null)
                 return;
             var completed = quest.TryToComplete();

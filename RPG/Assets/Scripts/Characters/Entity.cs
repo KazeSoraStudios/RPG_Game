@@ -18,22 +18,10 @@ namespace RPG_Character
             rigidbody.velocity = Vector2.zero;
         }
 
-        public void UpdateMovement(Vector2 movement, Map map = null)
+        public void UpdateMovement(Vector2 movement)
         {
             this.movement.x = Mathf.Ceil(movement.x);
             this.movement.y = Mathf.Ceil(movement.y);
-
-            if (movement != Vector2.zero)
-                return;
-
-            if (map == null || map.GetEntity(transform.position) is var entity && entity == null)
-                return;
-            if (entity.GetInstanceID() == GetInstanceID())
-                map.RemoveEntity(this);
-            var x = transform.position.x + movement.x;
-            var y = transform.position.y + movement.y;
-            var newPosition = new Vector2Int((int)x, (int)y);
-            map.AddEntity(this, newPosition);
         }
 
         public void CombatMovement(Vector3 movement)

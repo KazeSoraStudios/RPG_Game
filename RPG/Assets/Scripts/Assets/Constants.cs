@@ -67,6 +67,7 @@ public class Constants
     public const int DEFAULT_ENCOUNTER_CHANCE = 100;
     public const float TEXTBOX_CHARACTER_SPEED = 0.02f;
     public const float SELECT_MARKER_BOUNCE_SPEED = 5.0f;
+    public const float DEFAULT_TIMED_TEXTBOX_TIME = 999999.0f;
     public const string DEFAULT_COMBAT_BACKGROUND = "Textures/combat_bg_forest";
     public const string DEFAULT_COMBAT_ENEMY_PREFAB = CHARACTER_PREFAB_PATH + "Goblin";
     public const string CAMERA_NAME = "CM vcam1";

@@ -113,7 +113,7 @@ public class WaitState : CharacterState
 public class UnitMoveState : CharacterState
 {
     private const string Name = "MoveState";
-    private Trigger Trigger;
+    private Vector2 currentPosition = Vector2.zero;
     private Vector2 targetPosition = Vector2.zero;
 
     public UnitMoveState(Character character)
@@ -137,20 +137,19 @@ public class UnitMoveState : CharacterState
     public override void Exit()
     {
         var position = Character.transform.position;
-        Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
-        Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
-        Trigger = null;
     }
 
+    public float time = 0.0f;
     public override bool Execute(float deltaTime)
     {
-        var distance = Vector2.Distance(Character.transform.position, targetPosition);
-        if (distance <= 0.05f)
+        time += deltaTime;
+        currentPosition = Vector2.Lerp(currentPosition, targetPosition, time / 0.75f);
+        Character.transform.position = currentPosition;
+        var distance = Vector2.Distance(currentPosition, targetPosition);
+        if (distance <= 0.02f)
         {
             Character.transform.position = targetPosition;
             var position = Character.transform.position;
-            Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
-            Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
             var movement = GetNewMovement();
             if (movement == Vector2.zero)
                 Character.Controller.Change(Character.defaultState);
@@ -162,15 +161,10 @@ public class UnitMoveState : CharacterState
 
     private void BeforeMove(Vector2 movement)
     {
-        var triggerPosition = Character.transform.position;
-        Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)triggerPosition.x, (int)triggerPosition.y);
-        Trigger.OnExit(new TriggerParams((int)triggerPosition.x, (int)triggerPosition.y, Character));
-        targetPosition = (Vector2)triggerPosition + movement;
-        // if (Map.TryEncounter(new Vector3Int((int)targetPosition.x, (int)targetPosition.y, 0)))
-        // {
-
-        // }
-        Character.UpdateMovement(movement);
+        time = .0f;
+        currentPosition = Character.transform.position;
+        targetPosition = currentPosition + movement;
+        Character.UpdateStoryboardMovement(movement);
     }
 
     private Vector2 GetNewMovement()

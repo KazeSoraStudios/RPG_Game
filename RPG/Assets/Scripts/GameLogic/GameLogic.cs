@@ -14,7 +14,7 @@ public class GameLogic : MonoBehaviour
 {
     [SerializeField] bool QuickPlay;
     [SerializeField] LogLevel LogLevel;
-    [SerializeField] public GameState GameState;
+    [SerializeField] public GameState GameState = new GameState();
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
   
@@ -92,8 +92,8 @@ public class GameLogic : MonoBehaviour
         var village = GameObject.Find($"{scene}Map");
         var map = village.GetComponent<Map>();
         var exploreState = map.gameObject.AddComponent<ExploreState>();
-        exploreState.Init(map, Stack, Vector2.zero);
         Stack.Push(exploreState);
+        exploreState.Init(map, Stack, Vector2.zero);
         callback?.Invoke(exploreState);
         yield return null;
     }
@@ -125,10 +125,10 @@ public class GameLogic : MonoBehaviour
         //    LogManager.LogInfo("Pushed storyboard");
         //}
 
-        //if (Input.GetKeyDown(KeyCode.M))
-        //{
-        //    Stack.PushTextbox("this is a sample text box", Constants.PORTRAIT_PATH + "mage_portrait");
-        //}
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+           GameState.Areas["village"].Events["first_battle"] = true;
+        }
 
         #if UNITY_EDITOR
         LogManager.SetLogLevel(LogLevel);
@@ -228,28 +228,60 @@ public class GameLogic : MonoBehaviour
 
     #if UNITY_EDITOR
     public bool ShowStackStates = false;
+    public bool ShowGameState;
+
+    private Vector2 guiPosition = Vector2.zero;
 
     public void OnGUI()
     {
-        if (!ShowStackStates)
-            return;
+        guiPosition = Vector2.zero;
+        if (ShowStackStates)
+           RenderStack();
+        if (ShowGameState)
+            RenderGameState();
+    }
+
+    private void RenderStack()
+    {
         float yDiff = 30.0f;
-        var position = Vector2.zero;
-        GUI.Label(new Rect(position, Vector2.one * 500.0f), "StateStack:");
-        position.y += yDiff;
-        GUI.Label(new Rect(position, Vector2.one * 500.0f), $"Current Event: {Stack.Top().GetName()}");
-        position.y += yDiff;
+        GUI.Label(new Rect(guiPosition, Vector2.one * 500.0f), "StateStack:");
+        guiPosition.y += yDiff;
+        GUI.Label(new Rect(guiPosition, Vector2.one * 500.0f), $"Current Event: {Stack.Top().GetName()}");
+        guiPosition.y += yDiff;
 
         var style = new GUIStyle();
         style.fontSize = 24;
+        style.normal.textColor = Color.white;
         if (Stack.IsEmpty())
-            GUI.Label(new Rect(position, Vector2.one * 100.0f), "Empty!", style);
+            GUI.Label(new Rect(guiPosition, Vector2.one * 100.0f), "Empty!", style);
         var states = Stack.GetStates();
         for (int i = states.Count - 1; i >= 0; i--)
         {
             var message = $"{i} State: {states[i].GetName()}";
-            GUI.Label(new Rect(position, Vector2.one * 500.0f), message, style);
-            position.y += yDiff;
+            GUI.Label(new Rect(guiPosition, Vector2.one * 500.0f), message, style);
+            guiPosition.y += yDiff;
+        }
+    }
+
+    private void RenderGameState()
+    {
+        var style = new GUIStyle();
+        style.fontSize = 24;
+        style.normal.textColor = Color.white;
+        float yDiff = 30.0f;
+        GUI.Label(new Rect(guiPosition, Vector2.one * 500.0f), "GameState:", style);
+        guiPosition.y += yDiff;
+        GUI.Label(new Rect(guiPosition, Vector2.one * 500.0f), $"Gold: {GameState.World.Gold}, Time: {GameState.World.PlayTime}", style);
+        guiPosition.y += yDiff;
+        GUI.Label(new Rect(guiPosition, Vector2.one * 500.0f), $"Areas:", style);
+        guiPosition.y += yDiff;
+        var areas = GameState.Areas;
+        foreach (var entry in areas)
+        {
+            var area = entry.Value;
+            var message = area.CreateDebugAreaString();
+            GUI.Label(new Rect(guiPosition, Vector2.one * 500.0f), message, style);
+            guiPosition.y += yDiff;
         }
     }
 #endif

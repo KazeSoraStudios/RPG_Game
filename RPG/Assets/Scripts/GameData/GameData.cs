@@ -172,6 +172,20 @@ namespace RPG_GameData
         public new Dictionary<string, bool> Events = new Dictionary<string, bool>();
         public new Dictionary<string, bool> Chests = new Dictionary<string, bool>();
         public new Dictionary<string, bool> Items = new Dictionary<string, bool>();
+
+        public string CreateDebugAreaString()
+        {
+            var message = new System.Text.StringBuilder(Id + "\nEvents");
+            foreach (var e in Events)
+                message.Append($"\n\t{e.Key}:{e.Value}");
+            message.Append("\nChests");
+            foreach (var e in Chests)
+                message.Append($"\n\t{e.Key}:{e.Value}");
+            message.Append("\nItems");
+            foreach (var e in Items)
+                message.Append($"\n\t{e.Key}:{e.Value}");
+            return message.ToString();
+        }
     }
 
     public class Shop

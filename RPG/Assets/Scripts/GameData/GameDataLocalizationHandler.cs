@@ -12,7 +12,7 @@ namespace RPG_GameData
             for (int i = 0; i < count; i++)
             {
                 var key = data[index++];
-                var value = data[index++];
+                var value = data[index++].Replace('~', ',');
                 terms.Add(key, value);
                 index += columnAdvance;
             }

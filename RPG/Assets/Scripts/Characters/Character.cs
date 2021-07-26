@@ -42,14 +42,19 @@ namespace RPG_Character
 
         public void CombatMovement(Vector2 movement, Direction direction)
         {
-            Entity.UpdateMovement(movement, null);
+            Entity.UpdateMovement(movement);
             var directionMovement = direction == Direction.South ? Vector2.down : Vector2.up;
             UpdateAnimation(directionMovement);
         }
 
         public void UpdateMovement(Vector2 movement)
         {
-            Entity.UpdateMovement(movement, Map);
+            Entity.UpdateMovement(movement);
+            UpdateAnimation(movement);
+        }
+
+        public void UpdateStoryboardMovement(Vector2 movement)
+        {
             UpdateAnimation(movement);
         }
 
@@ -59,6 +64,29 @@ namespace RPG_Character
             animator.SetFloat("Horizontal", movement.x);
             animator.SetFloat("Vertical", movement.y);
             animator.SetFloat("Speed", movement.sqrMagnitude);
+        }
+
+        public void UpdateDirection(Direction direction)
+        {
+            this.direction = direction;
+            animator.SetInteger("Direction", (int)direction);
+            switch (direction)
+            {
+                case Direction.North:
+                    animator.Play("IdleUp");
+                    break;
+                case Direction.South:
+                    animator.Play("IdleDown");
+                    break;
+                case Direction.East:
+                    animator.Play("IdleLeft");
+                    break;
+                case Direction.West:
+                    animator.Play("IdleLeft");
+                    break;
+                default:
+                break;
+            }
         }
 
         void UpdatePlayerDirection(Vector2 movement)
@@ -107,7 +135,7 @@ namespace RPG_Character
 
         public void FollowPath(List<Direction> path)
         {
-            PathIndex = 1;
+            PathIndex = 0;
             PathToMove.Clear();
             PathToMove = path;
             previousDefaultState = defaultState;
@@ -191,6 +219,13 @@ namespace RPG_Character
             Controller.Change(defaultState);
             transform.position = locationBeforeCombat;
             animator.SetInteger("Direction", (int)directionBeforeCombat);
+        }
+
+        public void PrepareForTeleport()
+        {
+            ResetAnimator();
+            Entity.UpdateMovement(Vector2.zero);
+            Controller.Change(defaultState);
         }
 
         public void PrepareForSceneChange()
