@@ -193,7 +193,7 @@ MonoBehaviour:
   height: 0
   width: 0
   selectPadding: 16
-  speed: 5
+  speed: 6
   movement: {x: 0, y: 0}
   rigidbody: {fileID: 5883101160653709398}
 --- !u!114 &8475761078481550912
