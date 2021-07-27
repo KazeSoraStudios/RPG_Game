@@ -829,7 +829,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 320, y: -72}
-  m_SizeDelta: {x: 570, y: 115}
+  m_SizeDelta: {x: 560, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &45949688601350127
 CanvasRenderer:
@@ -864,15 +864,15 @@ MonoBehaviour:
     to see the max amount of text I should allow before cutting it off and ending '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a8799bed75b4f441c88474adc28a32ff, type: 2}
-  m_sharedMaterial: {fileID: 7003509796609109949, guid: a8799bed75b4f441c88474adc28a32ff,
+  m_sharedMaterial: {fileID: 255341451611233731, guid: a8799bed75b4f441c88474adc28a32ff,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4280427044
-  m_fontColor: {r: 0.14117648, g: 0.13333334, b: 0.13333334, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -889,8 +889,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
-  m_fontSizeBase: 22
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
