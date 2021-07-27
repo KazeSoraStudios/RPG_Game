@@ -863,8 +863,9 @@ MonoBehaviour:
     some stuff out checking different characters like wWw and stuff you know. I want
     to see the max amount of text I should allow before cutting it off and ending '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a8799bed75b4f441c88474adc28a32ff, type: 2}
+  m_sharedMaterial: {fileID: 7003509796609109949, guid: a8799bed75b4f441c88474adc28a32ff,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
