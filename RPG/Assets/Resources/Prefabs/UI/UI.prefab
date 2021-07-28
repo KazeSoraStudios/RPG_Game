@@ -204,7 +204,6 @@ MonoBehaviour:
   TextLayer: {fileID: 8056039865663492249}
   CombatLayer: {fileID: 7967354233810022333}
   ScreenImage: {fileID: 1103734157}
-  GameMenu: {fileID: 0}
 --- !u!1 &6950710910096918976
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,6 +213,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1819285939928329255}
+  - component: {fileID: 8456249820264467255}
   m_Layer: 5
   m_Name: BlockingLayer
   m_TagString: Untagged
@@ -241,6 +241,14 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8456249820264467255
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6950710910096918976}
+  m_CullTransparentMesh: 1
 --- !u!1 &8171170842977727384
 GameObject:
   m_ObjectHideFlags: 0

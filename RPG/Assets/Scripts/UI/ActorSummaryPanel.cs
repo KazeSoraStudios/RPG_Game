@@ -48,7 +48,7 @@ namespace RPG_UI
             var stats = actor.Stats;
             var hp = stats.Get(Stat.HP);
             var maxHp = stats.Get(Stat.MaxHP);
-            var mp = stats.Get(Stat.HP);
+            var mp = stats.Get(Stat.MP);
             var maxMp = stats.Get(Stat.MaxMP);
             HpText.SetText(string.Format(Constants.STAT_FILL_TEXT, hp, maxHp));
             MpText.SetText(string.Format(Constants.STAT_FILL_TEXT, mp, maxMp));
