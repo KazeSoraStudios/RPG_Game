@@ -149,11 +149,7 @@ public class UnitMoveState : CharacterState
         {
             Character.transform.position = targetPosition;
             var position = Character.transform.position;
-            var movement = GetNewMovement();
-            if (movement == Vector2.zero)
-                Character.Controller.Change(Character.defaultState);
-            else
-                BeforeMove(movement);
+            Character.Controller.Change(Character.defaultState);
         }
         return true;
     }
@@ -164,16 +160,6 @@ public class UnitMoveState : CharacterState
         currentPosition = Character.transform.position;
         targetPosition = currentPosition + movement;
         Character.UpdateStoryboardMovement(movement);
-    }
-
-    private Vector2 GetNewMovement()
-    {
-        var movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        if (movement.x != 0.0f)
-            movement.y = 0.0f;
-        else
-            movement.x = 0.0f;
-        return Character.CanMove(movement) ? movement : Vector2.zero;
     }
 }
 

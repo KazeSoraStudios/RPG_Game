@@ -71,6 +71,7 @@ namespace RPG_UI
                     MaxHp = maxhp,
                     Mp = mp,
                     MaxMp = maxMp,
+                    ActorId = actor.GameDataId
                 };
                 PartyMemeberStats[i].Init(config);
             }

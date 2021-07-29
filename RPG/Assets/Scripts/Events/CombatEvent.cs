@@ -678,7 +678,12 @@ namespace RPG_Combat
             //                        gEntities.fx_use_item.frames, 0.1)
             //self.mState:AddEffect(effect)
             actor.ReduceManaForSpell(spell);
-            state.UpdateActorMp(actor);
+            var data = new RPG_UI.HpMpWidget.UpdateData 
+            {
+                Value = actor.Stats.Get(Stat.MP),
+                Id = actor.GameDataId
+            };
+            GameEventsManager.BroadcastMessage(GameEventConstants.UPDATE_COMBAT_MP, data);
             var config = new CombatActionConfig
             {
                 Owner = actor,

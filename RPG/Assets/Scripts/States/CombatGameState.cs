@@ -25,7 +25,6 @@ namespace RPG_Combat
         void ApplyMiss(Actor target);
         void ApplyDodge(Actor target);
         void ApplyDamage(Actor target, int damage, bool isCrit);
-        void UpdateActorMp(Actor actor);
         void OnFlee();
         bool IsPartyMember(Actor actor);
         CombatUI GetUI();
@@ -222,8 +221,12 @@ namespace RPG_Combat
             {
                 controller.Change(Constants.HURT_STATE, new CombatStateParams { State = controller.CurrentState.GetName() });
             }
-
-            CombatUI.UpdateActorHp(GetPartyPosition(target), target);
+            var data = new HpMpWidget.UpdateData 
+            {
+                Value = hp,
+                Id = target.GameDataId
+            };
+            GameEventsManager.BroadcastMessage(GameEventConstants.UPDATE_COMBAT_HP, data);
             /*
             local entity = character.mEntity
             local x = entity.mX
@@ -283,11 +286,6 @@ namespace RPG_Combat
         public void HideNotice()
         {
             CombatUI.HideNotice();
-        }
-
-        public void UpdateActorMp(Actor actor)
-        {
-            CombatUI.UpdateActorMp(GetPartyPosition(actor), actor);
         }
 
         public CombatUI GetUI() => CombatUI;
@@ -505,14 +503,6 @@ namespace RPG_Combat
                 if (actor.Id == a.Id)
                     return true;
             return false;
-        }
-
-        public int GetPartyPosition(Actor a)
-        {
-            for (int i = 0; i < PartyActors.Count; i++)
-                if (PartyActors[i].Id == a.Id)
-                    return i;
-            return -1;
         }
 
         private LootData CalculateCombatData()
