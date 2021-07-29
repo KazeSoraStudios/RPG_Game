@@ -6,9 +6,9 @@ namespace RPG_AI
 {
     public abstract class AttackNode : Node
     {
-        protected readonly CombatGameState combat;
+        protected readonly ICombatState combat;
 
-        public AttackNode(CombatGameState combat)
+        public AttackNode(ICombatState combat)
         {
             this.combat = combat;
         }
@@ -26,7 +26,7 @@ namespace RPG_AI
         {
             LogManager.LogDebug($"Adding CEAttackEvent for {config.Actor.name}");
             var attackEvent = new CEAttack(config);
-            var queue = combat.EventQueue;
+            var queue = combat.EventQueue();
             var priority = attackEvent.CalculatePriority(queue);
             queue.Add(attackEvent, -1);
         }
@@ -35,7 +35,7 @@ namespace RPG_AI
         {
             LogManager.LogDebug($"Adding CECastSpellEvent for {config.Actor.name}");
             var spellEvent = new CECastSpellEvent(config);
-            var queue = combat.EventQueue;
+            var queue = combat.EventQueue();
             var priority = spellEvent.CalculatePriority(queue);
             queue.Add(spellEvent, -1);
         }

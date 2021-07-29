@@ -169,9 +169,9 @@ namespace RPG_GameData
     {
         public string Id;
         public string BackgroundMusic;
-        public new Dictionary<string, bool> Events = new Dictionary<string, bool>();
-        public new Dictionary<string, bool> Chests = new Dictionary<string, bool>();
-        public new Dictionary<string, bool> Items = new Dictionary<string, bool>();
+        public Dictionary<string, bool> Events = new Dictionary<string, bool>();
+        public Dictionary<string, bool> Chests = new Dictionary<string, bool>();
+        public Dictionary<string, bool> Items = new Dictionary<string, bool>();
 
         public string CreateDebugAreaString()
         {
@@ -191,8 +191,8 @@ namespace RPG_GameData
     public class Shop
     {
         public string Id;
-        public new List<string> Items = new List<string>();
-        public new Dictionary<string, List<string>> AdditionalItems = new Dictionary<string, List<string>>();
+        public List<string> Items = new List<string>();
+        public Dictionary<string, List<string>> AdditionalItems = new Dictionary<string, List<string>>();
 
         public List<string> GetAllAvilableItems()
         {

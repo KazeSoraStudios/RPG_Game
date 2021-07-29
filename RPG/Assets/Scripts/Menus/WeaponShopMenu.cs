@@ -25,7 +25,6 @@ namespace RPG_UI
 
         private bool inScrollView;
         private bool inSellItems;
-        private int categoryIndex = 0;
         private StateStack stack;
         private World world;
         private Party party;

@@ -9,7 +9,6 @@ namespace RPG_Combat
     public class CombatActionConfig
     {
         public string StateId;
-        public CombatGameState State;
         public Actor Owner;
         public List<Actor> Targets;
         public object Def;
@@ -54,8 +53,6 @@ namespace RPG_Combat
 
         private static void HpRestore(CombatActionConfig config)
         {
-            // TODO support menu use
-            //var stats = StatsForCombatState(targets);
             if (!(config.Def is ItemUse itemUse) || itemUse == null)
             {
                 LogManager.LogError("ItemUse was null inside Config. Cannot Run HP Restore.");

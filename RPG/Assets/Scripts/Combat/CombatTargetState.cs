@@ -13,8 +13,8 @@ namespace RPG_Combat
         {
             public bool CanSwitchSides = true;
             public CombatTargetType CombatTargetType = CombatTargetType.One;
-            public CombatGameState GameState;
-            public Func<CombatGameState, bool, List<Actor>> DefaultSelector;
+            public ICombatState GameState;
+            public Func<ICombatState, bool, List<Actor>> DefaultSelector;
             public Action<List<Actor>> OnSelect;
             public Action OnExit;
         }
@@ -50,10 +50,12 @@ namespace RPG_Combat
         public void Enter(object o = null)
         {
             gameObject.SafeSetActive(true);
-            if (config.GameState.EnemyActors.Count > 0)
-                enemies.AddRange(config.GameState.EnemyActors);
-            if (config.GameState.PartyActors.Count > 0)
-                party.AddRange(config.GameState.PartyActors);
+            var enemiesActors = config.GameState.GetEnemyActors();
+            if (enemiesActors.Count > 0)
+                enemies.AddRange(enemiesActors);
+            var partyActors = config.GameState.GetPartyActors();
+            if (partyActors.Count > 0)
+                party.AddRange(partyActors);
             targets = config.DefaultSelector(config.GameState, false);
             if (targets.Count < 0)
                 return;
@@ -86,7 +88,7 @@ namespace RPG_Combat
         public void HandleInput()
         {
             if (Input.GetKeyDown(KeyCode.Backspace))
-                config.GameState.CombatStack.Pop();
+                config.GameState.Stack().Pop();
             else if (Input.GetKeyDown(KeyCode.UpArrow))
                 Up();
             else if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -105,28 +107,9 @@ namespace RPG_Combat
             return inParty ? party : enemies;
         }
 
-        private void Up()
+        private void Right()
         {
             if (config.CombatTargetType != CombatTargetType.One)
-                return;
-            if (!AreTargetsOkay("up"))
-                return;
-            var target = targets[0];
-            var side = GetActorList(target);
-            var index = GetActorIndex(side, target);
-            index --;
-            if (index <= 0)
-                index = side.Count - 1;
-            targets.Clear();
-            targets.Add(side[index]);
-            SetArrowPosition(index);
-        }
-
-        private void Down()
-        {
-            if (config.CombatTargetType != CombatTargetType.One)
-                return;
-            if (!AreTargetsOkay("down"))
                 return;
             var target = targets[0];
             var side = GetActorList(target);
@@ -136,16 +119,29 @@ namespace RPG_Combat
                 index = 0;
             targets.Clear();
             targets.Add(side[index]);
-            SetArrowPosition(index);
+            SetArrowPosition(0);
         }
 
         private void Left()
         {
+            if (config.CombatTargetType != CombatTargetType.One)
+                return;
+            var target = targets[0];
+            var side = GetActorList(target);
+            var index = GetActorIndex(side, target);
+            index--;
+            if (index < 0)
+                index = side.Count - 1;
+            targets.Clear();
+            targets.Add(side[index]);
+            SetArrowPosition(0);
+        }
+
+        private void Down()
+        {
             if (!config.CanSwitchSides)
                 return;
-            if (!AreTargetsOkay("left"))
-                return;
-            if (!config.GameState.IsPartyMember(targets[0]))
+            if (config.GameState.IsPartyMember(targets[0]))
                 return;
             targets.Clear();
             if (config.CombatTargetType == CombatTargetType.One)
@@ -161,13 +157,11 @@ namespace RPG_Combat
             
         }
 
-        private void Right()
+        private void Up()
         {
             if (!config.CanSwitchSides)
                 return;
-            if (!AreTargetsOkay("right"))
-                return;
-            if (config.GameState.IsPartyMember(targets[0]))
+            if (!config.GameState.IsPartyMember(targets[0]))
                 return;
             targets.Clear();
             if (config.CombatTargetType == CombatTargetType.One)
@@ -190,25 +184,9 @@ namespace RPG_Combat
             return -1;
         }
 
-        private bool AreTargetsOkay(string direction)
-        {
-            if (targets == null || targets.Count < 1)
-            {
-                LogManager.LogError("Targets is null or empty in CombatTargetstate Cannot move up.");
-                return false;
-            }
-            return true;
-        }
-
         private void SetArrowPosition(int target, int arrow = 0)
         {
-            var actor = targets[target];
-            if (!config.GameState.ActorToCharacterMap.ContainsKey(actor.Id))
-            {
-                LogManager.LogError($"CombatGameState does not contain Character for Actor: {actor.Id}");
-                return;
-            }
-            var position = config.GameState.ActorToCharacterMap[actor.Id].Entity.GetTargetPosition();
+            var position = targets[target].GetComponent<Entity>().GetTargetPosition();
             position = Camera.main.WorldToScreenPoint(position);
             SelectionArrows[arrow].position = position;
         }

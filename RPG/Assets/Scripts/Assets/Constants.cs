@@ -64,7 +64,7 @@ public class Constants
     public const int EMPTY_EVENT_COUNTDOWN = -999;
     public const int MAX_TEXTBOX_CHARACTERS = 225;
     public const int MAX_ENEMIES = 6;
-    public const int DEFAULT_ENCOUNTER_CHANCE = 100;
+    public const int DEFAULT_ENCOUNTER_CHANCE = 30;
     public const float TEXTBOX_CHARACTER_SPEED = 0.02f;
     public const float SELECT_MARKER_BOUNCE_SPEED = 5.0f;
     public const float DEFAULT_TIMED_TEXTBOX_TIME = 999999.0f;

@@ -5,11 +5,7 @@ namespace RPG_AI
 {
     public class HealNode : Node
     {
-        private CombatGameState combat;
-        public HealNode(CombatGameState combat)
-        {
-            this.combat = combat;
-        }
+        public HealNode() { }
 
         public override NodeState Evaluate(Actor actor)
         {

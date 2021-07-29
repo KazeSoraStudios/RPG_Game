@@ -6,7 +6,7 @@ namespace RPG_AI
 {
     public class EasyAttackNode : AttackNode
     { 
-        public EasyAttackNode(CombatGameState combat) : base (combat) {}
+        public EasyAttackNode(ICombatState combat) : base (combat) {}
         public override NodeState Evaluate(Actor actor)
         {
             LogManager.LogDebug($"Running EasyAttackNode for Actor {actor.name}.");

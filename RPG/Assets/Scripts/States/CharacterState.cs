@@ -31,7 +31,6 @@ public class PlanStrollState : CharacterState
 
     private int FrameCount;
     private float CountDown;
-    private float FrameResetSpeed = 0.05f;
 
     public PlanStrollState(Character character)
         : base(character)
@@ -181,7 +180,6 @@ public class UnitMoveState : CharacterState
 public class MoveState : CharacterState
 {
     private const string Name = "MoveState";
-    private Trigger Trigger;
 
     public MoveState(Character character)
         : base(character) { }
@@ -210,10 +208,7 @@ public class MoveState : CharacterState
 
     public override void Exit()
     {
-        var position = Character.transform.position;
-        // Trigger = ServiceManager.Get<TriggerManager>().GetTrigger((int)position.x, (int)position.y);
-        // Trigger.OnEnter(new TriggerParams((int)position.x, (int)position.y, Character));
-        Trigger = null;
+        
     }
 
     public override bool Execute(float deltaTime)

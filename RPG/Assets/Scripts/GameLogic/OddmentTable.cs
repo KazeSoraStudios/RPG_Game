@@ -1,26 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Oddment", menuName = "RPG/Stats/Oddment")]
-public class Oddment : ScriptableObject
+public class Oddment
 {
     public int Chance;
     public int Count = 1;
     public List<string> Items = new List<string>();
 }
 
-public class OddmentItem : ScriptableObject
+public class OddmentItem
 {
 
 }
 
-[CreateAssetMenu(fileName = "ItemDrop", menuName = "RPG/Stats/ItemDrop")]
 public class OddmentItemDrop : OddmentItem
 {
     public int id = -1;
 }
 
-[CreateAssetMenu(fileName = "EnemyEncounter", menuName = "RPG/Stats/EnemyEncounter")]
 public class OddmentEnemyEncounter : OddmentItem
 {
     public string backgroundPath = string.Empty;

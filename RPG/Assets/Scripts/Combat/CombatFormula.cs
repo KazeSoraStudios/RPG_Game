@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using RPG_Character;
 using RPG_GameData;
 
@@ -22,23 +23,23 @@ namespace RPG_Combat
             Critical = 3
         }
 
-        public static FormulaResult MeleeAttack(CombatGameState state, Actor attacker, Actor target)
+        public static FormulaResult MeleeAttack(Actor attacker, Actor target)
         {
             var stats = attacker.Stats;
             var enemyStats = target.Stats;
             result.Damage = 0;
-            var hitResult = IsHit(state, attacker, target);
+            var hitResult = IsHit(attacker, target);
             if (hitResult == HitResult.Miss)
             {
                 result.Result = HitResult.Miss;
                 return result;
             }
-            if (IsDodge(state, attacker, target))
+            if (IsDodge(attacker, target))
             {
                 result.Result = HitResult.Miss;
                 return result;
             }
-            result.Damage = CalculateDamage(state, attacker, target);
+            result.Damage = CalculateDamage(attacker, target);
             if (hitResult == HitResult.Hit)
             {
                 result.Result = HitResult.Hit;
@@ -46,12 +47,12 @@ namespace RPG_Combat
             }
 
             DebugAssert.Assert(hitResult == HitResult.Critical, $"HitResult should be critical but is {hitResult}.");
-            result.Damage += BaseAttack(state, attacker, target);
+            result.Damage += BaseAttack(attacker, target);
             result.Result = HitResult.Critical;
             return result;
         }
 
-        public static HitResult IsHit(CombatGameState state, Actor attacker, Actor target)
+        public static HitResult IsHit(Actor attacker, Actor target)
         {
             var stats = attacker.Stats;
             var speed = stats.Get(Stat.Speed);
@@ -66,7 +67,7 @@ namespace RPG_Combat
                 HitResult.Hit : HitResult.Miss;
         }
 
-        public static bool IsDodge(CombatGameState state, Actor attacker, Actor target)
+        public static bool IsDodge(Actor attacker, Actor target)
         {
             var stats = attacker.Stats;
             var enemyStats = target.Stats;
@@ -79,13 +80,13 @@ namespace RPG_Combat
             return Random.Range(0.0f, 1.0f) <= chanceToDodge;
         }
 
-        public static bool IsCounter(CombatGameState state, Actor attacker, Actor target)
+        public static bool IsCounter(Actor attacker, Actor target)
         {
             var counter = target.Stats.Get(Stat.Counter);
             return Random.Range(0, 1) * Constants.COUNTER_MULTIPLIER < counter;
         }
 
-        public static int BaseAttack(CombatGameState state, Actor attacker, Actor target)
+        public static int BaseAttack(Actor attacker, Actor target)
         {
             var attack = attacker.Stats.Get(Stat.Attack);
             var defense = target.Stats.Get(Stat.Defense);
@@ -95,19 +96,18 @@ namespace RPG_Combat
 
         }
 
-        public static int CalculateDamage(CombatGameState state, Actor attacker, Actor target)
+        public static int CalculateDamage(Actor attacker, Actor target)
         {
             var enemyStats = target.Stats;
             var defense = enemyStats.Get(Stat.Defense);
-            var attack = BaseAttack(state, attacker, target);
+            var attack = BaseAttack(attacker, target);
             return (int)Mathf.Floor(Mathf.Max(0, attack - defense));
         }
 
-        public static bool CanEscape(CombatGameState state, Actor actor)
+        public static bool CanEscape(List<Actor> enemies, Actor actor)
         {
             var stats = actor.Stats;
             var speed = stats.Get(Stat.Speed);
-            var enemies = state.GetEnemiesActors();
             int enemyCount = enemies.Count;
             int totalSpeed = 0;
             foreach (var a in enemies)
@@ -121,7 +121,7 @@ namespace RPG_Combat
             return Random.Range(0, 1) <= escapeChance;
         }
 
-        public static bool CanSteal(CombatGameState state, Actor attacker, Actor target)
+        public static bool CanSteal(Actor attacker, Actor target)
         {
             var chanceToSteal = Constants.CHANCE_TO_STEAL;
             if (attacker.Level > target.Level)
@@ -132,13 +132,13 @@ namespace RPG_Combat
             return Random.Range(0, 1) <= chanceToSteal;
         }
 
-        public static HitResult IsHitMagic(CombatGameState state, Actor attacker, Actor target, Spell Spell)
+        public static HitResult IsHitMagic(Actor attacker, Actor target, Spell Spell)
         {
             var hitChance = Spell.HitChance;
             return Random.Range(0.0f, 1.0f) < hitChance ? HitResult.Hit : HitResult.Miss;
         }
 
-        public static int CalculateSpellDamage(CombatGameState state, Actor attacker, Actor target, Spell Spell)
+        public static int CalculateSpellDamage(Actor attacker, Actor target, Spell Spell)
         {
             var damageRange = Spell.BaseDamage;
             var baseDamage = damageRange.x;

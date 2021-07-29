@@ -13,9 +13,9 @@ namespace RPG_AI
         private float randomAttackChance = 0.4f;
         private Actor currentActor;
 
-        public MpAttackNode(CombatGameState combat) : base(combat) { }
+        public MpAttackNode(ICombatState combat) : base(combat) { }
 
-        public MpAttackNode(CombatGameState combat, 
+        public MpAttackNode(ICombatState combat, 
             float specialChance = 0.5f, float magicChance = 0.5f, float attackWeakest = 0.6f, float attackRandom = 0.4f) : base (combat) 
         {
             this.specialChance = specialChance;

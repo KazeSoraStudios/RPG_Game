@@ -50,37 +50,37 @@ namespace RPG_Combat
             return new List<Actor> { target };
         }
 
-        public static List<Actor> FindWeakestEnemy(CombatGameState state)
+        public static List<Actor> FindWeakestEnemy(ICombatState state)
         {
-            return FindWeakestActor(state.GetEnemiesActors(), false);
+            return FindWeakestActor(state.GetEnemyActors(), false);
         }
 
-        public static List<Actor> FindWeakestHurtEnemy(CombatGameState state)
+        public static List<Actor> FindWeakestHurtEnemy(ICombatState state)
         {
-            return FindWeakestActor(state.GetEnemiesActors(), true);
+            return FindWeakestActor(state.GetEnemyActors(), true);
         }
 
-        public static List<Actor> FindWeakestPartyMember(CombatGameState state)
+        public static List<Actor> FindWeakestPartyMember(ICombatState state)
         {
             return FindWeakestActor(state.GetPartyActors(), false);
         }
 
-        public static List<Actor> FindWeakestHurtPartyMember(CombatGameState state)
+        public static List<Actor> FindWeakestHurtPartyMember(ICombatState state)
         {
             return FindWeakestActor(state.GetPartyActors(), true);
         }
 
-        public static List<Actor> FindLowestMPPartyMember(CombatGameState state)
+        public static List<Actor> FindLowestMPPartyMember(ICombatState state)
         {
             return FindLowestRemainingMP(state.GetPartyActors(), true);
         }
 
-        public static List<Actor> FindLowestMPEnemy(CombatGameState state)
+        public static List<Actor> FindLowestMPEnemy(ICombatState state)
         {
-            return FindLowestRemainingMP(state.GetEnemiesActors(), true);
+            return FindLowestRemainingMP(state.GetEnemyActors(), true);
         }
 
-        public static List<Actor> FirstDeadPartyMember(CombatGameState state)
+        public static List<Actor> FirstDeadPartyMember(ICombatState state)
         {
             var actors = state.GetPartyActors();
             foreach (var actor in actors)
@@ -92,9 +92,9 @@ namespace RPG_Combat
             return new List<Actor> { actors[0] };
         }
 
-        public static List<Actor> FirstDeadEnemy(CombatGameState state)
+        public static List<Actor> FirstDeadEnemy(ICombatState state)
         {
-            var actors = state.GetEnemiesActors();
+            var actors = state.GetEnemyActors();
             foreach (var actor in actors)
             {
                 var hp = actor.Stats.Get(Stat.HP);
@@ -105,25 +105,25 @@ namespace RPG_Combat
         }
 
 
-        public static List<Actor> Party(CombatGameState state)
+        public static List<Actor> Party(ICombatState state)
         {
             return state.GetPartyActors();
         }
 
 
-        public static List<Actor> Enemies(CombatGameState state)
+        public static List<Actor> Enemies(ICombatState state)
         {
-            return state.GetEnemiesActors();
+            return state.GetEnemyActors();
         }
 
-        public static List<Actor> SelectAll(CombatGameState state)
+        public static List<Actor> SelectAll(ICombatState state)
         {
             var actors = new List<Actor>(state.GetPartyActors());
-            actors.AddRange(state.GetEnemiesActors());
+            actors.AddRange(state.GetEnemyActors());
             return actors;
         }
 
-        public static List<Actor> RandomPlayer(CombatGameState state)
+        public static List<Actor> RandomPlayer(ICombatState state)
         {
             var actors = state.GetPartyActors();
             var aliveActors = new Actor[actors.Count];
@@ -137,9 +137,9 @@ namespace RPG_Combat
             return new List<Actor> { aliveActors[Random.Range(0, index)] };
         }
 
-        public static List<Actor> RandomEnemy(CombatGameState state)
+        public static List<Actor> RandomEnemy(ICombatState state)
         {
-            var actors = state.GetEnemiesActors();
+            var actors = state.GetEnemyActors();
             var aliveActors = new Actor[actors.Count];
             int index = 0;
             foreach (var actor in actors)

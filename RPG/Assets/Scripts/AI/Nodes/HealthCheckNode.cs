@@ -6,12 +6,10 @@ namespace RPG_AI
     public class HealthCheckNode : Node
     {
         public readonly float threshold;
-        private CombatGameState combat;
 
-        public HealthCheckNode(float threshold, CombatGameState combat)
+        public HealthCheckNode(float threshold)
         {
             this.threshold = threshold;
-            this.combat = combat;
         }
 
         public override NodeState Evaluate(Actor actor)

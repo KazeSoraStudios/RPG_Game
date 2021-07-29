@@ -74,7 +74,7 @@ namespace RPG_GameData
             return ts;
         }
 
-        public static Func<CombatGameState, bool, List<Actor>> GetTarget(string name, string data)
+        public static Func<ICombatState, bool, List<Actor>> GetTarget(string name, string data)
         {
             if (data.IsEmpty())
             {

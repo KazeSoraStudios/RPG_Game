@@ -14,6 +14,18 @@ public interface IEvent
     int CalculatePriority(EventQueue queue);
 }
 
+public interface ISimEvent
+{
+    void Execute(EventQueue queue);
+    void Update();
+    bool IsFinished();
+    string GetName();
+    RPG_CombatSim.SimActor GetActor();
+    int GetPriority();
+    void SetPriority(int value);
+    int CalculatePriority(EventQueue queue);
+}
+
 public class EmptyEvent : IEvent
 {
     private int priority;

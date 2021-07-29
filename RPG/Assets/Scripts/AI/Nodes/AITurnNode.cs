@@ -5,12 +5,10 @@ namespace RPG_AI
 {
     public class AITurnNode : Node
     {
-        private readonly CombatGameState combat;
         private Node baseNode;
 
-        public AITurnNode(CombatGameState state, Node node)
+        public AITurnNode(Node node)
         {
-            this.combat = state;
             this.baseNode = node;
         }
 

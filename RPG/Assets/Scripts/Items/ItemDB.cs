@@ -91,7 +91,7 @@ public class ItemUse
 
 public class ItemTarget
 {
-    public Func<CombatGameState, bool, List<Actor>> Selector;
+    public Func<ICombatState, bool, List<Actor>> Selector;
 
     public bool SwitchSides;
 

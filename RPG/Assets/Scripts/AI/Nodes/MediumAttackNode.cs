@@ -8,8 +8,8 @@ namespace RPG_AI
         private float attackWeakestChance = 0.6f;
         private float randomAttackChance = 0.4f;
 
-        public MediumAttackNode(CombatGameState combat) : base (combat) {}
-        public MediumAttackNode(CombatGameState combat, 
+        public MediumAttackNode(ICombatState combat) : base (combat) {}
+        public MediumAttackNode(ICombatState combat, 
             float attackWeakest = 0.6f, float attackRandom = 0.4f) : base (combat) 
         {
             this.attackWeakestChance = attackWeakest;

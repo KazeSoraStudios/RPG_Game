@@ -11,10 +11,10 @@ namespace RPG_Combat
     {
         protected bool finished;
         protected int priority;
-        protected CombatGameState state;
+        protected ICombatState state;
         protected Actor actor;
 
-        public CombatEvent(Actor actor, CombatGameState state)
+        public CombatEvent(Actor actor, ICombatState state)
         {
             this.actor = actor;
             this.state = state;
@@ -57,7 +57,7 @@ namespace RPG_Combat
 
     public class CETurn : CombatEvent
     {
-        public CETurn(Actor actor, CombatGameState state)
+        public CETurn(Actor actor, ICombatState state)
             : base(actor, state) { }
 
         public override void Execute(EventQueue queue)
@@ -80,9 +80,9 @@ namespace RPG_Combat
                 Actor = actor,
                 State = state
             };
-            var nextstate = state.CombatChoice;
+            var nextstate = state.GetUI().CombatChoice;
             nextstate.Init(config);
-            state.CombatStack.Push(nextstate);
+            state.Stack().Push(nextstate);
             finished = true;
         }
 
@@ -99,7 +99,7 @@ namespace RPG_Combat
                 Targets = targets
             };
             var attackEvent = new CEAttack(config);
-            var queue = state.EventQueue;
+            var queue = state.EventQueue();
             var priority = attackEvent.CalculatePriority(queue);
             queue.Add(attackEvent, priority);
             finished = true;
@@ -113,7 +113,7 @@ namespace RPG_Combat
 
     public class CEAITurn : CombatEvent
     {
-        public CEAITurn(Actor actor, CombatGameState state)
+        public CEAITurn(Actor actor, ICombatState state)
             : base(actor, state) { }
 
         public override void Execute(EventQueue queue)
@@ -146,7 +146,6 @@ namespace RPG_Combat
                 finished = true;
                 return;
             }
-            state.SelectedActor = actor;
             if (tree.Evaluate(actor) == NodeState.Failure)
             {
                 LogManager.LogError($"Actor [{actor.name}] decision tree failed. Attacking random enemy.");
@@ -161,27 +160,12 @@ namespace RPG_Combat
                     Targets = targets
                 };
                 var attackEvent = new CEAttack(config);
-                var queue = state.EventQueue;
+                var queue = state.EventQueue();
                 var priority = attackEvent.CalculatePriority(queue);
                 queue.Add(attackEvent, priority);
             }
-            state.SelectedActor = null;
             finished = true;
         }
-
-        // private Node BuildDecisionTree()
-        // {
-        //     var attackNode = new EasyAttackNode(actor, state);
-        //     var magicNode = new MpAttackNode(actor, state);
-        //     Func<bool> condition = () => actor.Stats.Get(Stat.MP) > 0 && actor.HasMpMove();
-        //     var actionDecisionNode = new BinaryDecisionNode(0.5f, actor.name, magicNode, attackNode, condition);
-        //     var healNode = new HealNode(actor);
-        //     int healthThreshold = (int)(actor.Stats.Get(Stat.MaxHP) * 0.15f);
-        //     var healthCheckNode = new HealthCheckNode(healthThreshold, actor);
-        //     var healthCondition = new ConditionNode(actor.name, healthCheckNode, healNode);
-        //     var baseNode = new SelectorNode(actor.name, new List<Node> { healthCondition, actionDecisionNode });
-        //     return new AITurnNode(state, actor, baseNode);
-        // }
 
         public override string GetName()
         {
@@ -196,7 +180,7 @@ namespace RPG_Combat
             public bool IsCounter;
             public bool IsPlayer;
             public Actor Actor;
-            public CombatGameState CombatState;
+            public ICombatState CombatState;
             public List<Actor> Targets = new List<Actor>();
         }
 
@@ -205,7 +189,7 @@ namespace RPG_Combat
         private FormulaResult result;
         private Character character;
         private Storyboard storyboard;
-        private Func<CombatGameState, List<Actor>> targeter;
+        private Func<ICombatState, List<Actor>> targeter;
         private List<Actor> targets;
 
         public CEAttack(Config config) : base(config.Actor, config.CombatState)
@@ -261,7 +245,7 @@ namespace RPG_Combat
             {
                 //this.mAttackAnim = gEntities.claw
                 targeter = (state) => CombatSelector.RandomPlayer(state);
-                var targetPosition = (state.EnemyActors[0].transform.position - actor.transform.position) * 0.5f;
+                var targetPosition = (state.GetEnemyActors()[0].transform.position - actor.transform.position) * 0.5f;
                 targetPosition.y = actor.transform.position.y;
                 var attackMoveParams = new CombatStateParams
                 {
@@ -293,13 +277,13 @@ namespace RPG_Combat
                 events.Add(StoryboardEventFunctions.Wait(1.0f));
                 events.Add(StoryboardEventFunctions.Function(OnFinish));
             }
-            storyboard = new Storyboard(state.CombatStack, events);
+            storyboard = new Storyboard(state.Stack(), events);
         }
 
         public override void Execute(EventQueue queue)
         {
             LogManager.LogDebug($"Executing CEAttack for {actor.name}");
-            state.CombatStack.Push(storyboard);
+            state.Stack().Push(storyboard);
             for (int i = targets.Count - 1; i > -1; i--)
             {
                 var hp = targets[i].Stats.Get(Stat.HP);
@@ -328,7 +312,7 @@ namespace RPG_Combat
 
         private void CounterTarget(Actor target)
         {
-            var countered = CombatFormula.IsCounter(state, actor, target);
+            var countered = CombatFormula.IsCounter(actor, target);
             if (countered)
             {
                 LogManager.LogDebug($"Countering [{actor}] with Target [{target}]");
@@ -339,7 +323,7 @@ namespace RPG_Combat
         private void AttackTarget(Actor target)
         {
             LogManager.LogDebug($"Attacking {target.name}");
-            result = CombatFormula.MeleeAttack(state, actor, target);
+            result = CombatFormula.MeleeAttack(actor, target);
             var entity = target.GetComponent<Entity>();
             if (result.Result == CombatFormula.HitResult.Miss)
             {
@@ -406,7 +390,7 @@ namespace RPG_Combat
             public float Time = 0.6f;
             public Direction Direction = Direction.East;
             public Actor Actor;
-            public CombatGameState State;
+            public ICombatState State;
         }
 
         private float time;
@@ -431,7 +415,7 @@ namespace RPG_Combat
                 }),
                 StoryboardEventFunctions.Wait(1.0f)
             };
-            if (CombatFormula.CanEscape(state, actor))
+            if (CombatFormula.CanEscape(state.GetEnemyActors(), actor))
             {
                 events.Add(StoryboardEventFunctions.Function(() => FleeSuccessPart1()));
                 StoryboardEventFunctions.Wait(0.3f);
@@ -445,7 +429,7 @@ namespace RPG_Combat
                 StoryboardEventFunctions.Wait(0.3f);
                 events.Add(StoryboardEventFunctions.Function(() => OnFleeFail()));
             }
-            storyboard = new Storyboard(state.CombatStack, events);
+            storyboard = new Storyboard(state.Stack(), events);
             var character = actor.GetComponent<Character>();
             character.direction = direction;
             LogManager.LogDebug($"Trying to flee for {actor.Name}");
@@ -454,7 +438,7 @@ namespace RPG_Combat
         public override void Execute(EventQueue queue)
         {
             LogManager.LogDebug($"Executing CEFlee for {actor.name}");
-            state.CombatStack.Push(storyboard);
+            state.Stack().Push(storyboard);
         }
 
         public override int CalculatePriority(EventQueue queue)
@@ -477,7 +461,7 @@ namespace RPG_Combat
 
         private void FleeSuccessPart2()
         {
-            foreach (var actor in state.PartyActors)
+            foreach (var actor in state.GetPartyActors())
             {
                 var alive = actor.Stats.Get(Stat.HP) > 0;
                 var isFleer = actor.Id == this.actor.Id;
@@ -510,7 +494,7 @@ namespace RPG_Combat
         {
             public bool IsPlayer;
             public Actor Actor;
-            public CombatGameState CombatState;
+            public ICombatState CombatState;
             public ItemInfo Item;
             public ItemUse ItemUse;
             public List<Actor> Targets = new List<Actor>();
@@ -532,16 +516,16 @@ namespace RPG_Combat
             // TODO change to ready to attack state controller.Change(Constants.)
             // Remove now to take from inventory
             ServiceManager.Get<World>().RemoveItem(item.Id);
-            var direction = config.IsPlayer ? 1 : -1;
+            var direction = config.IsPlayer ? 1 : 0;
             var attackMoveParams = new CombatStateParams
             {
                 Direction = direction,
-                MovePosition = Vector2.left * 2.0f
+                MovePosition = config.IsPlayer ? Vector2.up : Vector2.down
             };
             var returnMoveParams = new CombatStateParams
             {
-                Direction = direction * -1,
-                MovePosition = Vector2.right * 2.0f
+                Direction = direction,
+                MovePosition = config.IsPlayer ? Vector2.down : Vector2.up
             };
             var events = new List<IStoryboardEvent>
             {
@@ -556,13 +540,13 @@ namespace RPG_Combat
                 StoryboardEventFunctions.RunCombatState(controller, Constants.COMBAT_MOVE_STATE, returnMoveParams),
                 StoryboardEventFunctions.Function(() => Finish())
             };
-            storyboard = new Storyboard(state.CombatStack, events);
+            storyboard = new Storyboard(state.Stack(), events);
         }
 
         public override void Execute(EventQueue queue)
         {
             LogManager.LogDebug($"Executing CEUseItemEvent for {actor.name}");
-            state.CombatStack.Push(storyboard);
+            state.Stack().Push(storyboard);
         }
 
         private void ShowItemNotice()
@@ -588,7 +572,6 @@ namespace RPG_Combat
             var config = new CombatActionConfig
             {
                 Owner = actor,
-                State = state,
                 StateId = "item",
                 Targets = targets,
                 Def = itemUse
@@ -612,7 +595,7 @@ namespace RPG_Combat
         {
             public bool IsPlayer;
             public Actor Actor;
-            public CombatGameState CombatState;
+            public ICombatState CombatState;
             public Spell spell;
             public List<Actor> Targets = new List<Actor>();
         }
@@ -629,24 +612,23 @@ namespace RPG_Combat
             finished = false;
             controller = actor.GetComponent<Character>().Controller;
             // TODO change to ready to attack state controller.Change(Constants.)
-            // Remove now to take from inventory
-            var direction = config.IsPlayer ? 1 : -1;
+            var direction = config.IsPlayer ? 1: 0;
             var attackMoveParams = new CombatStateParams
             {
                 Direction = direction,
-                MovePosition = Vector2.left * 2.0f
+                MovePosition = config.IsPlayer ? Vector2.up : Vector2.down
             };
             var returnMoveParams = new CombatStateParams
             {
-                Direction = direction * -1,
-                MovePosition = Vector2.right * 2.0f
+                Direction = direction,
+                MovePosition = config.IsPlayer ? Vector2.down : Vector2.up
             };
             var events = new List<IStoryboardEvent>()
             { 
                 StoryboardEventFunctions.Function(() => ShowNotice()),
                 StoryboardEventFunctions.RunCombatState(controller, Constants.COMBAT_MOVE_STATE, attackMoveParams),
                 StoryboardEventFunctions.Wait(0.5f),
-                StoryboardEventFunctions.RunCombatState(controller, Constants.USE_STATE, new CSRunAnimation.Config { Animation = Constants.CAST_ANIMATION_STATE }), // TODO change to cast?
+                StoryboardEventFunctions.RunCombatState(controller, Constants.RUN_ANIMATION_STATE, new CSRunAnimation.Config { Animation = Constants.CAST_ANIMATION_STATE }), // TODO change to cast?
                 StoryboardEventFunctions.Wait(0.12f),
                 StoryboardEventFunctions.NoBlock(
                     StoryboardEventFunctions.RunCombatState(controller, Constants.RUN_ANIMATION_STATE, new CSRunAnimation.Config { Animation = Constants.WAIT_STATE })
@@ -657,13 +639,13 @@ namespace RPG_Combat
                 StoryboardEventFunctions.RunCombatState(controller, Constants.COMBAT_MOVE_STATE, returnMoveParams),
                 StoryboardEventFunctions.Function(() => Finish())
             };
-            storyboard = new Storyboard(state.CombatStack, events);
+            storyboard = new Storyboard(state.Stack(), events);
         }
 
         public override void Execute(EventQueue queue)
         {
             LogManager.LogDebug($"Executing CECastSpellEvent for {actor.name}");
-            state.CombatStack.Push(storyboard);
+            state.Stack().Push(storyboard);
             for (int i = targets.Count - 1; i >= 0; i--)
             {
                 var hp = targets[i].Stats.Get(Stat.HP);
@@ -700,7 +682,6 @@ namespace RPG_Combat
             var config = new CombatActionConfig
             {
                 Owner = actor,
-                State = state,
                 StateId = "magic",
                 Targets = targets,
                 Def = spell

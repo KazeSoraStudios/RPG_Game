@@ -9,7 +9,7 @@ namespace RPG_AI
     public enum AIType { Easy, Medium, Hard, Magic, Healer, Melee }
     public class AIBehaviors
     {
-        public static Dictionary<AIType, Node> LoadEnemyBehaviors(CombatGameState state, List<Actor> enemies)
+        public static Dictionary<AIType, Node> LoadEnemyBehaviors(ICombatState state, List<Actor> enemies)
         {
             var ai = new Dictionary<AIType, Node>();
             foreach (var enemy in enemies)
@@ -29,7 +29,7 @@ namespace RPG_AI
             return ai;
         }
 
-        private static Node LoadBehaviorTree(CombatGameState state, EnemyAIData data)
+        private static Node LoadBehaviorTree(ICombatState state, EnemyAIData data)
         {
             switch (data.Type)
             {
@@ -39,17 +39,17 @@ namespace RPG_AI
             }
         }
 
-        private static Node BuildEasyAIDecisionTree(CombatGameState state, EnemyAIData data)
+        private static Node BuildEasyAIDecisionTree(ICombatState state, EnemyAIData data)
         {
             var attackNode = new EasyAttackNode(state);
             var magicNode = new MpAttackNode(state);
             Func<Actor, bool> condition = (actor) => actor.Stats.Get(Stat.MP) > 0 && actor.HasMpMove();
             var actionDecisionNode = new BinaryDecisionNode(0.5f, magicNode, attackNode, condition);
-            var healNode = new HealNode(state);
-            var healthCheckNode = new HealthCheckNode(data.HpThreshold, state);
+            var healNode = new HealNode();
+            var healthCheckNode = new HealthCheckNode(data.HpThreshold);
             var healthCondition = new ConditionNode(healthCheckNode, healNode);
             var baseNode = new SelectorNode(new List<Node> { healthCondition, actionDecisionNode });
-            return new AITurnNode(state, baseNode);
+            return new AITurnNode(baseNode);
         }
     }
 }

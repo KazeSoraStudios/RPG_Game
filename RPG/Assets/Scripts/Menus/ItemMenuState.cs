@@ -22,7 +22,6 @@ namespace RPG_UI
         [SerializeField] Image SelectionArrow;
 
         private bool inScrollView;
-        private bool inKeyItems;
         private int categoryIndex = 0;
         private InGameMenu parent;
         private StateStack stack;
@@ -40,7 +39,6 @@ namespace RPG_UI
             stack = parent.Stack;
             stateMachine = parent.StateMachine;
             inScrollView = false;
-            inKeyItems = false;
             ScrollView.HideCursor();
             useConfigs.Clear();
             keyConfigs.Clear();

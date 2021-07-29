@@ -98,7 +98,6 @@ namespace RPG_Character
         {
             if (!npcsByMap.ContainsKey(map))
             {
-                LogManager.LogError($"Map: {map} is not present in NPCsForMap.");
                 return new List<Character>();
             }
             var list = npcsByMap[map];

@@ -12,15 +12,14 @@ namespace RPG_Combat
         public class Config
         {
             public Actor Actor;
-            public CombatGameState State;
+            public ICombatState State;
         }
 
         [SerializeField] MenuOptionsList OptionsList;
 
         private StateStack stack;
-        private CombatGameState combatState;
+        private ICombatState combatState;
         private Actor actor;
-        private Character character;
 
         public void Init(Config config)
         {
@@ -28,8 +27,7 @@ namespace RPG_Combat
                 return;
             combatState = config.State;
             actor = config.Actor;
-            character = combatState.ActorToCharacterMap[actor.Id];
-            stack = combatState.CombatStack;
+            stack = combatState.Stack();
             InitMenuOptionsList();
         }
 
@@ -57,12 +55,10 @@ namespace RPG_Combat
         public void Enter(object o)
         {
             Show();
-            combatState.SelectedActor = actor;
         }
 
         public void Exit()
         {
-            combatState.SelectedActor = null;
             Hide();
         }
 
@@ -101,7 +97,7 @@ namespace RPG_Combat
                         OnSelect = TakeAction,
                         OnExit = () => OptionsList.ShowCursor()
                     };
-                    var targetState = combatState.TargetState;
+                    var targetState = combatState.GetUI().TargetState;
                     targetState.Init(targetConfig);
                     stack.Push(targetState);
                     break;
@@ -117,7 +113,7 @@ namespace RPG_Combat
                 case 4: // Flee
                     // Remove the choice state (this)
                     stack.Pop();
-                    var queue = combatState.EventQueue;
+                    var queue = combatState.EventQueue();
                     var fleeConfig = new CEFlee.Config
                     {
                         Actor = actor,
@@ -162,8 +158,8 @@ namespace RPG_Combat
                 },
                 OnSelect = onSelect
             };
-            combatState.ActionBrowseList.Init(config);
-            stack.Push(combatState.ActionBrowseList);
+            combatState.GetUI().ActionBrowseList.Init(config);
+            stack.Push(combatState.GetUI().ActionBrowseList);
         }
 
         private void OnSelectItem(CombatBrowseListState action, string id)
@@ -248,7 +244,7 @@ namespace RPG_Combat
                 return null;
             }
             var isItem = true;
-            Tuple<Func<CombatGameState, bool, List<Actor>>, bool> selectorInfo;
+            Tuple<Func<ICombatState, bool, List<Actor>>, bool> selectorInfo;
             string description = string.Empty;
             if (def is ItemInfo info)
             {
@@ -275,7 +271,7 @@ namespace RPG_Combat
                 stack.Pop();
                 stack.Pop();
                 stack.Pop();
-                var queue = combatState.EventQueue;
+                var queue = combatState.EventQueue();
                 IEvent combatEvent;
                 if (isItem)
                 {
@@ -322,12 +318,12 @@ namespace RPG_Combat
                 OnSelect = onSelect,
                 OnExit = onExit
             };
-            var targetState = combatState.TargetState;
+            var targetState = combatState.GetUI().TargetState;
             targetState.Init(config);
             return targetState;
         }
 
-        private Tuple<Func<CombatGameState, bool, List<Actor>>, bool> GetItemSelectorInfo(ItemInfo item)
+        private Tuple<Func<ICombatState, bool, List<Actor>>, bool> GetItemSelectorInfo(ItemInfo item)
         {
             var itemUses = ServiceManager.Get<GameData>().ItemUses;
             if (!itemUses.ContainsKey(item.Use))
@@ -339,7 +335,7 @@ namespace RPG_Combat
             return Tuple.Create(target.Selector, target.SwitchSides);
         }
 
-        private Tuple<Func<CombatGameState, bool, List<Actor>>, bool> GetSpellSelectorInfo(Spell spell)
+        private Tuple<Func<ICombatState, bool, List<Actor>>, bool> GetSpellSelectorInfo(Spell spell)
         {            
             if (spell == null)
             {
@@ -364,7 +360,7 @@ namespace RPG_Combat
                 IsCounter = false
             };
             var attackEvent = new CEAttack(config);
-            var queue = combatState.EventQueue;
+            var queue = combatState.EventQueue();
             var priority = -1;// TODO possibly queue attacks? attackEvent.CalculatePriority(queue);
             queue.Add(attackEvent, priority);
         }
