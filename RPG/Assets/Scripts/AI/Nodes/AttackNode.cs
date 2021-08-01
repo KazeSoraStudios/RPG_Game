@@ -26,18 +26,16 @@ namespace RPG_AI
         {
             LogManager.LogDebug($"Adding CEAttackEvent for {config.Actor.name}");
             var attackEvent = new CEAttack(config);
-            var queue = combat.EventQueue();
-            var priority = attackEvent.CalculatePriority(queue);
-            queue.Add(attackEvent, -1);
+            var turnHandler = combat.CombatTurnHandler();
+            turnHandler.AddEvent(attackEvent, -1);
         }
 
         protected void AddSpellEvent(CECastSpellEvent.Config config)
         {
             LogManager.LogDebug($"Adding CECastSpellEvent for {config.Actor.name}");
             var spellEvent = new CECastSpellEvent(config);
-            var queue = combat.EventQueue();
-            var priority = spellEvent.CalculatePriority(queue);
-            queue.Add(spellEvent, -1);
+            var turnHandler = combat.CombatTurnHandler();
+            turnHandler.AddEvent(spellEvent, -1);
         }
     }
 }

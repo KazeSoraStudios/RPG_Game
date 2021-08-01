@@ -29,14 +29,12 @@ namespace RPG_UI
 
         private void Awake() 
         {
-            GameEventsManager.Register(GameEventConstants.UPDATE_COMBAT_HP, UpdateHp);
-            GameEventsManager.Register(GameEventConstants.UPDATE_COMBAT_MP, UpdateMp);
+            GameEventsManager.Register(GameEventConstants.ON_MP_CHANGED, UpdateMp);
         }
 
         private void OnDestroy() 
         {
-            GameEventsManager.Unregister(GameEventConstants.UPDATE_COMBAT_HP, UpdateHp);
-            GameEventsManager.Unregister(GameEventConstants.UPDATE_COMBAT_MP, UpdateMp);
+            GameEventsManager.Unregister(GameEventConstants.ON_MP_CHANGED, UpdateMp);
         }
 
         public void Init(Config config)
@@ -54,17 +52,8 @@ namespace RPG_UI
                 MpBar.SetTargetFillAmountImmediate(config.Mp / (float)config.MaxMp);
         }
 
-        public void UpdateHp(object obj)
+        public void UpdateHp(int hp)
         {
-            if (!gameObject.activeSelf || obj == null || !(obj is UpdateData))
-            {
-                LogManager.LogError("Null object passed to UpdateHP.");
-                return;
-            }
-            var data = (UpdateData)obj;
-            if (!data.Id.Equals(config.ActorId))
-                return;
-            int hp = data.Value;
             if (HpText != null)
                 HpText.SetText(string.Format(Constants.STAT_FILL_TEXT, hp, config.MaxHp));
             if (HpBar != null)
@@ -73,7 +62,9 @@ namespace RPG_UI
 
         public void UpdateMp(object obj)
         {
-            if (!gameObject.activeSelf || obj == null || !(obj is UpdateData))
+            if (!gameObject.activeSelf)
+                return;
+            if (obj == null || !(obj is UpdateData))
             {
                 LogManager.LogError("Null object passed to UpdateMP.");
                 return;

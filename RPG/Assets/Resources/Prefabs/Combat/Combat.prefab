@@ -59,6 +59,7 @@ GameObject:
   - component: {fileID: 8506796559124862125}
   - component: {fileID: 7586170754447874655}
   - component: {fileID: 9014211319775489923}
+  - component: {fileID: 8328045362026633318}
   m_Layer: 5
   m_Name: Combat
   m_TagString: Untagged
@@ -101,7 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Positions: {fileID: 514502740127271945}
   CombatUI: {fileID: 5691650879159066113}
-  Queue: {fileID: 9014211319775489923}
+  TurnHandler: {fileID: 8328045362026633318}
   PartyActors: []
   EnemyActors: []
   DeadCharacters: []
@@ -120,6 +121,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowEvents: 0
+--- !u!114 &8328045362026633318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5732442356158233945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1693425dfd0622746ac1d07857664100, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventQueue: {fileID: 9014211319775489923}
 --- !u!1001 &1671744398367631236
 PrefabInstance:
   m_ObjectHideFlags: 0

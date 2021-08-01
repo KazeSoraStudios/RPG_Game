@@ -16,6 +16,59 @@ namespace RPG_Combat
 
     public class CombatActions
 	{
+        public static void ApplyCounter(Actor target, Actor attacker, ICombatState combat)
+        {
+            LogManager.LogDebug($"Target [{target.name}] countered Attacker [{attacker.name}].");
+            var targetAlive = target.Stats.Get(Stat.HP) > 0;
+            if (!targetAlive)
+                return;
+            var config = new CEAttack.Config
+            {
+                IsCounter = true,
+                IsPlayer = combat.IsPartyMember(target),
+                CombatState = combat,
+                Targets = new List<Actor>() { attacker },
+                Actor = target
+            };
+            var attack = new CEAttack(config);
+            int speed = -1;
+            combat.CombatTurnHandler().AddEvent(attack, speed);
+        }
+
+        public static void ApplyMiss(Actor target)
+        {
+            LogManager.LogDebug($"Target [{target.name}] missed.");
+        }
+
+        public static void ApplyDodge(Actor target)
+        {
+            LogManager.LogDebug($"Target [{target.name}] dodged.");
+            if (target == null)
+            {
+                LogManager.LogError("Null target passed to Applydodge.");
+                return;
+            }
+            var character = target.GetComponent<Character>();
+            if (character.Controller.CurrentState.GetName() != Constants.HURT_STATE)
+            {
+                character.Controller.Change(Constants.HURT_STATE, new CombatStateParams { State = character.Controller.CurrentState.GetName() });
+            }
+        }
+
+        public static void ApplyDamage(Actor target, int damage, bool isCrit)
+        {
+            var stats = target.Stats;
+            var hp = stats.Get(Stat.HP) - damage;
+            stats.SetStat(Stat.HP, hp);
+            LogManager.LogDebug($"{target.name} took {damage} damage and HP is now {hp}. Was critical hit: {isCrit}");
+            var controller = target.GetComponent<Character>().Controller;
+            if (damage > 0 && controller.CurrentState.GetName() != Constants.HURT_STATE)
+            {
+                controller.Change(Constants.HURT_STATE, new CombatStateParams { State = controller.CurrentState.GetName() });
+                GameEventsManager.BroadcastMessage(GameEventConstants.ON_DAMAGE_TAKEN, target);
+            }
+        }
+
         public static void RunAction(string action, CombatActionConfig config)
         {
             if (config == null)

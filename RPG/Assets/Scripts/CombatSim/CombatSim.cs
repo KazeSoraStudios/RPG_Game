@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG_AI;
@@ -10,44 +10,37 @@ namespace RPG_CombatSim
 {
     public class CombatSim : MonoBehaviour
     {
-        [SerializeField] EventQueue EventQueue;
-        public Dictionary<AIType, Node> BehaviorTrees = new Dictionary<AIType, Node>();
+        public bool AlwaysMelee;
+        public bool AlwaysMagic;
+        public int NumberOfBattles;
+        public int TotalBattles;
+        public int TotalTurns;
+        public int TotalMisses;
+        public float AttackLean = 0.5f;
 
-        public Node GetBehaviorTreeForAIType(AIType type)
+        private ICombatState state;
+        private Action onWin;
+        private Action onDie;
+        private List<Drop> drops = new List<Drop>();
+
+        void Init(ICombatState state, Action onWin, Action onDie)
         {
-            return BehaviorTrees.ContainsKey(type) ?
-                BehaviorTrees[type] : null;
+            this.state = state;
+            this.onWin = onWin;
+            this.onDie = onDie;
         }
 
-        private void AddPlayerTurns(List<Actor> actors, bool forceFirst = false)
+        void OnWin(StateStack stack)
         {
-            foreach (var actor in actors)
-            {
-                var firstSpeed = Constants.MAX_STAT_VALUE + 1;
-                var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
-                {
-                    // var turn = new CETurn(actor, this);
-                    // var speed = forceFirst ? firstSpeed : turn.CalculatePriority(EventQueue);
-                    // EventQueue.Add(turn, speed);
-                    // LogManager.LogDebug($"Adding turn for {actor.name}");
-                }
-            }
+
         }
 
-        private void AddEnemyTurns(List<Actor> actors)
+        void OnLose(StateStack stack)
         {
-            foreach (var actor in actors)
-            {
-                var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
-                {
-                    // var turn = new CEAITurn(actor, this);
-                    // var speed = turn.CalculatePriority(EventQueue);
-                    // EventQueue.Add(turn, speed);
-                    // LogManager.LogDebug($"Adding AI turn for {actor.name}");
-                }
-            }
+
         }
+
+        List<Drop> Drops() => drops;
+
     }
 }

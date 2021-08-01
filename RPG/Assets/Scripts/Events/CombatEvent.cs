@@ -86,25 +86,6 @@ namespace RPG_Combat
             finished = true;
         }
 
-        private void HandleEnemyTurn()
-        {
-            var targets = new List<Actor>();
-            targets.AddRange(CombatSelector.RandomPlayer(state));
-            var config = new CEAttack.Config
-            {
-                IsCounter = false,
-                IsPlayer = false,
-                Actor = actor,
-                CombatState = state,
-                Targets = targets
-            };
-            var attackEvent = new CEAttack(config);
-            var queue = state.EventQueue();
-            var priority = attackEvent.CalculatePriority(queue);
-            queue.Add(attackEvent, priority);
-            finished = true;
-        }
-
         public override string GetName()
         {
             return $"CombatEventTurn for {actor.name}";
@@ -160,9 +141,8 @@ namespace RPG_Combat
                     Targets = targets
                 };
                 var attackEvent = new CEAttack(config);
-                var queue = state.EventQueue();
-                var priority = attackEvent.CalculatePriority(queue);
-                queue.Add(attackEvent, priority);
+                var turnHandler = state.CombatTurnHandler();
+                turnHandler.AddEvent(attackEvent, priority);
             }
             finished = true;
         }
@@ -205,7 +185,7 @@ namespace RPG_Combat
 
             var events = new List<IStoryboardEvent>();
             var text = ServiceManager.Get<LocalizationManager>().Localize("ID_ATTACK_NOTICE_TEXT");
-            events.Add(StoryboardEventFunctions.Function(() => state.ShowNotice(string.Format(text, actor.Name))));
+            events.Add(StoryboardEventFunctions.Function(() => state.GetUI().ShowNotice(string.Format(text, actor.Name))));
             if (config.IsPlayer)
             {
                 //this.mAttackAnim = gEntities.slash
@@ -297,7 +277,7 @@ namespace RPG_Combat
         private void OnFinish()
         {
             finished = true;
-            state.HideNotice();            
+            state.GetUI().HideNotice();            
         }
 
         private void DoAttack()
@@ -316,7 +296,7 @@ namespace RPG_Combat
             if (countered)
             {
                 LogManager.LogDebug($"Countering [{actor}] with Target [{target}]");
-                state.ApplyCounter(target, actor);
+                CombatActions.ApplyCounter(target, actor, state);
             }
         }
 
@@ -327,15 +307,15 @@ namespace RPG_Combat
             var entity = target.GetComponent<Entity>();
             if (result.Result == CombatFormula.HitResult.Miss)
             {
-                state.ApplyMiss(target);
+                CombatActions.ApplyMiss(target);
                 return;
             }
             if (result.Result == CombatFormula.HitResult.Dodge)
-                state.ApplyDodge(target);
+                CombatActions.ApplyDodge(target);
             else
             {
                 var isCrit = result.Result == CombatFormula.HitResult.Critical;
-                state.ApplyDamage(target, result.Damage, isCrit);
+                CombatActions.ApplyDamage(target, result.Damage, isCrit);
             }
             var entityPosition = entity.transform.position;
             // TODO
@@ -352,7 +332,7 @@ namespace RPG_Combat
                 return;
             
             var message = CreateResultMessage();
-            state.ShowNotice(message);
+            state.GetUI().ShowNotice(message);
         }
 
         private string CreateResultMessage()
@@ -411,7 +391,7 @@ namespace RPG_Combat
             var events = new List<IStoryboardEvent>
             {
                 StoryboardEventFunctions.Function(() => {
-                    state.ShowNotice("ID_ATTEMPT_FLEE_TEXT");
+                    state.GetUI().ShowNotice("ID_ATTEMPT_FLEE_TEXT");
                 }),
                 StoryboardEventFunctions.Wait(1.0f)
             };
@@ -425,7 +405,7 @@ namespace RPG_Combat
             }
             else
             {
-                events.Add(StoryboardEventFunctions.Function(() => state.ShowNotice("ID_FLEE_FAILED_TEXT")));
+                events.Add(StoryboardEventFunctions.Function(() => state.GetUI().ShowNotice("ID_FLEE_FAILED_TEXT")));
                 StoryboardEventFunctions.Wait(0.3f);
                 events.Add(StoryboardEventFunctions.Function(() => OnFleeFail()));
             }
@@ -453,7 +433,7 @@ namespace RPG_Combat
 
         private void FleeSuccessPart1()
         {
-            state.ShowNotice("ID_SUCCESS_TEXT");
+            state.GetUI().ShowNotice("ID_SUCCESS_TEXT");
             var targetPosition = actor.transform.position + Vector3.right * 5.0f; // Run off screen, does not matter if position is ever reached
             var moveParams = new MoveParams(targetPosition);
             actor.GetComponent<Character>().Controller.Change(Constants.MOVE_STATE, moveParams);
@@ -475,7 +455,7 @@ namespace RPG_Combat
                 }
             }
             state.OnFlee();
-            state.HideNotice();
+            state.GetUI().HideNotice();
         }
 
         private void OnFleeFail()
@@ -484,7 +464,7 @@ namespace RPG_Combat
             character.direction = direction == Direction.East ? Direction.West : Direction.East;
             character.Controller.Change(Constants.STAND_STATE);
             finished = true;
-            state.HideNotice();
+            state.GetUI().HideNotice();
         }
     }
 
@@ -552,12 +532,12 @@ namespace RPG_Combat
         private void ShowItemNotice()
         {
             var notice = $"Item: {item.GetName()}";
-            state.ShowNotice(notice);
+            state.GetUI().ShowNotice(notice);
         }
 
         private void HideNotice()
         { 
-            state.HideNotice();
+            state.GetUI().HideNotice();
         }
 
         private void UseItem()
@@ -661,12 +641,12 @@ namespace RPG_Combat
         private void ShowNotice()
         {
             var notice = $"Spell: {spell.LocalizedName()}";
-            state.ShowNotice(notice);
+            state.GetUI().ShowNotice(notice);
         }
 
         private void HideNotice()
         {
-            state.HideNotice();
+            state.GetUI().HideNotice();
         }
 
         private void Cast()
@@ -683,7 +663,7 @@ namespace RPG_Combat
                 Value = actor.Stats.Get(Stat.MP),
                 Id = actor.GameDataId
             };
-            GameEventsManager.BroadcastMessage(GameEventConstants.UPDATE_COMBAT_MP, data);
+            GameEventsManager.BroadcastMessage(GameEventConstants.ON_MP_CHANGED, data);
             var config = new CombatActionConfig
             {
                 Owner = actor,

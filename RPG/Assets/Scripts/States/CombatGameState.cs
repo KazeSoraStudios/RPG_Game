@@ -8,28 +8,13 @@ using TMPro;
 
 namespace RPG_Combat
 {
-    public class LootData
-    {
-        public int Exp;
-        public int Gold;
-        public List<Item> Loot = new List<Item>();
-    }
-
     public interface ICombatState
     {
-        void ShowTip(string text);
-        void HideTip();
-        void ShowNotice(string text);
-        void HideNotice();
-        void ApplyCounter(Actor target, Actor attacker);
-        void ApplyMiss(Actor target);
-        void ApplyDodge(Actor target);
-        void ApplyDamage(Actor target, int damage, bool isCrit);
         void OnFlee();
         bool IsPartyMember(Actor actor);
         CombatUI GetUI();
         Node GetBehaviorTreeForAIType(AIType type);
-        EventQueue EventQueue();
+        CombatTurnHandler CombatTurnHandler();
         StateStack Stack();
         List<Actor> GetAllActors();
         List<Actor> GetEnemyActors();
@@ -42,16 +27,17 @@ namespace RPG_Combat
         {
             public bool CanFlee;
             public string BackgroundPath;
-            public List<Actor> Party;
-            public List<Actor> Enemies;
             public StateStack Stack;
             public Action OnWin;
             public Action OnDie;
+            public List<Actor> Party;
+            public List<Actor> Enemies;
         }
 
         [SerializeField] CombatPositions Positions;
         [SerializeField] CombatUI CombatUI;
-        [SerializeField] EventQueue Queue;
+        [SerializeField] CombatTurnHandler TurnHandler;
+        [SerializeField] ICombatEndHandler EndHandler;
 
         public List<Actor> PartyActors = new List<Actor>();
         public List<Actor> EnemyActors = new List<Actor>();
@@ -60,36 +46,40 @@ namespace RPG_Combat
         public List<Character> EnemyCharacters = new List<Character>();
         public Dictionary<AIType, Node> BehaviorTrees = new Dictionary<AIType, Node>();
         public List<object> Effects = new List<object>();
-        public List<Drop> Drops = new List<Drop>();
 
         private bool canEscape = true;
         private bool escaped = false;
         private StateStack CombatStack = new StateStack();
         private StateStack gameStack = new StateStack();
-        private Action onWin;
-        private Action onDie;
+
+        private void Awake() 
+        {
+            GameEventsManager.Register(GameEventConstants.ON_DAMAGE_TAKEN, HandleDamage);
+        }
+
+        private void OnDestroy() 
+        {
+            GameEventsManager.Unregister(GameEventConstants.ON_DAMAGE_TAKEN, HandleDamage);
+        }
 
         public void Init(Config config)
         {
             if (CheckUIConfigAndLogError(0, GetName()))
                 return;
-            Queue.Clear();
             CombatStack.Clear();
             canEscape = config.CanFlee;
             gameStack = config.Stack;
             PartyActors = config.Party;
             EnemyActors = config.Enemies;
-            onWin = config.OnWin;
-            onDie = config.OnDie;
             CreateCombatCharacters(true);
             CreateCombatCharacters(false);
             LoadBehaviors();
+            EndHandler.Init(this, config.OnWin, config.OnDie);
             CombatUI.LoadMenuUI(config.Party);
             var backgroundPath = config.BackgroundPath.IsEmpty() ? Constants.DEFAULT_COMBAT_BACKGROUND : config.BackgroundPath;
             ServiceManager.Get<CombatScene>().SetBackground(backgroundPath);
             PlaceActors();
-            AddPlayerTurns(PartyActors, true);
-            AddEnemyTurns(EnemyActors);
+            TurnHandler.Init(this);
             RegisterEnemies();
         }
 
@@ -113,19 +103,15 @@ namespace RPG_Combat
                 CombatStack.Update(deltaTime);
             else
             {
-                Queue.Execute();
-
-                AddPlayerTurns(PartyActors);
-                AddEnemyTurns(EnemyActors);
-
+                TurnHandler.Execute();
                 if (PartyWins() || PartyFled())
                 {
-                    Queue.Clear();
+                    TurnHandler.ClearTurns();
                     OnWin();
                 }
                 else if (EnemyWins())
                 {
-                    Queue.Clear();
+                    TurnHandler.ClearTurns();
                     OnLose();
                 }
             }
@@ -161,93 +147,6 @@ namespace RPG_Combat
             return actors;
         }
 
-        public void ApplyCounter(Actor target, Actor attacker)
-        {
-            LogManager.LogDebug($"Target [{target.name}] countered Attacker [{attacker.name}].");
-            var targetAlive = target.Stats.Get(Stat.HP) > 0;
-            if (!targetAlive)
-                return;
-            var isPlayer = IsPartyMember(target);
-            var config = new CEAttack.Config
-            {
-                IsCounter = true,
-                IsPlayer = isPlayer,
-                CombatState = this,
-                Targets = new List<Actor>() { attacker },
-                Actor = target
-            };
-            var attack = new CEAttack(config);
-            int speed = -1;
-            Queue.Add(attack, speed);
-
-            //    // TODO add effect
-
-            //self:AddSpriteEffect(target,
-            //    gGame.Font.damageSprite['counter'])
-        }
-
-        public void ApplyMiss(Actor target)
-        {
-            LogManager.LogDebug($"Target [{target.name}] missed.");
-            //AddSpriteEffect(target,
-            //   gGame.Font.damageSprite['miss'])
-        }
-
-        public void ApplyDodge(Actor target)
-        {
-            LogManager.LogDebug($"Target [{target.name}] dodged.");
-            if (target == null)
-            {
-                LogManager.LogError("Null target passed to Applydodge.");
-                return;
-            }
-            var character = target.GetComponent<Character>();
-            if (character.Controller.CurrentState.GetName() != Constants.HURT_STATE)
-            {
-                character.Controller.Change(Constants.HURT_STATE, new CombatStateParams { State = character.Controller.CurrentState.GetName() });
-            }
-            //AddSpriteEffect(target,
-            //gGame.Font.damageSprite['dodge'])
-        }
-
-        public void ApplyDamage(Actor target, int damage, bool isCrit)
-        {
-            var stats = target.Stats;
-            var hp = stats.Get(Stat.HP) - damage;
-            stats.SetStat(Stat.HP, hp);
-            LogManager.LogDebug($"{target.name} took {damage} damage and HP is now {hp}. Was critical hit: {isCrit}");
-            var controller = target.GetComponent<Character>().Controller;
-            if (damage > 0 && controller.CurrentState.GetName() != Constants.HURT_STATE)
-            {
-                controller.Change(Constants.HURT_STATE, new CombatStateParams { State = controller.CurrentState.GetName() });
-            }
-            var data = new HpMpWidget.UpdateData 
-            {
-                Value = hp,
-                Id = target.GameDataId
-            };
-            GameEventsManager.BroadcastMessage(GameEventConstants.UPDATE_COMBAT_HP, data);
-            /*
-            local entity = character.mEntity
-            local x = entity.mX
-            local y = entity.mY
-
-            local dmgColor = Vector.Create(1,1,1,1)
-
-            if isCrit then
-            dmgColor = Vector.Create(1,1,0,1)
-            end
-
-            local dmgEffect = JumpingNumbers:Create(x, y, damage, dmgColor)
-            self:AddEffect(dmgEffect)
-            end
-            */
-
-            //local dmgEffect = JumpingNumbers:Create(x, y, damage, dmgColor)
-            //self: AddEffect(dmgEffect)
-            HandleDeath();
-        }
-
         public void HandleDeath()
         {
             HandlePartyDeath();
@@ -266,28 +165,7 @@ namespace RPG_Combat
         }
 
         public StateStack Stack() => CombatStack;
-        public EventQueue EventQueue() => Queue;
-
-        public void ShowTip(string text)
-        {
-            CombatUI.ShowTip(text);
-        }
-
-        public void HideTip()
-        {
-            CombatUI.HideTip();
-        }
-
-        public void ShowNotice(string text)        
-        {
-            CombatUI.ShowNotice(text);
-        }
-
-        public void HideNotice()
-        {
-            CombatUI.HideNotice();
-        }
-
+        public CombatTurnHandler CombatTurnHandler() => TurnHandler;
         public CombatUI GetUI() => CombatUI;
 
         private void PlaceActors()
@@ -313,7 +191,7 @@ namespace RPG_Combat
                     if (hp <= 0)
                     {
                         character.Controller.Change(Constants.DIE_STATE, Constants.DEATH_ANIMATION);
-                        Queue.RemoveEventsForActor(actor.Id);
+                        TurnHandler.RemoveEventsForActor(actor.Id);
                     }
                 }
             }
@@ -332,8 +210,8 @@ namespace RPG_Combat
                     EnemyActors.RemoveAt(i);
                     EnemyCharacters.RemoveAt(i);
                     character.Controller.Change(Constants.ENEMY_DIE_STATE);
-                    Queue.RemoveEventsForActor(actor.Id);
-                    Drops.Add(actor.Loot);
+                    TurnHandler.RemoveEventsForActor(actor.Id);
+                    EndHandler.Drops().Add(actor.Loot);
                     DeadCharacters.Add(character);
                 }
             }
@@ -343,78 +221,15 @@ namespace RPG_Combat
         {
             if (gameStack.Top().GetHashCode() != GetHashCode())
                 return;
-
-            foreach (var actor in PartyActors)
-            {
-                var character = actor.GetComponent<Character>();
-                var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive)
-                    character.Controller.Change(Constants.DEATH_ANIMATION); // TODO victory animation
-            }
-
-            var combatData = CalculateCombatData();
-            var xp = ServiceManager.Get<AssetManager>().Load<XPSummaryState>(Constants.XP_SUMMARY_MENU_PREFAB);
-            var summary = Instantiate(xp);
-            summary.gameObject.SafeSetActive(false);
-            var layer = ServiceManager.Get<UIController>().MenuLayer;
-            layer.gameObject.SafeSetActive(true);
-            summary.transform.SetParent(layer, false);
-            var config = new XPSummaryState.Config
-            {
-                Stack = gameStack,
-                Party = ServiceManager.Get<World>().Party.Members,
-                Loot = combatData
-            };
-            summary.Init(config);
-            var events = new List<IStoryboardEvent>()
-            {
-                StoryboardEventFunctions.UpdateState(this, 1.0f),
-                StoryboardEventFunctions.BlackScreen("black", 0),
-                StoryboardEventFunctions.FadeScreenIn("black", 0.6f),
-                StoryboardEventFunctions.ReplaceState(this, summary),
-                StoryboardEventFunctions.Wait(0.3f),
-                StoryboardEventFunctions.FadeScreenOut("black", 0.3f),
-            };
-            onWin?.Invoke();
             gameObject.SafeSetActive(false);
-            var storyboard = new Storyboard(gameStack, events);
-            gameStack.Push(storyboard);
-
+            EndHandler.OnWin(gameStack);
         }
 
         private void OnLose()
         {
             if (gameStack.Top().GetHashCode() == GetHashCode()) // TODO maybe fix?
                 return;
-            var events = new List<IStoryboardEvent>
-            {
-                StoryboardEventFunctions.UpdateState(this, 1.5f),
-                StoryboardEventFunctions.BlackScreen(),
-                StoryboardEventFunctions.FadeScreenIn("black"),
-            };
-            if (onDie != null)
-            {
-                events.Add(StoryboardEventFunctions.RemoveState(this));
-                events.Add(StoryboardEventFunctions.Function(onDie));
-            }
-            else
-            {
-                var gameover = ServiceManager.Get<AssetManager>().Load<GameOverState>(Constants.GAME_OVER_PREFAB);
-                var menu = Instantiate(gameover);
-                var layer = ServiceManager.Get<UIController>().MenuLayer;
-                menu.transform.SetParent(layer, false);
-                var config = new GameOverState.Config
-                {
-                    Stack = CombatStack, // Stack,
-                    World = ServiceManager.Get<World>()
-                };
-                menu.Init(config);
-                events.Add(StoryboardEventFunctions.ReplaceState(this, menu));
-            }
-            events.Add(StoryboardEventFunctions.Wait(2.0f));
-            events.Add(StoryboardEventFunctions.FadeScreenOut("black"));
-            var storyboard = new Storyboard(gameStack, events);
-            gameStack.Push(storyboard);
+            EndHandler.OnLose(gameStack);
         }
 
         private void CreateCombatCharacters(bool party)
@@ -438,37 +253,6 @@ namespace RPG_Combat
                 var character = actor.GetComponent<Character>();
                 characters.Add(character);
                 character.Controller.Change(Constants.STAND_STATE);
-            }
-        }
-
-        private void AddPlayerTurns(List<Actor> actors, bool forceFirst = false)
-        {
-            foreach (var actor in actors)
-            {
-                var firstSpeed = Constants.MAX_STAT_VALUE + 1;
-                var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive && !Queue.ActorHasEvent(actor.Id))
-                {
-                    var turn = new CETurn(actor, this);
-                    var speed = forceFirst ? firstSpeed : turn.CalculatePriority(Queue);
-                    Queue.Add(turn, speed);
-                    LogManager.LogDebug($"Adding turn for {actor.name}");
-                }
-            }
-        }
-
-        private void AddEnemyTurns(List<Actor> actors)
-        {
-            foreach (var actor in actors)
-            {
-                var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive && !Queue.ActorHasEvent(actor.Id))
-                {
-                    var turn = new CEAITurn(actor, this);
-                    var speed = turn.CalculatePriority(Queue);
-                    Queue.Add(turn, speed);
-                    LogManager.LogDebug($"Adding AI turn for {actor.name}");
-                }
             }
         }
 
@@ -499,36 +283,15 @@ namespace RPG_Combat
         }
         public bool IsPartyMember(Actor a)
         {
-            foreach (var actor in PartyActors)
-                if (actor.Id == a.Id)
-                    return true;
-            return false;
+            return IsPartyMember(a.Id);
         }
 
-        private LootData CalculateCombatData()
+        public bool IsPartyMember(int id)
         {
-            var data = new LootData();
-            var lootDictionary = new Dictionary<string, Item>();
-            foreach (var loot in Drops)
-            {
-                data.Exp += loot.Exp;
-                data.Gold += loot.Gold;
-                foreach (var item in loot.AlwaysDrop)
-                {
-                    if (!lootDictionary.ContainsKey(item.ItemInfo.Id))
-                        lootDictionary[item.ItemInfo.Id] = item;
-                    else
-                        lootDictionary[item.ItemInfo.Id].Count += item.Count;
-                }
-                var chance = loot.PickChanceItem();
-                if (chance == null)
-                    continue;
-                if (!lootDictionary.ContainsKey(chance.ItemInfo.Id))
-                    lootDictionary[chance.ItemInfo.Id] = chance;
-                else
-                    lootDictionary[chance.ItemInfo.Id].Count += chance.Count;
-            }
-            return data;
+            foreach (var actor in PartyActors)
+                if (actor.Id == id)
+                    return true;
+            return false;
         }
 
         private void RegisterEnemies()
@@ -543,42 +306,31 @@ namespace RPG_Combat
             BehaviorTrees.Clear();
             BehaviorTrees = AIBehaviors.LoadEnemyBehaviors(this, EnemyActors);
         }
+
+        private void HandleDamage(object obj)
+        {
+            if (obj == null || !(obj is Actor actor))
+            {
+                LogManager.LogError("Invalid object sent to HandleDamage.");
+                return;
+            }
+            if (IsPartyMember(actor))
+            {
+                HandlePartyDeath();
+                CombatUI.UpdateActorHp(GetPartyPosition(actor.Id), actor);
+            }
+            else
+            {
+                HandleEnemyDeath();
+            }
+        }
+
+        private int GetPartyPosition(int id)
+        {
+            for (int i = 0; i < PartyActors.Count; i++)
+                if (PartyActors[i].Id == id)
+                    return i;
+            return -1;
+        }
     }
-
-    /*
-function CombatState:OnPartyMemberSelect(index, data)
-
-end
-function CombatState:OnWin()
-end
-
-function CombatState:AddSpriteEffect(actor, sprite)
-    local character = self.mActorCharMap[actor]
-    local entity = character.mEntity
-    local x = entity.mX
-    local y = entity.mY
-    local effect = CombatSpriteFx:Create(x, y, sprite)
-    self:AddEffect(effect)
-end
-
-function CombatState:ApplyMiss(target)
-    self:AddSpriteEffect(target,
-        gGame.Font.damageSprite['miss'])
-end
-function CombatState:AddEffect(effect)
-
-    for i = 1, #self.mEffectList do
-
-        local priority = self.mEffectList[i].mPriority
-
-        if effect.mPriority > priority then
-            table.insert(self.mEffectList, i, effect)
-            return
-        end
-    end
-
-    table.insert(self.mEffectList, effect)
-end
-     
-     */
 }

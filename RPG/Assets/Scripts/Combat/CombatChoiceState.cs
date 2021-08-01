@@ -113,15 +113,15 @@ namespace RPG_Combat
                 case 4: // Flee
                     // Remove the choice state (this)
                     stack.Pop();
-                    var queue = combatState.EventQueue();
+                    var turnHandler = combatState.CombatTurnHandler();
                     var fleeConfig = new CEFlee.Config
                     {
                         Actor = actor,
                         State = combatState
                     };
                     var fleeEvent = new CEFlee(fleeConfig);
-                    var speed = -1;//fleeEvent.CalculatePriority(queue);
-                    queue.Add(fleeEvent, speed);
+                    var speed = -1;
+                    turnHandler.AddEvent(fleeEvent, speed);
                     break;
                 default:
                     LogManager.LogError($"Selection: {selection} is not a valid combat choice.");
@@ -146,7 +146,7 @@ namespace RPG_Combat
                 Actor = actor,
                 Stack = stack,
                 OnExit = () => { 
-                    combatState.HideTip();
+                    combatState.GetUI().HideTip();
                     OptionsList.ShowCursor();
                 },
                 OnRender = (c) => { return c == null ? string.Empty : c.Name; }, 
@@ -154,7 +154,7 @@ namespace RPG_Combat
                     var text = string.Empty;
                     if (c == null || c.Description.IsEmptyOrWhiteSpace())
                         text = c.Description;
-                    combatState.ShowTip(text);
+                    combatState.GetUI().ShowTip(text);
                 },
                 OnSelect = onSelect
             };
@@ -262,7 +262,7 @@ namespace RPG_Combat
                 LogManager.LogError($"Def is unsupported Type: {def.GetType()}.");
                 return null;
             }
-            combatState.ShowTip(description);
+            combatState.GetUI().ShowTip(description);
             action.Hide();
             Hide();
 
@@ -271,7 +271,7 @@ namespace RPG_Combat
                 stack.Pop();
                 stack.Pop();
                 stack.Pop();
-                var queue = combatState.EventQueue();
+                var turnHandler = combatState.CombatTurnHandler();
                 IEvent combatEvent;
                 if (isItem)
                 {
@@ -301,8 +301,8 @@ namespace RPG_Combat
                     };
                     combatEvent = new CECastSpellEvent(spellConfig);
                 }
-                var priority = -1;//combatEvent.CalculatePriority(queue);
-                queue.Add(combatEvent, priority);
+                var priority = -1;
+                turnHandler.AddEvent(combatEvent, priority);
             };
 
             Action onExit = () => {
@@ -360,9 +360,9 @@ namespace RPG_Combat
                 IsCounter = false
             };
             var attackEvent = new CEAttack(config);
-            var queue = combatState.EventQueue();
+            var turnHandler = combatState.CombatTurnHandler();
             var priority = -1;// TODO possibly queue attacks? attackEvent.CalculatePriority(queue);
-            queue.Add(attackEvent, priority);
+            turnHandler.AddEvent(attackEvent, priority);
         }
     }
 }
