@@ -17,7 +17,7 @@ namespace RPG_AI
                 var enemyAI = ServiceManager.Get<GameData>().EnemyAI;
                 if (!enemyAI.ContainsKey(enemy.GameDataId))
                 {
-                    LogManager.LogError($"Enemy {enemy.name} is not found in EnemyAI.");
+                    LogManager.LogError($"Enemy {enemy.name}, ID: {enemy.GameDataId} is not found in EnemyAI.");
                     continue;
                 }
                 var aiData = enemyAI[enemy.GameDataId];

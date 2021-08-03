@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using RPG_Character;
 using RPG_Combat;
+using RPG_CombatSim;
 
 namespace RPG_AI
 {
@@ -25,7 +26,11 @@ namespace RPG_AI
         protected void AddAttackEvent(CEAttack.Config config)
         {
             LogManager.LogDebug($"Adding CEAttackEvent for {config.Actor.name}");
-            var attackEvent = new CEAttack(config);
+            IEvent attackEvent;
+            if(GameRules.COMBAT_SIM)
+                attackEvent = new CSEAttack(config);
+            else
+                attackEvent = new CEAttack(config);
             var turnHandler = combat.CombatTurnHandler();
             turnHandler.AddEvent(attackEvent, -1);
         }
@@ -33,7 +38,11 @@ namespace RPG_AI
         protected void AddSpellEvent(CECastSpellEvent.Config config)
         {
             LogManager.LogDebug($"Adding CECastSpellEvent for {config.Actor.name}");
-            var spellEvent = new CECastSpellEvent(config);
+            IEvent spellEvent;
+            if(GameRules.COMBAT_SIM)
+                spellEvent = new CSECastSpellEvent(config);
+            else
+                spellEvent = new CECastSpellEvent(config);
             var turnHandler = combat.CombatTurnHandler();
             turnHandler.AddEvent(spellEvent, -1);
         }

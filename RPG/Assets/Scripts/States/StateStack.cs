@@ -99,4 +99,9 @@ public class StateStack
         textbox.Init(config);
         Push(textbox);
     }
+
+    public void SuppressErrorState()
+    {
+        emptyState.ReportError = false;
+    }
 }

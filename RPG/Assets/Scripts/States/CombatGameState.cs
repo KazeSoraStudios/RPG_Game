@@ -14,7 +14,8 @@ namespace RPG_Combat
         bool IsPartyMember(Actor actor);
         CombatUI GetUI();
         Node GetBehaviorTreeForAIType(AIType type);
-        CombatTurnHandler CombatTurnHandler();
+        ITurnHandler CombatTurnHandler();
+        ICombatReporter CombatReporter();
         StateStack Stack();
         List<Actor> GetAllActors();
         List<Actor> GetEnemyActors();
@@ -30,14 +31,15 @@ namespace RPG_Combat
             public StateStack Stack;
             public Action OnWin;
             public Action OnDie;
+            public ICombatReporter Reporter;
             public List<Actor> Party;
             public List<Actor> Enemies;
         }
 
         [SerializeField] CombatPositions Positions;
         [SerializeField] CombatUI CombatUI;
-        [SerializeField] CombatTurnHandler TurnHandler;
-        [SerializeField] ICombatEndHandler EndHandler;
+        [SerializeField] public ITurnHandler TurnHandler;
+        [SerializeField] public ICombatEndHandler EndHandler;
 
         public List<Actor> PartyActors = new List<Actor>();
         public List<Actor> EnemyActors = new List<Actor>();
@@ -51,6 +53,7 @@ namespace RPG_Combat
         private bool escaped = false;
         private StateStack CombatStack = new StateStack();
         private StateStack gameStack = new StateStack();
+        private ICombatReporter combatReporter;
 
         private void Awake() 
         {
@@ -74,10 +77,11 @@ namespace RPG_Combat
             CreateCombatCharacters(true);
             CreateCombatCharacters(false);
             LoadBehaviors();
+            LoadCombatReporter(config.Reporter);
             EndHandler.Init(this, config.OnWin, config.OnDie);
             CombatUI.LoadMenuUI(config.Party);
             var backgroundPath = config.BackgroundPath.IsEmpty() ? Constants.DEFAULT_COMBAT_BACKGROUND : config.BackgroundPath;
-            ServiceManager.Get<CombatScene>().SetBackground(backgroundPath);
+            ServiceManager.Get<CombatScene>()?.SetBackground(backgroundPath);
             PlaceActors();
             TurnHandler.Init(this);
             RegisterEnemies();
@@ -92,7 +96,7 @@ namespace RPG_Combat
             for (int i = DeadCharacters.Count - 1; i > -1; i--)
             {
                 DeadCharacters[i].Controller.Update(deltaTime);
-                var state = (CombatState)DeadCharacters[i].Controller.CurrentState;
+                var state = DeadCharacters[i].Controller.CurrentState as CombatState;
                 if (state == null || state.IsFinished())
                     DeadCharacters.RemoveAt(i);
             }
@@ -127,6 +131,8 @@ namespace RPG_Combat
         public void Enter(object stateParams) { }
         public void Exit() 
         {
+            if (GameRules.COMBAT_SIM)
+                return;
             var npcs = ServiceManager.Get<NPCManager>().ClearNpcsForMap(GetName());
             foreach (var npc in npcs)
                 Destroy(npc.gameObject);
@@ -165,8 +171,9 @@ namespace RPG_Combat
         }
 
         public StateStack Stack() => CombatStack;
-        public CombatTurnHandler CombatTurnHandler() => TurnHandler;
+        public ITurnHandler CombatTurnHandler() => TurnHandler;
         public CombatUI GetUI() => CombatUI;
+        public ICombatReporter CombatReporter() => combatReporter;
 
         private void PlaceActors()
         {
@@ -227,7 +234,7 @@ namespace RPG_Combat
 
         private void OnLose()
         {
-            if (gameStack.Top().GetHashCode() == GetHashCode()) // TODO maybe fix?
+            if (gameStack.Top().GetHashCode() != GetHashCode()) // TODO maybe fix?
                 return;
             EndHandler.OnLose(gameStack);
         }
@@ -296,6 +303,8 @@ namespace RPG_Combat
 
         private void RegisterEnemies()
         {
+            if (GameRules.COMBAT_SIM) 
+                return;
             var mapName = GetName();
             foreach (var enemy in EnemyCharacters)
                 ServiceManager.Get<NPCManager>().AddNPC(mapName, enemy);
@@ -331,6 +340,13 @@ namespace RPG_Combat
                 if (PartyActors[i].Id == id)
                     return i;
             return -1;
+        }
+
+        private void LoadCombatReporter(ICombatReporter reporter)
+        {
+            combatReporter = reporter;
+            if (combatReporter == null)
+                combatReporter = new CombatInfoReporter(CombatUI);
         }
     }
 }

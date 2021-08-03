@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG_Character;
@@ -19,7 +20,11 @@ namespace RPG_Combat
 
         private void Awake()
         {
-            combatLocation = GameObject.Find("Combat").transform;
+            var combat = GameObject.Find("Combat");
+            if (combat != null)
+                combatLocation = combat.transform;
+            else
+                combatLocation = transform;
         }
 
         public void PlaceParty(List<Actor> actors)

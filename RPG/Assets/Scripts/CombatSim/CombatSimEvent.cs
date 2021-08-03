@@ -76,14 +76,16 @@ namespace RPG_CombatSim
 
         private void HandlePlayerTurn()
         {
-            var config = new CombatChoiceState.Config
+            var config = new CSEAttack.Config
             {
                 Actor = actor,
-                State = state
+                IsPlayer = true,
+                IsCounter = false,
+                State = state,
+                Targets = CombatSelector.FindWeakestEnemy(state)
             };
-            // var nextstate = state.CombatChoice;
-            // nextstate.Init(config);
-            // state.CombatStack.Push(nextstate);
+            var attackEvent = new CSEAttack(config);
+            state.CombatTurnHandler().AddEvent(attackEvent, -1);
             finished = true;
         }
 
@@ -93,9 +95,9 @@ namespace RPG_CombatSim
         }
     }
 
-    public class CEAITurn : CombatSimEvent
+    public class CSEAITurn : CombatSimEvent
     {
-        public CEAITurn (Actor actor,  ICombatState state)
+        public CSEAITurn (Actor actor,  ICombatState state)
             : base(actor, state) { }
 
         public override void Execute(EventQueue queue)
@@ -126,7 +128,7 @@ namespace RPG_CombatSim
                 LogManager.LogError($"Actor [{actor.name}] decision tree failed. Attacking random enemy.");
                 var targets = new List<Actor>();
                 targets.AddRange(CombatSelector.RandomPlayer(state));
-                var config = new CEAttack.Config
+                var config = new CSEAttack.Config
                 {
                     IsCounter = false,
                     IsPlayer = false,
@@ -134,7 +136,7 @@ namespace RPG_CombatSim
                     State = state,
                     Targets = targets
                 };
-                var attackEvent = new CEAttack(config);
+                var attackEvent = new CSEAttack(config);
                 var turnHandler = state.CombatTurnHandler();
                 turnHandler.AddEvent(attackEvent, -1);
             }
@@ -147,7 +149,7 @@ namespace RPG_CombatSim
         }
     }
 
-    public class CEAttack : CombatSimEvent
+    public class CSEAttack : CombatSimEvent
     {
         public class Config
         {
@@ -165,7 +167,20 @@ namespace RPG_CombatSim
         private Func<ICombatState, List<Actor>> targeter;
         private List<Actor> targets;
 
-        public CEAttack(Config config) : base(config.Actor, config.State)
+        public CSEAttack(Config config) : base(config.Actor, config.State)
+        {
+            isPlayer = config.IsPlayer;
+            targets = config.Targets;
+            counter = config.IsCounter;
+            character = actor.GetComponent<Character>();
+            if (character == null)
+            {
+                LogManager.LogError($"Character is null for actor {config.Actor}");
+                return;
+            }
+        }
+
+        public CSEAttack(CEAttack.Config config) : base(config.Actor, config.CombatState)
         {
             isPlayer = config.IsPlayer;
             targets = config.Targets;
@@ -241,11 +256,9 @@ namespace RPG_CombatSim
 
         private void ShowResult()
         {
-            // TODO print result
             if (result == null)
                 return;
-            
-            var message = CreateResultMessage();
+            state.CombatReporter().ReportResult(result, actor.name);
         }
 
         private string CreateResultMessage()
@@ -276,7 +289,7 @@ namespace RPG_CombatSim
         }
     }
 
-    public class CEUseItemEvent : CombatSimEvent
+    public class CSEUseItemEvent : CombatSimEvent
     {
         public class Config
         {
@@ -291,7 +304,7 @@ namespace RPG_CombatSim
         private ItemInfo item;
         private ItemUse itemUse;
         private List<Actor> targets;
-        public CEUseItemEvent(Config config)
+        public CSEUseItemEvent(Config config)
             : base(config.Actor, config.CombatState)
         {
             item = config.Item;
@@ -330,7 +343,7 @@ namespace RPG_CombatSim
             return "CEUseItemEvent";
         }
     }
-    public class CECastSpellEvent : CombatSimEvent
+    public class CSECastSpellEvent : CombatSimEvent
     {
         public class Config
         {
@@ -343,7 +356,16 @@ namespace RPG_CombatSim
 
         private Spell spell;
         private List<Actor> targets;
-        public CECastSpellEvent(Config config)
+
+        public CSECastSpellEvent(Config config)
+            : base(config.Actor, config.CombatState)
+        {
+            spell = config.spell;
+            targets = config.Targets;
+            finished = false;
+        }
+
+        public CSECastSpellEvent(CECastSpellEvent.Config config)
             : base(config.Actor, config.CombatState)
         {
             spell = config.spell;

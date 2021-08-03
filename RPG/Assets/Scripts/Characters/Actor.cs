@@ -109,7 +109,7 @@ namespace RPG_Character
         private void DoInitialLeveling()
         {
             // Only party members need to level up
-            if (!ServiceManager.Get<World>().Party.HasMemeber(GameDataId))
+            if (GameRules.COMBAT_SIM || !ServiceManager.Get<World>().Party.HasMemeber(GameDataId))
                 return;
 
             for (int i = 1; i < Level; i++)

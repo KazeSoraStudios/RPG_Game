@@ -185,7 +185,7 @@ namespace RPG_Combat
 
             var events = new List<IStoryboardEvent>();
             var text = ServiceManager.Get<LocalizationManager>().Localize("ID_ATTACK_NOTICE_TEXT");
-            events.Add(StoryboardEventFunctions.Function(() => state.GetUI().ShowNotice(string.Format(text, actor.Name))));
+            events.Add(StoryboardEventFunctions.Function(() => state.CombatReporter().DisplayInfo(string.Format(text, actor.Name))));
             if (config.IsPlayer)
             {
                 //this.mAttackAnim = gEntities.slash
@@ -330,31 +330,7 @@ namespace RPG_Combat
         {
             if (result == null)
                 return;
-            
-            var message = CreateResultMessage();
-            state.GetUI().ShowNotice(message);
-        }
-
-        private string CreateResultMessage()
-        {
-            var localization = ServiceManager.Get<LocalizationManager>();
-            if (result.Result == CombatFormula.HitResult.Miss)
-            {
-                var message = localization.Localize("ID_MISS_TEXT");
-                return string.Format(message, actor.Name);
-            }
-            else if (result.Result == CombatFormula.HitResult.Dodge)
-                return localization.Localize("ID_DODGE_TEXT");
-            else if (result.Result == CombatFormula.HitResult.Hit)
-            { 
-                var message = localization.Localize("ID_ATTACK_HIT_TEXT");
-                return string.Format(message, result.Damage);
-            }
-            else
-            {
-                var message = localization.Localize("ID_CRITICAL_HIT_TEXT");
-                return string.Format(message, result.Damage);
-            }
+            state.CombatReporter().ReportResult(result, actor.name);
         }
 
         public override string GetName()
@@ -391,7 +367,7 @@ namespace RPG_Combat
             var events = new List<IStoryboardEvent>
             {
                 StoryboardEventFunctions.Function(() => {
-                    state.GetUI().ShowNotice("ID_ATTEMPT_FLEE_TEXT");
+                    state.CombatReporter().DisplayInfo("ID_ATTEMPT_FLEE_TEXT");
                 }),
                 StoryboardEventFunctions.Wait(1.0f)
             };
@@ -405,7 +381,7 @@ namespace RPG_Combat
             }
             else
             {
-                events.Add(StoryboardEventFunctions.Function(() => state.GetUI().ShowNotice("ID_FLEE_FAILED_TEXT")));
+                events.Add(StoryboardEventFunctions.Function(() => state.CombatReporter().DisplayInfo("ID_FLEE_FAILED_TEXT")));
                 StoryboardEventFunctions.Wait(0.3f);
                 events.Add(StoryboardEventFunctions.Function(() => OnFleeFail()));
             }
@@ -433,7 +409,7 @@ namespace RPG_Combat
 
         private void FleeSuccessPart1()
         {
-            state.GetUI().ShowNotice("ID_SUCCESS_TEXT");
+            state.CombatReporter().DisplayInfo("ID_SUCCESS_TEXT");
             var targetPosition = actor.transform.position + Vector3.right * 5.0f; // Run off screen, does not matter if position is ever reached
             var moveParams = new MoveParams(targetPosition);
             actor.GetComponent<Character>().Controller.Change(Constants.MOVE_STATE, moveParams);
@@ -532,7 +508,7 @@ namespace RPG_Combat
         private void ShowItemNotice()
         {
             var notice = $"Item: {item.GetName()}";
-            state.GetUI().ShowNotice(notice);
+            state.CombatReporter().DisplayInfo(notice);
         }
 
         private void HideNotice()
@@ -641,7 +617,7 @@ namespace RPG_Combat
         private void ShowNotice()
         {
             var notice = $"Spell: {spell.LocalizedName()}";
-            state.GetUI().ShowNotice(notice);
+            state.CombatReporter().DisplayInfo(notice);
         }
 
         private void HideNotice()

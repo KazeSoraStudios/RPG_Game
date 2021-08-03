@@ -4,7 +4,15 @@ using RPG_Character;
 
 namespace RPG_Combat
 {
-    public class CombatTurnHandler : MonoBehaviour
+    public interface ITurnHandler
+    {
+        void Init(ICombatState state);
+        void Execute();
+        public void ClearTurns();
+        public void AddEvent(IEvent evt, int speed);
+        public void RemoveEventsForActor(int id);
+    }
+    public class CombatTurnHandler : MonoBehaviour, ITurnHandler
     {
         [SerializeField] EventQueue EventQueue;
         private ICombatState combatState;

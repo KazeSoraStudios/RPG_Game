@@ -29,23 +29,31 @@ namespace RPG_UI
 
         public void ShowTip(string text)
         {
+            if (TipContainer == null)
+                return;
             TipContainer.SafeSetActive(true);
             TipText.SetText(text);
         }
 
         public void ShowNotice(string text)
         {
+            if (NoticeContainer == null)
+                return;
             NoticeContainer.SafeSetActive(true);
             NoticeText.SetText(text);
         }
 
         public void HideTip()
         {
+            if (TipContainer == null)
+                return;
             TipContainer.SafeSetActive(false);
         }
 
         public void HideNotice()
         {
+            if (NoticeContainer == null)
+                return;
             NoticeContainer.SafeSetActive(false);
         }
 
