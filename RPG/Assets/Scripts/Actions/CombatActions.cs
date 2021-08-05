@@ -61,8 +61,6 @@ namespace RPG_Combat
             var hp = stats.Get(Stat.HP) - damage;
             stats.SetStat(Stat.HP, hp);
             LogManager.LogDebug($"{target.name} took {damage} damage and HP is now {hp}. Was critical hit: {isCrit}");
-            if (GameRules.COMBAT_SIM)
-                return;
             var controller = target.GetComponent<Character>().Controller;
             if (damage > 0 && controller.CurrentState.GetName() != Constants.HURT_STATE)
             {

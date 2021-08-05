@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Reset
+  m_text: View Data
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2323,12 +2323,8 @@ MonoBehaviour:
   AlwaysMagic: 0
   NumberOfBattles: 0
   TotalBattles: 0
-  TotalWins: 0
-  TotalLoses: 0
-  TotalTurns: 0
-  TotalDodges: 0
-  TotalMisses: 0
-  TotalCrits: 0
+  SimDataToView: 0
+  AttackSelector: 0
   AttackLean: 0.5
   Party:
   - hero
@@ -2352,7 +2348,8 @@ MonoBehaviour:
   EventQueue: {fileID: 6269476706332938236}
   Downloader: {fileID: 0}
   PartyData: []
-  enemyData: []
+  EnemyData: []
+  SimData: []
 --- !u!222 &6543274000469615780
 CanvasRenderer:
   m_ObjectHideFlags: 0

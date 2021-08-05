@@ -82,7 +82,7 @@ namespace RPG_Character
                 }
             }
             NextLevelExp = LevelFunction.NextLevel(Level);
-            DoInitialLeveling();
+            GoToLevel(Level, true);
         }
 
         public void Init(Enemy enemy)
@@ -104,21 +104,22 @@ namespace RPG_Character
             Loot = CreateLoot(enemy);
             var gameData = ServiceManager.Get<GameData>();
             Stats = Stats = new Stats(gameData.Stats[enemy.StatsId], name);
+            Level = enemy.Level;
+            GoToLevel(Level, false);
         }
 
-        private void DoInitialLeveling()
+        public void GoToLevel(int level, bool isPlayer)
         {
-            // Only party members need to level up
-            if (GameRules.COMBAT_SIM || !ServiceManager.Get<World>().Party.HasMemeber(GameDataId))
+            if (LevelFunction == null)
                 return;
-
+            Level = level;
             for (int i = 1; i < Level; i++)
                 Exp += LevelFunction.NextLevel(i);
             Level = 0;
             NextLevelExp = LevelFunction.NextLevel(Level);
             while (ReadyToLevelUp())
             {
-                var levelUp = CreateLevelUp();
+                var levelUp = CreateLevelUp(isPlayer);
                 ApplyLevel(levelUp);
             }
         }
@@ -134,19 +135,21 @@ namespace RPG_Character
             return ReadyToLevelUp();
         }
 
-        public LevelUp CreateLevelUp()
+        public LevelUp CreateLevelUp(bool isPlayer)
         {
             var levelUp = new LevelUp(NextLevelExp, 1, Stats);
             foreach (var growth in StatGrowth.Growths)
                 levelUp.Stats.SetStat(growth.Key, growth.Value.RollDice());
             var level = Level + levelUp.Level;
-            var partyDefinition = ServiceManager.Get<GameData>().PartyDefs[GameDataId];
-            var actionGrow = partyDefinition.ActionGrowth;
-            if (actionGrow.Spells.ContainsKey(level))
-                levelUp.Spells = GetSpellsForLevelUp(actionGrow.Spells[level]);
-            if (actionGrow.Special.ContainsKey(level))
-                levelUp.Specials = GetSpecialsForLevelUp(actionGrow.Special[level]);
-
+            if (isPlayer)
+            {
+                var partyDefinition = ServiceManager.Get<GameData>().PartyDefs[GameDataId];
+                var actionGrow = partyDefinition.ActionGrowth;
+                if (actionGrow.Spells.ContainsKey(level))
+                    levelUp.Spells = GetSpellsForLevelUp(actionGrow.Spells[level]);
+                if (actionGrow.Special.ContainsKey(level))
+                    levelUp.Specials = GetSpecialsForLevelUp(actionGrow.Special[level]);
+            }
             return levelUp;
         }
 

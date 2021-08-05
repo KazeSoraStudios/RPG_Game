@@ -11,56 +11,7 @@ using RPG_UI;
 public delegate void RunAction(params object[] args);
 
 public class Actions
-{
-    //EquipSlotLabels =
-    //{
-    //    "Weapon:",
-    //    "Armor:",
-    //    "Accessory:",
-    //    "Accessory:"
-    //},
-    //EquipSlotId =
-    //{
-    //    "weapon",
-    //    "armor",
-    //    "acces1",
-    //    "acces2"
-    //},
-    //ActorStats =
-    //{
-    //    "strength",
-    //    "speed",
-    //    "intelligence"
-    //},
-    //ItemStats =
-    //{
-    //    "attack",
-    //    "defense",
-    //    "magic",
-    //    "resist"
-    //},
-    //ActorStatLabels =
-    //{
-    //    "Strength",
-    //    "Speed",
-    //    "Intelligence"
-    //},
-    //ItemStatLabels =
-    //{
-    //    "Attack",
-    //    "Defense",
-    //    "Magic",
-    //    "Resist"
-    //},
-    //ActionLabels =
-    //{
-    //    ["attack"] = "Attack",
-    //    ["item"] = "Item",
-    //    ["flee"] = "Flee",
-    //    ["magic"] = "Magic",
-    //    ["special"] = "Special"
-    //}
-    
+{    
     public static void Teleport(Entity hero, Vector2 position)
     {
         ServiceManager.Get<World>().LockInput();

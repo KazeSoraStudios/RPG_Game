@@ -7,11 +7,13 @@ namespace RPG_AI
 {
     public abstract class AttackNode : Node
     {
+        private readonly bool sim;
         protected readonly ICombatState combat;
 
         public AttackNode(ICombatState combat)
         {
             this.combat = combat;
+            sim = combat.IsSim();
         }
 
         protected List<Actor> GetTargets(float chance)
@@ -27,7 +29,7 @@ namespace RPG_AI
         {
             LogManager.LogDebug($"Adding CEAttackEvent for {config.Actor.name}");
             IEvent attackEvent;
-            if(GameRules.COMBAT_SIM)
+            if(sim)
                 attackEvent = new CSEAttack(config);
             else
                 attackEvent = new CEAttack(config);
@@ -39,7 +41,7 @@ namespace RPG_AI
         {
             LogManager.LogDebug($"Adding CECastSpellEvent for {config.Actor.name}");
             IEvent spellEvent;
-            if(GameRules.COMBAT_SIM)
+            if(sim)
                 spellEvent = new CSECastSpellEvent(config);
             else
                 spellEvent = new CECastSpellEvent(config);

@@ -295,7 +295,7 @@ namespace RPG_Combat
                     { 
                         Actor = actor,
                         CombatState = combatState,
-                        spell = spell,
+                        Spell = spell,
                         IsPlayer = true,
                         Targets = targets
                     };

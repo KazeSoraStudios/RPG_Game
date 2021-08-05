@@ -8,11 +8,13 @@ using RPG_GameData;
 
 namespace RPG_CombatSim
 {
+    public enum PlayerAttackSelector { Random, Weakest }
     public class CombatSim : MonoBehaviour, ICombatEndHandler, ICombatReporter, ITurnHandler
     {
         [Serializable]
         public class ActorData
         {
+            public int Level = 1;
             public int HP;
             public int MP;
             public int Attack;
@@ -53,12 +55,8 @@ namespace RPG_CombatSim
         public bool AlwaysMagic;
         public int NumberOfBattles;
         public int TotalBattles;
-        public int TotalWins;
-        public int TotalLoses;
-        public int TotalTurns;
-        public int TotalDodges;
-        public int TotalMisses;
-        public int TotalCrits;
+        public int SimDataToView = 0;
+        public PlayerAttackSelector AttackSelector;
         public float AttackLean = 0.5f;
         public string[] Party = new string[3];
         public string[] Enemies = new string[7];
@@ -73,8 +71,10 @@ namespace RPG_CombatSim
         public GameDataDownloader Downloader;
         public List<Drop> drops = new List<Drop>();
         public List<ActorData> PartyData = new List<ActorData>();
-        public List<ActorData> enemyData = new List<ActorData>();
+        public List<ActorData> EnemyData = new List<ActorData>();
+        public List<CombatSimData> SimData = new List<CombatSimData>();
 
+        private int currentSimData = 0;
         private Action onWin;
         private Action onDie;
         private StateStack stack;
@@ -82,8 +82,6 @@ namespace RPG_CombatSim
         private CombatGameState combat;
         private List<Actor> partyPrefabs = new List<Actor>();
         private List<Actor> enemyPrefabs = new List<Actor>();
-
-        public DictionaryList<string, string> v;
 
         private void Awake()
         {
@@ -106,6 +104,7 @@ namespace RPG_CombatSim
             combat = GameObject.Instantiate(asset, Vector3.zero, Quaternion.identity);
             combat.EndHandler = this;
             combat.TurnHandler = this;
+            SimData.Add(new CombatSimData());
         }
 
         private void Update() 
@@ -121,13 +120,13 @@ namespace RPG_CombatSim
 
         public void OnWin(StateStack stack)
         {
-            TotalWins++;
+            SimData[currentSimData].TotalWins++;
             OnBattleFinished();
         }
 
         public void OnLose(StateStack stack)
         {
-            TotalLoses++;
+            SimData[currentSimData].TotalLoses++;
             OnBattleFinished();
         }
 
@@ -135,15 +134,15 @@ namespace RPG_CombatSim
 
         public void ReportResult(FormulaResult result, string name)
         {
-            TotalTurns++;
+            SimData[currentSimData].TotalTurns++;
             if (result.Result == CombatFormula.HitResult.Miss)
-                TotalMisses++;
+                SimData[currentSimData].TotalMisses++;
             else if (result.Result == CombatFormula.HitResult.Dodge)
-                TotalDodges++;
+                SimData[currentSimData].TotalDodges++;
             else if (result.Result == CombatFormula.HitResult.Hit)
                 {}
             else
-                TotalCrits++;
+                SimData[currentSimData].TotalCrits++;
             DisplayResults();
         }
 
@@ -154,12 +153,10 @@ namespace RPG_CombatSim
 
         public void Reset()
         {
-            TotalWins = 0;
-            TotalLoses = 0;
-            TotalTurns = 0;
-            TotalDodges = 0;
-            TotalMisses = 0;
-            TotalCrits = 0;
+            if (SimDataToView < 0 || SimDataToView >= SimData.Count)
+                currentSimData = 0;
+            else
+                currentSimData = SimDataToView;
             DisplayResults();
         }
 
@@ -205,7 +202,7 @@ namespace RPG_CombatSim
                 var isAlive = actor.Stats.Get(Stat.HP) > 0;
                 if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
                 {
-                    var turn = new CESimTurn(actor, combat);
+                    var turn = new CESimTurn(actor, combat, this);
                     var speed = forceFirst ? firstSpeed : turn.CalculatePriority(EventQueue);
                     EventQueue.Add(turn, speed);
                     LogManager.LogDebug($"Adding turn for {actor.name}");
@@ -238,24 +235,29 @@ namespace RPG_CombatSim
             }
             else
             {
-                RunBattle();
+                StartCombat();
             }
         }
 
         private void DisplayResults()
         {
-            Wins.SetText($"{TotalWins}");
-            Loses.SetText($"{TotalLoses}");
-            float percent =  TotalWins + TotalLoses == 0 ? TotalWins : TotalWins / (float)(TotalWins + TotalLoses);
+            var current = SimData[currentSimData];
+            Wins.SetText($"{current.TotalWins}");
+            Loses.SetText($"{current.TotalLoses}");
+            float percent =  current.TotalWins + current.TotalLoses == 0 ? 
+            current.TotalWins : current.TotalWins / (float)(current.TotalWins + current.TotalLoses);
             WinPercent.SetText($"{percent}");
-            Dodges.SetText($"{TotalDodges}");
-            Misses.SetText($"{TotalMisses}");
-            Hits.SetText($"{TotalTurns - TotalDodges - TotalMisses}");
-            Crits.SetText($"{TotalCrits}");
+            Dodges.SetText($"{current.TotalDodges}");
+            Misses.SetText($"{current.TotalMisses}");
+            Hits.SetText($"{current.TotalTurns - current.TotalDodges - current.TotalMisses}");
+            Crits.SetText($"{current.TotalCrits}");
         }
 
         public void RunBattle()
         {
+            SimData.Add(new CombatSimData());
+            currentSimData = SimData.Count - 1;
+            TotalBattles = 0;
             StartCombat();
         }
 
@@ -264,6 +266,7 @@ namespace RPG_CombatSim
             var combatConfig = new CombatGameState.Config
             {
                 CanFlee = true,
+                Sim = true,
                 Party = CreateParty(),
                 Enemies = CreateEnemies(),
                 Stack = stack,
@@ -296,7 +299,7 @@ namespace RPG_CombatSim
 
         public void CreateEnemyData()
         {
-            enemyData.Clear();
+            EnemyData.Clear();
             var data = gameData.Enemies;
             foreach (var enemy in Enemies)
             {
@@ -310,7 +313,7 @@ namespace RPG_CombatSim
                 if (GetEnemyDataIndex(enemy) == -1)
                 {
                     var actorData = new ActorData(enemy, new Stats(gameData.Stats[enemy + "_stats"], name));
-                    enemyData.Add(actorData);
+                    EnemyData.Add(actorData);
                 }
             }
         }
@@ -332,7 +335,10 @@ namespace RPG_CombatSim
                 int index = GetPartyDataIndex(hero);
                 partyPrefabs[i].Init(data[hero]);
                 if (index != -1)
+                {
                     partyPrefabs[i].Stats = PartyData[i].Stats();
+                    partyPrefabs[i].GoToLevel(PartyData[i].Level, true);
+                }
                 party.Add(partyPrefabs[i]);
             }
             return party;
@@ -355,7 +361,10 @@ namespace RPG_CombatSim
                 int index = GetEnemyDataIndex(enemy);
                 enemyPrefabs[i].Init(data[enemy]);
                 if (index != -1)
-                    enemyPrefabs[i].Stats = enemyData[i].Stats();
+                {
+                    enemyPrefabs[i].Stats = EnemyData[i].Stats();
+                    enemyPrefabs[i].GoToLevel(EnemyData[i].Level, false);
+                }
                 enemies.Add(enemyPrefabs[i]);
             }
             return enemies;
@@ -395,8 +404,8 @@ namespace RPG_CombatSim
 
         private int GetEnemyDataIndex(string id)
         {
-            for (int i = 0; i < enemyData.Count; i++)
-                if (enemyData[i].Id.Equals(id))
+            for (int i = 0; i < EnemyData.Count; i++)
+                if (EnemyData[i].Id.Equals(id))
                     return i;
             return -1;
         }

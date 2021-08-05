@@ -552,7 +552,7 @@ namespace RPG_Combat
             public bool IsPlayer;
             public Actor Actor;
             public ICombatState CombatState;
-            public Spell spell;
+            public Spell Spell;
             public List<Actor> Targets = new List<Actor>();
         }
 
@@ -563,7 +563,7 @@ namespace RPG_Combat
         public CECastSpellEvent(Config config)
             : base(config.Actor, config.CombatState)
         {
-            spell = config.spell;
+            spell = config.Spell;
             targets = config.Targets;
             finished = false;
             controller = actor.GetComponent<Character>().Controller;

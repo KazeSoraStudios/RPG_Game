@@ -1,30 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using RPG_Character;
 using RPG_Combat;
-using RPG_GameData;
+
 public enum ItemType { Useable, Key, Accessory, Weapon, Armor, None };
 public enum UseRestriction { None, Hero, Samurai, Mage };
-
-public class ItemDB : MonoBehaviour
-{
-    //[SerializeField] public Dictionary<int, Item> items = new Dictionary<int, Item>();
-    ////[SerializeField] private List<ItemInfo> Items;
-    //[SerializeField] static int NumberOfItems;
-    //[SerializeField] static int NumberOfKeyItems;
-
-
-    //public static int GetNumberOfItems()
-    //{
-    //    return NumberOfItems;
-    //}
-
-    //public static int GetNumberOfKeyItems()
-    //{
-    //    return NumberOfKeyItems;
-    //}
-}
 
 public class Item
 {

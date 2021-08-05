@@ -58,8 +58,12 @@ namespace RPG_CombatSim
 
     public class CESimTurn : CombatSimEvent
     {
-        public CESimTurn (Actor actor,  ICombatState state)
-            : base(actor, state) { }
+        private CombatSim sim;
+        public CESimTurn (Actor actor,  ICombatState state, CombatSim sim)
+            : base(actor, state) 
+        { 
+            this.sim = sim;
+        }
 
         public override void Execute(EventQueue queue)
         {
@@ -76,17 +80,63 @@ namespace RPG_CombatSim
 
         private void HandlePlayerTurn()
         {
+            IEvent evt;
+            if (sim.AlwaysMelee)
+                evt = CreateAttackEvent();
+            else if (sim.AlwaysMagic && actor.Spells.Count > 0)
+                evt = CreateMagicEvent(GetSpell());
+            else
+            {
+                var chance = UnityEngine.Random.Range(0.0f, 1.0f);
+                if (chance >= sim.AttackLean && actor.Spells.Count > 0)
+                    evt = CreateMagicEvent(GetSpell());
+                else
+                    evt = CreateAttackEvent();
+            }
+            state.CombatTurnHandler().AddEvent(evt, -1);
+            finished = true;
+        }
+
+        public CSEAttack CreateAttackEvent()
+        {
             var config = new CSEAttack.Config
             {
                 Actor = actor,
                 IsPlayer = true,
                 IsCounter = false,
                 State = state,
-                Targets = CombatSelector.FindWeakestEnemy(state)
+                Targets = GetTargets()
             };
-            var attackEvent = new CSEAttack(config);
-            state.CombatTurnHandler().AddEvent(attackEvent, -1);
-            finished = true;
+            return new CSEAttack(config);
+        }
+
+        public CSECastSpellEvent CreateMagicEvent(Spell spell)
+        {
+            var config = new CSECastSpellEvent.Config
+            {
+                Actor = actor,
+                IsPlayer = true,
+                CombatState = state,
+                Spell = spell,
+                Targets = GetTargets()
+            };
+            return new CSECastSpellEvent(config);
+        }
+
+        private Spell GetSpell()
+        {
+            var spells = actor.Spells;
+            if (spells.Count < 1)
+                return null;
+            int index = UnityEngine.Random.Range(0, spells.Count);
+            return spells[index];
+        }
+
+        private List<Actor> GetTargets()
+        {
+            return sim.AttackSelector == PlayerAttackSelector.Random ?  CombatSelector.RandomEnemy(state)
+            : CombatSelector.FindWeakestEnemy(state);
+
         }
 
         public override string GetName()
@@ -350,7 +400,7 @@ namespace RPG_CombatSim
             public bool IsPlayer;
             public Actor Actor;
             public ICombatState CombatState;
-            public Spell spell;
+            public Spell Spell;
             public List<Actor> Targets = new List<Actor>();
         }
 
@@ -360,7 +410,7 @@ namespace RPG_CombatSim
         public CSECastSpellEvent(Config config)
             : base(config.Actor, config.CombatState)
         {
-            spell = config.spell;
+            spell = config.Spell;
             targets = config.Targets;
             finished = false;
         }
@@ -368,7 +418,7 @@ namespace RPG_CombatSim
         public CSECastSpellEvent(CECastSpellEvent.Config config)
             : base(config.Actor, config.CombatState)
         {
-            spell = config.spell;
+            spell = config.Spell;
             targets = config.Targets;
             finished = false;
         }

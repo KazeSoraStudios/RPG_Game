@@ -184,7 +184,7 @@ namespace RPG_UI
                 actor.AddExp(xp);
                 while (actor.ReadyToLevelUp())
                 {
-                    var levelup = actor.CreateLevelUp();
+                    var levelup = actor.CreateLevelUp(true);
                     var levelNumber = actor.Level + levelup.Level;
                     var summary = XPSummaries[i];
                     summary.AddPopUp("ID_LEVEL_UP_TEXT", Color.yellow);

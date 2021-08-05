@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using RPG_GameData;
+﻿using UnityEngine;
 
 namespace RPG_Character
 {
@@ -19,16 +16,7 @@ namespace RPG_Character
                 LogManager.LogError($"{name} does not have an Id, cannot get text from GameData.");
                 return;
             }
-            // Get from gamedata
-            //ServiceManager.Get<GameData>().
-            text = "This forest is 1,000 years old and filled with goblins. Be careful!";
-        }
-
-        void Start()
-        {
-            int x = (int)transform.position.x;
-            int y = (int)transform.position.y;
-            ServiceManager.Get<TriggerManager>().AddTrigger(x, y, this);
+            text = ServiceManager.Get<LocalizationManager>().Localize(text);
         }
 
         public void SetText(string text)

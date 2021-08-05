@@ -140,7 +140,7 @@ namespace RPG_Character
                 actor.AddExp(exp);
                 while (actor.ReadyToLevelUp())
                 {
-                    var levelup = actor.CreateLevelUp();
+                    var levelup = actor.CreateLevelUp(true);
                     actor.ApplyLevel(levelup);
 
                 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using RPG_Audio;
 
 public class Storyboard : IGameState
 {
@@ -7,7 +8,7 @@ public class Storyboard : IGameState
     public StateStack SubStack = new StateStack();
     public Dictionary<string, IGameState> States = new Dictionary<string, IGameState>();
     public List<IStoryboardEvent> events = new List<IStoryboardEvent>();
-    public Dictionary<string, AudioSource> PlayingSounds = new Dictionary<string, AudioSource>();
+    public HashSet<string> PlayingSounds = new HashSet<string>();
 
     public Storyboard (StateStack stack, List<IStoryboardEvent> events, bool handIn = false)
     {
@@ -27,8 +28,9 @@ public class Storyboard : IGameState
 
     public void Exit()
     {
+        var audio = ServiceManager.Get<AudioManager>();
         foreach (var sound in PlayingSounds)
-            sound.Value.Stop();
+            audio.ForceFadeOut(sound);
     }
 
     public void HandleInput() { }
@@ -66,19 +68,18 @@ public class Storyboard : IGameState
         return "StoryboardState";
     }
 
-    public void AddSound(string name, AudioSource sound)
+    public void AddSound(string name)
     {
-        if (PlayingSounds.ContainsKey(name))
+        if (PlayingSounds.Contains(name))
             return;
-        PlayingSounds.Add(name, sound);
+        PlayingSounds.Add(name);
     }
 
     public void StopSound(string name)
     {
-        // TODO use audio manager
-        if (!PlayingSounds.ContainsKey(name))
+        if (!PlayingSounds.Contains(name))
             return;
-        PlayingSounds[name].Stop();
+        ServiceManager.Get<AudioManager>().ForceFadeOut(name);
     }
 
     public void PushState(string id, IGameState state)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using RPG_Audio;
 using RPG_Character;
 using RPG_Combat;
 using RPG_UI;
@@ -323,20 +324,21 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent PlaySound(string soundName, float volume, string identifer = "")
+    public static IStoryboardEvent PlaySound(string soundName, float volume)
     {
-        if (identifer.Equals(string.Empty))
-            identifer = soundName;
+        if (soundName.IsEmptyOrWhiteSpace())
+        {
+            LogManager.LogWarn("Empty Sound passed to PlaySound.");
+            return EmptyEvent;
+        }
         if (volume < 0 || volume > 1)
             volume = 1;
         return new StoryboardFunctionEvent
         {
             Function = (storyboard) =>
             {
-                // TODO sounds manager
-                //var id = Sound.Play(soundName)
-                //Sound.SetVolume(id, volume)
-                //storyboard:Sound(name, id)
+                ServiceManager.Get<AudioManager>().PlaySound(soundName, volume);
+                storyboard.AddSound(soundName);
                 return EmptyEvent;
             }
         };
@@ -391,71 +393,43 @@ public class StoryboardEventFunctions
     //    };
     //}
 
-    //public static IStoryboardEvent WriteTile(int mapId, Map.ChangeTile changeTile)
-    //{
-    //    return new StoryboardFunctionEvent
-    //    {
-    //        Function = (storyboard) =>
-    //        {
-    //            var map = GetMapReference(storyboard, mapId);
-    //            map.WriteTile(changeTile);
-    //            return EmptyEvent;
-    //        }
-    //    };
-    //}
+    public static IStoryboardEvent MoveCameraToTile(string state, int endX, int endY, float duration = 1.0f)
+    {
+       return new StoryboardFunctionEvent
+       {
+           Function = (storyboard) =>
+           {
+               var camera = Camera.main.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>();
+               var startX = camera.transform.position.x;
+               var startY = camera.transform.position.y;
+               var xDistance = endX - startX;
+               var yDistance = endY - startY;
 
-    //public static IStoryboardEvent MoveCameraToTile(string state, int x, int y, float duration = 1.0f)
-    //{
-    //    return new StoryboardFunctionEvent
-    //    {
-    //        Function = (storyboard) =>
-    //        {
-    //            var exploreState = (ExploreState)storyboard.States[state];
-    //            var startX = exploreState.manualCameraX;
-    //            var startY = exploreState.manualCameraY;
-    //            var topLeft = exploreState.Map.GetTileFoot(x, y);
-    //            var endX = topLeft.Item1;
-    //            var endY = topLeft.Item2;
-    //            var xDistance = endX - startX;
-    //            var yDistance = endY - startY;
+               return new TweenEvent<Cinemachine.CinemachineVirtualCamera>
+               {
+                   Target = camera,
+                   Function = (target, value) =>
+                   {
+                       var dX = startX + xDistance * value;
+                       var dY = startY + xDistance * value;
+                       var position = new Vector3(dX, dY, 0.0f);
+                       target.transform.position = position;
+                   },
+                   Start = 0,
+                   Duration = duration
+               };
+           }
+       };
+    }
 
-    //            return new TweenEvent<ExploreState>
-    //            {
-    //                Target = exploreState,
-    //                Function = (target, value) =>
-    //                {
-    //                    var dX = startX + xDistance * value;
-    //                    var dY = startY + xDistance * value;
-    //                    target.manualCameraX = (int)dX;
-    //                    target.manualCameraY = (int)dY;
-    //                },
-    //                Start = 0,
-    //                Duration = duration
-    //            };
-    //        }
-    //    };
-    //}
-
-    public static IStoryboardEvent FadeSound(string name, float start, float end, float duration)
+    public static IStoryboardEvent FadeSound(string name, float duration)
     {
         return new StoryboardFunctionEvent
         {
             Function = (storyboard) =>
             {
-                var id = storyboard.PlayingSounds[name];
-                // TODO assert sound id
-                return new TweenEvent<float>
-                {
-                    Target = 0.0f,
-                    Start = start,
-                    Distance = end - start,
-                    Duration = duration,
-                    Function = (target, value) =>
-                    {
-                        // TODO sound manager 
-                        // Sound.SetVolume(target, value);
-                    }
-                };
+                ServiceManager.Get<AudioManager>().ForceFadeOut(name, duration);
+                return EmptyEvent;
             }
         };
     }

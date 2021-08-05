@@ -86,6 +86,7 @@ namespace RPG_GameData
     {
         public int StealItem;
         public int Exp;
+        public int Level = 1;
         public Vector2 Gold;
         public string Id;
         public string Name;

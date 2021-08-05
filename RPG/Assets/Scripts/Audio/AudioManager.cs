@@ -9,9 +9,9 @@ namespace RPG_Audio
 		public List<AudioSource> AvailableSources = new List<AudioSource>();
 		public AudioSource BackgroundAudio;
 		public AudioSource[] AllSources = new AudioSource[8];
-
 		private AudioLibrary Library;
 		private bool BackgroundPaused = false;
+
 		void Awake()
 		{
 			ServiceManager.Register(this);
@@ -22,7 +22,6 @@ namespace RPG_Audio
 				AvailableSources.Add(AllSources[i]);
 			}
 		}
-
 
 		void OnDestroy()    
 		{
@@ -132,11 +131,12 @@ namespace RPG_Audio
 
 		
 
-		public AudioHandle PlaySound(string SoundName)
+		public AudioHandle PlaySound(string SoundName, float volume = 1)
 		{
 			var handle = Library.GetHandleForSound(SoundName);
-			if (handle.isValid)
+			if (handle != null && handle.isValid)
 			{
+				handle.volume = volume;
 				AvailableSources[0].clip = handle.clip;
 				AvailableSources[0].volume = handle.volume;
 				AvailableSources[0].PlayDelayed(handle.delay);
@@ -150,11 +150,12 @@ namespace RPG_Audio
 			return null;
 		}
 
-		public void ForceFadeOut(string SoundName)
+		public void ForceFadeOut(string SoundName, float fadeDuration = 1)
 		{
 			var handle = Library.GetHandleForSound(SoundName);
-			if (handle.isValid)
+			if (handle != null && handle.isValid)
 			{
+				handle.FadeDuration = fadeDuration;
 				StartCoroutine(handle.fadeOut());
 			}
 			else

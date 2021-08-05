@@ -11,6 +11,7 @@ namespace RPG_Combat
     public interface ICombatState
     {
         void OnFlee();
+        bool IsSim();
         bool IsPartyMember(Actor actor);
         CombatUI GetUI();
         Node GetBehaviorTreeForAIType(AIType type);
@@ -27,6 +28,7 @@ namespace RPG_Combat
         public class Config
         {
             public bool CanFlee;
+            public bool Sim;
             public string BackgroundPath;
             public StateStack Stack;
             public Action OnWin;
@@ -49,6 +51,7 @@ namespace RPG_Combat
         public Dictionary<AIType, Node> BehaviorTrees = new Dictionary<AIType, Node>();
         public List<object> Effects = new List<object>();
 
+        private bool sim = false;
         private bool canEscape = true;
         private bool escaped = false;
         private StateStack CombatStack = new StateStack();
@@ -71,6 +74,7 @@ namespace RPG_Combat
                 return;
             CombatStack.Clear();
             canEscape = config.CanFlee;
+            sim = config.Sim;
             gameStack = config.Stack;
             PartyActors = config.Party;
             EnemyActors = config.Enemies;
@@ -131,7 +135,7 @@ namespace RPG_Combat
         public void Enter(object stateParams) { }
         public void Exit() 
         {
-            if (GameRules.COMBAT_SIM)
+            if (sim)
                 return;
             var npcs = ServiceManager.Get<NPCManager>().ClearNpcsForMap(GetName());
             foreach (var npc in npcs)
@@ -170,6 +174,7 @@ namespace RPG_Combat
                 BehaviorTrees[type] : null;
         }
 
+        public bool IsSim() => sim;
         public StateStack Stack() => CombatStack;
         public ITurnHandler CombatTurnHandler() => TurnHandler;
         public CombatUI GetUI() => CombatUI;
@@ -303,7 +308,7 @@ namespace RPG_Combat
 
         private void RegisterEnemies()
         {
-            if (GameRules.COMBAT_SIM) 
+            if (sim) 
                 return;
             var mapName = GetName();
             foreach (var enemy in EnemyCharacters)
