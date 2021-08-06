@@ -176,5 +176,14 @@ namespace RPG_Audio
 
 			return null;
 		}
+
+		public void SetOverallVolume(float f)
+		{
+			foreach (AudioSource source in AllSources)
+			{
+				source.volume = f;
+			}
+			BackgroundAudio.volume = f;
+		}
 	}
 }

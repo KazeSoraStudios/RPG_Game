@@ -1034,6 +1034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: 39, y: 8}
+  EnterBuilding: 1
 --- !u!1 &194071468
 GameObject:
   m_ObjectHideFlags: 0
@@ -2431,6 +2432,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: 40, y: -13}
+  EnterBuilding: 1
 --- !u!1 &452518472
 GameObject:
   m_ObjectHideFlags: 0
@@ -2534,6 +2536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: 5.5, y: -7}
+  EnterBuilding: 0
 --- !u!1001 &516576819
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4420,6 +4423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: 0, y: 0}
+  EnterBuilding: 0
 --- !u!1001 &812059144
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4566,6 +4570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: -15.5, y: 7}
+  EnterBuilding: 0
 --- !u!1001 &829144374
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7169,6 +7174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: 66, y: 6}
+  EnterBuilding: 1
 --- !u!1001 &1316139470
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7624,6 +7630,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: 71, y: -14}
+  EnterBuilding: 1
 --- !u!4 &1393452525 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8214254501312239723, guid: 6f579f8ae24134629973e7bb1a0bf19c,
@@ -8767,6 +8774,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: 5, y: 7}
+  EnterBuilding: 0
 --- !u!1001 &1559261076
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10159,6 +10167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeleportPosition: {x: -16, y: -7}
+  EnterBuilding: 0
 --- !u!1 &1943101292
 GameObject:
   m_ObjectHideFlags: 0

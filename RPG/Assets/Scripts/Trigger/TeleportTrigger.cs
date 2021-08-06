@@ -4,6 +4,7 @@ using RPG_Character;
 public class TeleportTrigger : MonoBehaviour
 {
     [SerializeField] Vector2 TeleportPosition;
+    [SerializeField] bool EnterBuilding;
     private void OnTriggerEnter2D(Collider2D other) 
     {
         if (!other.tag.Equals("Player"))
@@ -11,6 +12,12 @@ public class TeleportTrigger : MonoBehaviour
         var character = other.GetComponent<Character>();
         character.PrepareForSceneChange();
         character.UpdateMovement(Vector2.zero);
-        Actions.Teleport(character.Entity, TeleportPosition);
+        ServiceManager.Get<RPG_Audio.AudioManager>().SetOverallVolume(1f);
+        if (EnterBuilding)
+		{
+            ServiceManager.Get<RPG_Audio.AudioManager>().SetOverallVolume(0.5f);
+		}
+		Actions.Teleport(character.Entity, TeleportPosition);
     }
+
 }

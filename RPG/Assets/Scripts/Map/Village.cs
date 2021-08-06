@@ -23,8 +23,10 @@ public class Village : Map
     private void PlayOpeningScene(GameState gameState, StateStack stack)
     {
         var character = gameState.World.Party.GetActor(0).GetComponent<Character>();
+        ServiceManager.Get<RPG_Audio.AudioManager>().SetOverallVolume(0.5f);
         var events = new List<IStoryboardEvent>
         {
+            
             StoryboardEventFunctions.BlackScreen("black", 0.1f),
             StoryboardEventFunctions.MoveHeroToPosition(this, new Vector2(65, 8)),
             StoryboardEventFunctions.FadeScreenOut("black", 1.0f),
