@@ -6,7 +6,6 @@ namespace RPG_Audio
 {
     public class AudioHandle
     {
-        public string Id;
         public AudioClip clip;
 
         public float volume;
@@ -46,7 +45,7 @@ namespace RPG_Audio
         {
             IsFading = true;
             volume = 0;
-            var source = ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(Id);
+            var source = ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(clip.name);
             while (volume < origVolume)
             {
                 volume += (1.0f / FadeDuration) * Time.fixedDeltaTime;
@@ -63,7 +62,7 @@ namespace RPG_Audio
         public IEnumerator fadeOut()
         {
             IsFading = true;
-            var source = ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(Id);
+            var source = ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(clip.name);
             while (volume > 0.0f)
             {
                 volume -= (1.0f / FadeDuration) * Time.fixedDeltaTime;
@@ -83,7 +82,7 @@ namespace RPG_Audio
         {
             volume = 1.0f;
             origVolume = 1.0f;
-            ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(Id).volume = volume;
+            ServiceManager.Get<AudioManager>().GetAudioSourceOfHandle(clip.name).volume = volume;
             FadeDuration = 1.0f;
             if (fadeInCoroutineHandle != null)
             {

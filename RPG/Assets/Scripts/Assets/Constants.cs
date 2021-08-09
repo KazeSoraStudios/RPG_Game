@@ -66,6 +66,7 @@ public class Constants
     public const int MAX_ENEMIES = 6;
     public const int DEFAULT_ENCOUNTER_CHANCE = 30;
     public const float TEXTBOX_CHARACTER_SPEED = 0.02f;
+    public const float TEXTBOX_BLIP_SPEED = 0.1f;
     public const float SELECT_MARKER_BOUNCE_SPEED = 5.0f;
     public const float DEFAULT_TIMED_TEXTBOX_TIME = 999999.0f;
     public const string DEFAULT_COMBAT_BACKGROUND = "Textures/combat_bg_forest";
@@ -125,5 +126,6 @@ public class Constants
 
     // Sounds
     public const string SOUND_FOLDER = "Sounds/";
-    public const string DEFAULT_BACKGROUND_MUSIC = "village_background";
+    public const string DEFAULT_BACKGROUND_MUSIC = "HeroVillageTheme";
+    public const string TEXT_BLIP_SOUND = "text-sound";
 }

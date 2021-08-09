@@ -15,9 +15,8 @@ namespace RPG_Audio
 
 		public AudioHandle GetHandleForSound(string sound)
 		{
-			if (!audio.ContainsKey(sound))
+			if(!audio.ContainsKey(sound))
 			{
-				LogManager.LogWarn($"Sound [{sound}] not found in AudioLibrary.");
 				return null;
 			}
 			return audio[sound];
@@ -65,7 +64,6 @@ namespace RPG_Audio
 					ShouldFadeOut = data.FadeOut,
 					FadeDuration = data.FadeDuration,
 					delay = data.delay,
-					Id = data.Id, 
 					volume = 1
 				};
 				audio[entry.Key] = handle;

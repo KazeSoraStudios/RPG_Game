@@ -37,6 +37,7 @@ public class Map : MonoBehaviour
 
     public virtual void Init()
     {
+        LogManager.LogInfo(Area.BackgroundMusic);
         var background = !Area.BackgroundMusic.IsEmptyOrWhiteSpace() ? Area.BackgroundMusic : Constants.DEFAULT_BACKGROUND_MUSIC;
         ServiceManager.Get<RPG_Audio.AudioManager>().SetBackgroundAudio(background);
         LoadNpcs();

@@ -32,15 +32,20 @@ namespace RPG_UI
         private bool usingSelectionBox = false;
         private bool callSelectionBoxCallback = false;
         private bool turnOff;
+
         private int currentPage = 0;
         private int characterIndex = 0;
         private int pageStart = 0;
         private int pageEnd = 0;
+
         private float nextCharTime;
+        private float nextBlipTime;
         private float totalTime;
         private float initialDelay = 0.0f;
         private float advanceTime = 0.0f;
+
         private string text;
+
         private TMP_TextInfo textInfo;
         private Action onFinish;
         private Action<int> onSelect;
@@ -78,6 +83,7 @@ namespace RPG_UI
             ServiceManager.Get<Party>().PrepareForTextboxState();
             ServiceManager.Get<NPCManager>().PrepareForTextboxState();
             nextCharTime = 0.0f;
+            nextBlipTime = 0;
             totalTime = 0.0f;
             turnOff = false;
             currentPage = 0;
@@ -91,6 +97,7 @@ namespace RPG_UI
         {
             totalTime += deltaTime;
             nextCharTime += deltaTime;
+            nextBlipTime += deltaTime;
             if (nextCharTime >= Constants.TEXTBOX_CHARACTER_SPEED)
             {
                 nextCharTime = 0.0f;
@@ -98,6 +105,12 @@ namespace RPG_UI
                 if (characterIndex >= pageEnd)
                     characterIndex = pageEnd;
                 Text.maxVisibleCharacters = characterIndex;
+            }
+            if(nextBlipTime >= Constants.TEXTBOX_BLIP_SPEED && !turnOff)
+			{
+                nextBlipTime = 0;
+                if (characterIndex < pageEnd)
+                    ServiceManager.Get<RPG_Audio.AudioManager>().PlaySound(Constants.TEXT_BLIP_SOUND);
             }
             if (totalTime >= advanceTime)
                 AdvanceOrTurnOff();
@@ -168,6 +181,7 @@ namespace RPG_UI
                 pageStart = textInfo.pageInfo[currentPage].firstCharacterIndex;
                 pageEnd = textInfo.pageInfo[currentPage].lastCharacterIndex;
                 Text.pageToDisplay = currentPage + 1;
+                
             }
             else
             {
