@@ -4,46 +4,47 @@ using RPG_Character;
 
 namespace RPG_Combat
 {
-    public interface ITurnHandler
+    public interface ICombatTurnHandler
     {
-        void Init(ICombatState state);
+        void Init(ICombatState state, EventQueue queue);
         void Execute();
         public void ClearTurns();
         public void AddEvent(IEvent evt, int speed);
         public void RemoveEventsForActor(int id);
     }
-    public class CombatTurnHandler : MonoBehaviour, ITurnHandler
+    public class CombatTurnHandler : MonoBehaviour, ICombatTurnHandler
     {
-        [SerializeField] EventQueue EventQueue;
+        private EventQueue eventQueue;
         private ICombatState combatState;
 
-        public void Init(ICombatState state)
+        public void Init(ICombatState state, EventQueue queue)
         {
             combatState = state;
-            EventQueue.Clear();
+            eventQueue = queue;
+            eventQueue.Clear();
             AddTurns();
         }
 
         public void Execute()
         {
-            EventQueue.Execute();
-            if (EventQueue.IsEmpty())
+            eventQueue.Execute();
+            if (eventQueue.IsEmpty())
                 AddTurns();
         }
 
         public void ClearTurns()
         {
-            EventQueue.Clear();
+            eventQueue.Clear();
         }
 
         public void AddEvent(IEvent evt, int speed)
         {
-            EventQueue.Add(evt, speed);
+            eventQueue.Add(evt, speed);
         }
 
         public void RemoveEventsForActor(int id)
         {
-            EventQueue.RemoveEventsForActor(id);
+            eventQueue.RemoveEventsForActor(id);
         }
 
         private void AddTurns()
@@ -58,11 +59,11 @@ namespace RPG_Combat
             {
                 var firstSpeed = Constants.MAX_STAT_VALUE + 1;
                 var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
+                if (isAlive && !eventQueue.ActorHasEvent(actor.Id))
                 {
                     var turn = new CETurn(actor, combatState);
-                    var speed = forceFirst ? firstSpeed : turn.CalculatePriority(EventQueue);
-                    EventQueue.Add(turn, speed);
+                    var speed = forceFirst ? firstSpeed : turn.CalculatePriority(eventQueue);
+                    eventQueue.Add(turn, speed);
                     LogManager.LogDebug($"Adding turn for {actor.name}");
                 }
             }
@@ -73,11 +74,11 @@ namespace RPG_Combat
             foreach (var actor in actors)
             {
                 var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
+                if (isAlive && !eventQueue.ActorHasEvent(actor.Id))
                 {
                     var turn = new CEAITurn(actor, combatState);
-                    var speed = turn.CalculatePriority(EventQueue);
-                    EventQueue.Add(turn, speed);
+                    var speed = turn.CalculatePriority(eventQueue);
+                    eventQueue.Add(turn, speed);
                     LogManager.LogDebug($"Adding AI turn for {actor.name}");
                 }
             }

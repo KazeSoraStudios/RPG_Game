@@ -147,7 +147,7 @@ namespace RPG_Combat
             var damage = baseDamage * 4;
             var level = attacker.Level;
             var stats = attacker.Stats;
-            var bonus = level * stats.Get(Stat.Magic) * (baseDamage / 32);
+            float bonus = level * stats.Get(Stat.Magic) * (baseDamage / 32);
             damage += bonus;
             if (Spell.SpellElement != SpellElement.None)
             {
@@ -156,9 +156,18 @@ namespace RPG_Combat
             }
 
             var resistance = Mathf.Min(Constants.MAX_STAT_VALUE, target.Stats.Get(Stat.Resist));
-            var resist = 1 - (resistance * 0.555f); // Divide by 255
+            float resist = 1 - (resistance / 255.0f); // Divide by 255
             damage *= resist;
             return Mathf.FloorToInt(damage);
+        }
+
+        public static FormulaResult MagicAttack(Actor attacker, Actor target, Spell spell)
+        {
+            result.Damage = 0;
+            result.Result = IsHitMagic(attacker, target, spell);
+            if (result.Result == HitResult.Hit)
+                result.Damage = CalculateSpellDamage(attacker, target, spell);
+            return result;
         }
     }
 }

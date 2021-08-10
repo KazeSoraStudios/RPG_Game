@@ -20,7 +20,7 @@ namespace RPG_AI
         {
             var attack = UnityEngine.Random.Range(0.0f, 1.1f);
             if (attack <= chance)
-                return CombatSelector.FindWeakestEnemy(combat);
+                return CombatSelector.FindWeakestPartyMember(combat);
             else
                 return CombatSelector.RandomPlayer(combat);
         }

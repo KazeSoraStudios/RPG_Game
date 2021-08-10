@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using RPG_Character;
 using RPG_Combat;
 using RPG_GameData;
@@ -9,84 +7,31 @@ using RPG_GameData;
 namespace RPG_CombatSim
 {
     public enum PlayerAttackSelector { Random, Weakest }
-    public class CombatSim : MonoBehaviour, ICombatEndHandler, ICombatReporter, ITurnHandler
+    public class CombatSim : MonoBehaviour
     {
-        [Serializable]
-        public class ActorData
-        {
-            public int Level = 1;
-            public int HP;
-            public int MP;
-            public int Attack;
-            public int Defense;
-            public int Magic;
-            public int Resist;
-            public int Speed;
-            public string Id;
-            private Stats stats;
-
-            public Stats Stats()
-            {
-                stats.SetStat(Stat.HP, HP);
-                stats.SetStat(Stat.MP, MP);
-                stats.SetStat(Stat.Attack, Attack);
-                stats.SetStat(Stat.Defense, Defense);
-                stats.SetStat(Stat.Magic, Magic);
-                stats.SetStat(Stat.Resist, Resist);
-                stats.SetStat(Stat.Speed, Speed);
-                return stats;
-            }
-
-            public ActorData(string id, Stats stats)
-            {
-                Id = id;
-                this.stats = stats;
-                HP = stats.Get(Stat.HP);
-                MP = stats.Get(Stat.MP);
-                Attack = stats.Get(Stat.Attack);
-                Defense = stats.Get(Stat.Defense);
-                Magic = stats.Get(Stat.Magic);
-                Resist = stats.Get(Stat.Resist);
-                Speed = stats.Get(Stat.Speed);
-            }
-        }
-
-        public bool AlwaysMelee;
-        public bool AlwaysMagic;
-        public int NumberOfBattles;
-        public int TotalBattles;
-        public int SimDataToView = 0;
-        public PlayerAttackSelector AttackSelector;
-        public float AttackLean = 0.5f;
-        public string[] Party = new string[3];
-        public string[] Enemies = new string[7];
-        public TextMeshProUGUI Wins;
-        public TextMeshProUGUI Loses;
-        public TextMeshProUGUI WinPercent;
-        public TextMeshProUGUI Dodges;
-        public TextMeshProUGUI Misses;
-        public TextMeshProUGUI Hits;
-        public TextMeshProUGUI Crits;
-        public EventQueue EventQueue;
-        public GameDataDownloader Downloader;
-        public List<Drop> drops = new List<Drop>();
-        public List<ActorData> PartyData = new List<ActorData>();
-        public List<ActorData> EnemyData = new List<ActorData>();
-        public List<CombatSimData> SimData = new List<CombatSimData>();
+        [SerializeField] public bool AlwaysMelee;
+        [SerializeField] public bool AlwaysMagic;
+        [SerializeField] int NumberOfBattles;
+        [SerializeField] int TotalBattles;
+        [SerializeField] int SimDataToView = 0;
+        [SerializeField] public PlayerAttackSelector AttackSelector;
+        [SerializeField] public float AttackLean = 0.5f;
+        [SerializeField] string[] Party = new string[3];
+        [SerializeField] string[] Enemies = new string[7];
+        [SerializeField] List<SimActorData> PartyData = new List<SimActorData>();
+        [SerializeField] List<SimActorData> EnemyData = new List<SimActorData>();
+        [SerializeField] List<CombatSimData> SimData = new List<CombatSimData>();
+        [SerializeField] GameDataDownloader Downloader;
+        [SerializeField] CombatSimTurnHandler TurnHandler;
+        [SerializeField] CombatSimReporter Reporter;
+        [SerializeField] CombatSimEndHandler EndHandler;
 
         private int currentSimData = 0;
-        private Action onWin;
-        private Action onDie;
         private StateStack stack;
         private GameData gameData;
         private CombatGameState combat;
         private List<Actor> partyPrefabs = new List<Actor>();
         private List<Actor> enemyPrefabs = new List<Actor>();
-
-        private void Awake()
-        {
-            LogManager.SetLogLevel(LogLevel.Info);
-        }
 
         private void Start() 
         {
@@ -102,9 +47,9 @@ namespace RPG_CombatSim
                 return;
             }
             combat = GameObject.Instantiate(asset, Vector3.zero, Quaternion.identity);
-            combat.EndHandler = this;
-            combat.TurnHandler = this;
             SimData.Add(new CombatSimData());
+            Reporter.Init(this);
+            LogManager.SetLogLevel(LogLevel.Debug);
         }
 
         private void Update() 
@@ -112,43 +57,9 @@ namespace RPG_CombatSim
             stack.Update(Time.deltaTime);
         }
 
-        public void Init(ICombatState state, Action onWin, Action onDie)
+        public CombatSimData GetCurrentData()
         {
-            this.onWin = onWin;
-            this.onDie = onDie;
-        }
-
-        public void OnWin(StateStack stack)
-        {
-            SimData[currentSimData].TotalWins++;
-            OnBattleFinished();
-        }
-
-        public void OnLose(StateStack stack)
-        {
-            SimData[currentSimData].TotalLoses++;
-            OnBattleFinished();
-        }
-
-        public List<Drop> Drops() => drops;
-
-        public void ReportResult(FormulaResult result, string name)
-        {
-            SimData[currentSimData].TotalTurns++;
-            if (result.Result == CombatFormula.HitResult.Miss)
-                SimData[currentSimData].TotalMisses++;
-            else if (result.Result == CombatFormula.HitResult.Dodge)
-                SimData[currentSimData].TotalDodges++;
-            else if (result.Result == CombatFormula.HitResult.Hit)
-                {}
-            else
-                SimData[currentSimData].TotalCrits++;
-            DisplayResults();
-        }
-
-        public void DisplayInfo(string info)
-        {
-            LogManager.LogInfo(info);
+            return SimData[currentSimData];
         }
 
         public void Reset()
@@ -157,100 +68,21 @@ namespace RPG_CombatSim
                 currentSimData = 0;
             else
                 currentSimData = SimDataToView;
-            DisplayResults();
+            Reporter.DisplayResults();
         }
 
-        public void Init(ICombatState state)
-        {
-            EventQueue.Clear();
-            AddTurns();
-        }
-
-        public void Execute()
-        {
-            EventQueue.Execute();
-            if (EventQueue.IsEmpty())
-                AddTurns();
-        }
-
-        public void ClearTurns()
-        {
-            EventQueue.Clear();
-        }
-
-        public void AddEvent(IEvent evt, int speed)
-        {
-            EventQueue.Add(evt, speed);
-        }
-
-        public void RemoveEventsForActor(int id)
-        {
-            EventQueue.RemoveEventsForActor(id);
-        }
-
-        private void AddTurns()
-        {
-            AddPlayerTurns(combat.GetPartyActors());
-            AddEnemyTurns(combat.GetEnemyActors());
-        }
-
-        private void AddPlayerTurns(List<Actor> actors, bool forceFirst = false)
-        {
-            foreach (var actor in actors)
-            {
-                var firstSpeed = Constants.MAX_STAT_VALUE + 1;
-                var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
-                {
-                    var turn = new CESimTurn(actor, combat, this);
-                    var speed = forceFirst ? firstSpeed : turn.CalculatePriority(EventQueue);
-                    EventQueue.Add(turn, speed);
-                    LogManager.LogDebug($"Adding turn for {actor.name}");
-                }
-            }
-        }
-
-        private void AddEnemyTurns(List<Actor> actors)
-        {
-            foreach (var actor in actors)
-            {
-                var isAlive = actor.Stats.Get(Stat.HP) > 0;
-                if (isAlive && !EventQueue.ActorHasEvent(actor.Id))
-                {
-                    var turn = new CSEAITurn(actor, combat);
-                    var speed = turn.CalculatePriority(EventQueue);
-                    EventQueue.Add(turn, speed);
-                    LogManager.LogDebug($"Adding AI turn for {actor.name}");
-                }
-            }
-        }
-
-        private void OnBattleFinished()
+        public void OnBattleFinished()
         {
             stack.Pop();
             TotalBattles++;
             if (TotalBattles >= NumberOfBattles)
             {
-                DisplayResults();
+                Reporter.DisplayResults();
             }
             else
             {
                 StartCombat();
             }
-        }
-
-        private void DisplayResults()
-        {
-            var current = SimData[currentSimData];
-            Wins.SetText($"{current.TotalWins}");
-            Loses.SetText($"{current.TotalLoses}");
-            float percent =  current.TotalWins + current.TotalLoses == 0 ? 
-            current.TotalWins : current.TotalWins / (float)(current.TotalWins + current.TotalLoses);
-            WinPercent.SetText($"{percent}");
-            Dodges.SetText($"{current.TotalDodges}");
-            Misses.SetText($"{current.TotalMisses}");
-            Hits.SetText($"{current.TotalTurns - current.TotalDodges - current.TotalMisses}");
-            Crits.SetText($"{current.TotalCrits}");
         }
 
         public void RunBattle()
@@ -270,7 +102,9 @@ namespace RPG_CombatSim
                 Party = CreateParty(),
                 Enemies = CreateEnemies(),
                 Stack = stack,
-                Reporter = this
+                Reporter = Reporter,
+                TurnHandler = TurnHandler,
+                EndHandler = EndHandler
             };
             combat.Init(combatConfig);
             stack.Push(combat);
@@ -291,7 +125,7 @@ namespace RPG_CombatSim
                 }
                 if (GetPartyDataIndex(hero) == -1)
                 {    
-                    var actorData = new ActorData(hero, new Stats(gameData.Stats[hero + "_stats"], name));
+                    var actorData = new SimActorData(hero, new Stats(gameData.Stats[hero + "_stats"], name));
                     PartyData.Add(actorData);
                 }
             }
@@ -312,7 +146,7 @@ namespace RPG_CombatSim
                 }
                 if (GetEnemyDataIndex(enemy) == -1)
                 {
-                    var actorData = new ActorData(enemy, new Stats(gameData.Stats[enemy + "_stats"], name));
+                    var actorData = new SimActorData(enemy, new Stats(gameData.Stats[enemy + "_stats"], name));
                     EnemyData.Add(actorData);
                 }
             }
@@ -337,7 +171,6 @@ namespace RPG_CombatSim
                 if (index != -1)
                 {
                     partyPrefabs[i].Stats = PartyData[i].Stats();
-                    partyPrefabs[i].GoToLevel(PartyData[i].Level, true);
                 }
                 party.Add(partyPrefabs[i]);
             }
@@ -363,7 +196,6 @@ namespace RPG_CombatSim
                 if (index != -1)
                 {
                     enemyPrefabs[i].Stats = EnemyData[i].Stats();
-                    enemyPrefabs[i].GoToLevel(EnemyData[i].Level, false);
                 }
                 enemies.Add(enemyPrefabs[i]);
             }
@@ -383,14 +215,16 @@ namespace RPG_CombatSim
                 var hero = GameObject.Instantiate(obj);
                 hero.gameObject.transform.SetParent(transform, true);
                 hero.Init(null, Constants.PARTY_STATES, Constants.WAIT_STATE);
+                hero.name = $"Party{i}";
                 partyPrefabs.Add(hero.GetComponent<Actor>());
             }
             for (int i = 0; i < 7; i++)
             {
-                var hero = GameObject.Instantiate(obj);
-                hero.gameObject.transform.SetParent(transform, true);
-                hero.Init(null, Constants.PARTY_STATES, Constants.WAIT_STATE);
-                enemyPrefabs.Add(hero.GetComponent<Actor>());
+                var enemy = GameObject.Instantiate(obj);
+                enemy.gameObject.transform.SetParent(transform, true);
+                enemy.Init(null, Constants.PARTY_STATES, Constants.WAIT_STATE);
+                enemy.name = $"Enemy{i}";
+                enemyPrefabs.Add(enemy.GetComponent<Actor>());
             }
         }
 

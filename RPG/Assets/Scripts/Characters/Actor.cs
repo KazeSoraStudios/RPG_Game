@@ -82,7 +82,6 @@ namespace RPG_Character
                 }
             }
             NextLevelExp = LevelFunction.NextLevel(Level);
-            GoToLevel(Level, true);
         }
 
         public void Init(Enemy enemy)
@@ -105,24 +104,23 @@ namespace RPG_Character
             var gameData = ServiceManager.Get<GameData>();
             Stats = Stats = new Stats(gameData.Stats[enemy.StatsId], name);
             Level = enemy.Level;
-            GoToLevel(Level, false);
         }
 
-        public void GoToLevel(int level, bool isPlayer)
-        {
-            if (LevelFunction == null)
-                return;
-            Level = level;
-            for (int i = 1; i < Level; i++)
-                Exp += LevelFunction.NextLevel(i);
-            Level = 0;
-            NextLevelExp = LevelFunction.NextLevel(Level);
-            while (ReadyToLevelUp())
-            {
-                var levelUp = CreateLevelUp(isPlayer);
-                ApplyLevel(levelUp);
-            }
-        }
+        // public void GoToLevel(int level, bool isPlayer)
+        // {
+        //     if (LevelFunction == null)
+        //         return;
+        //     Level = level;
+        //     for (int i = 1; i < Level; i++)
+        //         Exp += LevelFunction.NextLevel(i);
+        //     Level = 0;
+        //     NextLevelExp = LevelFunction.NextLevel(Level);
+        //     while (ReadyToLevelUp())
+        //     {
+        //         var levelUp = CreateLevelUp(isPlayer);
+        //         ApplyLevel(levelUp);
+        //     }
+        // }
 
         public bool ReadyToLevelUp()
         {

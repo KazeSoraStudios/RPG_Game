@@ -96,14 +96,6 @@ namespace RPG_Combat
             }
         }
 
-        private List<Stats> StatsForMenuState(List<Actor> targets)
-        { // TODO set up for use on menu
-            var stats = new List<Stats>();
-            foreach (var target in targets)
-                stats.Add(target.Stats);
-            return stats;
-        }
-
         private static void HpRestore(CombatActionConfig config)
         {
             if (!(config.Def is ItemUse itemUse) || itemUse == null)
@@ -154,25 +146,39 @@ namespace RPG_Combat
                 LogManager.LogError("Spell was null inside Config. Cannot Run ElementSpell.");
                 return;
             }
-            var restoreAmount = spell.BaseDamage != Vector2.zero ? spell.BaseDamage : new Vector2(100.0f, 100.0f);
-            restoreAmount.x *= config.Owner.Level;
+            foreach(var target in config.Targets)
+            {
+                var result = CombatFormula.MagicAttack(config.Owner, target, spell);
+                LogManager.LogDebug($"{config.Owner.Name} cast spell {spell.LocalizedName()} at {target.Name}. Result is {result.Result}, damage is {result.Damage}");
+                if (result.Result == CombatFormula.HitResult.Hit)
+                    ApplyDamage(target, result.Damage, false);
+            }
+            // TODO Spell effect
+        }
 
-            // TODO effect local animEffect = gEntities.fx_restore_hp
-            var restoreColor = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+        private static void Revive(CombatActionConfig config)
+        {
+            if (!(config.Def is ItemUse itemUse) || itemUse == null)
+            {
+                LogManager.LogError("ItemUse was null inside Config. Cannot Run Revive.");
+                return;
+            }
+
+            var restoreAmount = itemUse.Amount > 0 ? itemUse.Amount : 250;
             foreach(var target in config.Targets)
             {
                 var stats = target.Stats;
-                var hp = stats.Get(Stat.HP);
                 var maxHP = stats.Get(Stat.MaxHP);
+                var hp = stats.Get(Stat.HP);
                 if (hp > 0)
                 {
-                    // TODO add text number effect AddTextNumberEffect(state, entity, restoreAmount, restoreColor)
-                    hp = Mathf.Min(maxHP, hp + (int)restoreAmount.x);
-                    stats.SetStat(Stat.HP, hp);
+                    LogManager.LogDebug($"Actor [{target.Name}] has HP [{hp}], cannot use Revive.");
+                    continue;
                 }
+                stats.SetStat(Stat.HP, Mathf.Max(maxHP, hp + restoreAmount));
+                target.GetComponent<Character>().Controller.SetCurrentState(Constants.STAND_STATE);
             }
-            // TODO animation AddAnimEffect(state, entity, animEffect, 0.1)
-    }
+        }
 
         /*
 		 local function AddAnimEffect(state, entity, def, spf)
@@ -320,92 +326,8 @@ CombatActions =
 
 
     ['revive'] =
-    function(state, owner, targets, def, stateId)
-
-        local restoreAmount = def.use.restore or 100
-
-        local function DoCombatFX()
-            local animEffect = gEntities.fx_revive
-            local restoreColor = Vector.Create(0, 1, 0, 1)
-
-            for k, v in ipairs(targets) do
-                local stats, character, entity = StatsCharEntity(state, v)
-                local nowHP = stats:Get("hp_now")
-
-                if nowHP == 0 then
-                    -- the character will get a CETurn event automatically
-                    -- assigned next update
-                    character.mController:Change(CSStandby.mName)
-                    AddTextNumberEffect(state, entity, restoreAmount, restoreColor)
-                end
-
-                AddAnimEffect(state, entity, animEffect, 0.1)
-            end
-        end
-
-        if not (stateId == "item") then
-            DoCombatFX()
-        end
-
-        local extractStatFunction = StatsForCombatState
-        if stateId == "item" then
-            extractStatFunction = StatsForMenuState
-        end
-
-        local statList = extractStatFunction(targets)
-        for k, v in ipairs(statList) do
-
-            local maxHP = v:Get("hp_max")
-            local nowHP = v:Get("hp_now")
-
-            if nowHP == 0 then
-                nowHP = math.min(maxHP, nowHP + restoreAmount)
-                v:Set("hp_now", nowHP)
-            end
-        end
-
+    
     end,
-
-    ['element_spell'] =
-    function(state, owner, targets, def, stateId)
-
-        for k, v in ipairs(targets) do
-            local _, _, entity = StatsCharEntity(state, v)
-
-            local damage, hitResult = Formula.MagicAttack(state, owner, v, def)
-
-            if hitResult == HitResult.Hit then
-                state:ApplyDamage(v, damage)
-            end
-
-            if def.element == "fire" then
-                AddAnimEffect(state, entity, gEntities.fx_fire, 0.06)
-            elseif def.element == "electric" then
-                AddAnimEffect(state, entity, gEntities.fx_electric, 0.12)
-            elseif def.element == "ice" then
-                AddAnimEffect(state, entity, gEntities.fx_ice_1, 0.1)
-                local x = entity.mX
-                local y = entity.mY
-
-                local spk = gEntities.fx_ice_spark
-                local effect = AnimEntityFx:Create(x, y, spk, spk.frames, 0.12)
-                state:AddEffect(effect)
-
-                local x2 = x + entity.mWidth * 0.8
-                local ice2 = gEntities.fx_ice_2
-                effect = AnimEntityFx:Create(x2, y, ice2, ice2.frames, 0.1)
-                state:AddEffect(effect)
-
-                local x3 = x - entity.mWidth * 0.8
-                local y3 = y - entity.mHeight * 0.6
-                local ice3 = gEntities.fx_ice_3
-                effect = AnimEntityFx:Create(x3, y3, ice3, ice3.frames, 0.1)
-                state:AddEffect(effect)
-            end
-        end
-    end
-		 
-		 
-		 */
+*/
     }
 }

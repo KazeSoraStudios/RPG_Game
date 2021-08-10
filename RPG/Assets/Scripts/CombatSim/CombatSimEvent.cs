@@ -290,6 +290,8 @@ namespace RPG_CombatSim
             LogManager.LogDebug($"Attacking {target.name}");
             result = CombatFormula.MeleeAttack(actor, target);
             var entity = target.GetComponent<Entity>();
+            var text = $"{actor.Name} attacked {target.Name}. The result is {result.Result}, damage is {result.Damage}";
+            state.CombatReporter().DisplayInfo(text);
             if (result.Result == CombatFormula.HitResult.Miss)
             {
                 CombatActions.ApplyMiss(target);
@@ -435,6 +437,8 @@ namespace RPG_CombatSim
             }
             if (targets.Count < 1)
                 targets = spell.ItemTarget.Selector(state, true);
+            var text = $"{actor.Name} cast spell {spell.LocalizedName()}";
+            state.CombatReporter().DisplayInfo(text);
             Cast();
             Finish();
         }

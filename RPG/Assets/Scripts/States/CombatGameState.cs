@@ -4,7 +4,6 @@ using UnityEngine;
 using RPG_AI;
 using RPG_Character;
 using RPG_UI;
-using TMPro;
 
 namespace RPG_Combat
 {
@@ -15,7 +14,7 @@ namespace RPG_Combat
         bool IsPartyMember(Actor actor);
         CombatUI GetUI();
         Node GetBehaviorTreeForAIType(AIType type);
-        ITurnHandler CombatTurnHandler();
+        ICombatTurnHandler CombatTurnHandler();
         ICombatReporter CombatReporter();
         StateStack Stack();
         List<Actor> GetAllActors();
@@ -34,14 +33,14 @@ namespace RPG_Combat
             public Action OnWin;
             public Action OnDie;
             public ICombatReporter Reporter;
+            public ICombatTurnHandler TurnHandler;
+            public ICombatEndHandler EndHandler;
             public List<Actor> Party;
             public List<Actor> Enemies;
         }
 
         [SerializeField] CombatPositions Positions;
         [SerializeField] CombatUI CombatUI;
-        [SerializeField] public ITurnHandler TurnHandler;
-        [SerializeField] public ICombatEndHandler EndHandler;
 
         public List<Actor> PartyActors = new List<Actor>();
         public List<Actor> EnemyActors = new List<Actor>();
@@ -49,7 +48,6 @@ namespace RPG_Combat
         public List<Character> PartyCharacters = new List<Character>();
         public List<Character> EnemyCharacters = new List<Character>();
         public Dictionary<AIType, Node> BehaviorTrees = new Dictionary<AIType, Node>();
-        public List<object> Effects = new List<object>();
 
         private bool sim = false;
         private bool canEscape = true;
@@ -57,6 +55,8 @@ namespace RPG_Combat
         private StateStack CombatStack = new StateStack();
         private StateStack gameStack = new StateStack();
         private ICombatReporter combatReporter;
+        private ICombatTurnHandler turnHandler;
+        private ICombatEndHandler endHandler;
 
         private void Awake() 
         {
@@ -81,13 +81,11 @@ namespace RPG_Combat
             CreateCombatCharacters(true);
             CreateCombatCharacters(false);
             LoadBehaviors();
-            LoadCombatReporter(config.Reporter);
-            EndHandler.Init(this, config.OnWin, config.OnDie);
+            LoadInterfaces(config);
             CombatUI.LoadMenuUI(config.Party);
             var backgroundPath = config.BackgroundPath.IsEmpty() ? Constants.DEFAULT_COMBAT_BACKGROUND : config.BackgroundPath;
             ServiceManager.Get<CombatScene>()?.SetBackground(backgroundPath);
             PlaceActors();
-            TurnHandler.Init(this);
             RegisterEnemies();
         }
 
@@ -111,15 +109,15 @@ namespace RPG_Combat
                 CombatStack.Update(deltaTime);
             else
             {
-                TurnHandler.Execute();
+                turnHandler.Execute();
                 if (PartyWins() || PartyFled())
                 {
-                    TurnHandler.ClearTurns();
+                    turnHandler.ClearTurns();
                     OnWin();
                 }
                 else if (EnemyWins())
                 {
-                    TurnHandler.ClearTurns();
+                    turnHandler.ClearTurns();
                     OnLose();
                 }
             }
@@ -176,7 +174,7 @@ namespace RPG_Combat
 
         public bool IsSim() => sim;
         public StateStack Stack() => CombatStack;
-        public ITurnHandler CombatTurnHandler() => TurnHandler;
+        public ICombatTurnHandler CombatTurnHandler() => turnHandler;
         public CombatUI GetUI() => CombatUI;
         public ICombatReporter CombatReporter() => combatReporter;
 
@@ -203,7 +201,7 @@ namespace RPG_Combat
                     if (hp <= 0)
                     {
                         character.Controller.Change(Constants.DIE_STATE, Constants.DEATH_ANIMATION);
-                        TurnHandler.RemoveEventsForActor(actor.Id);
+                        turnHandler.RemoveEventsForActor(actor.Id);
                     }
                 }
             }
@@ -222,8 +220,8 @@ namespace RPG_Combat
                     EnemyActors.RemoveAt(i);
                     EnemyCharacters.RemoveAt(i);
                     character.Controller.Change(Constants.ENEMY_DIE_STATE);
-                    TurnHandler.RemoveEventsForActor(actor.Id);
-                    EndHandler.Drops().Add(actor.Loot);
+                    turnHandler.RemoveEventsForActor(actor.Id);
+                    endHandler.Drops().Add(actor.Loot);
                     DeadCharacters.Add(character);
                 }
             }
@@ -234,14 +232,14 @@ namespace RPG_Combat
             if (gameStack.Top().GetHashCode() != GetHashCode())
                 return;
             gameObject.SafeSetActive(false);
-            EndHandler.OnWin(gameStack);
+            endHandler.OnWin(gameStack);
         }
 
         private void OnLose()
         {
             if (gameStack.Top().GetHashCode() != GetHashCode()) // TODO maybe fix?
                 return;
-            EndHandler.OnLose(gameStack);
+            endHandler.OnLose(gameStack);
         }
 
         private void CreateCombatCharacters(bool party)
@@ -347,11 +345,19 @@ namespace RPG_Combat
             return -1;
         }
 
-        private void LoadCombatReporter(ICombatReporter reporter)
+        private void LoadInterfaces(Config config)
         {
-            combatReporter = reporter;
+            combatReporter = config.Reporter;
             if (combatReporter == null)
                 combatReporter = new CombatInfoReporter(CombatUI);
+            turnHandler = config.TurnHandler;
+            if (turnHandler == null)
+                turnHandler = new CombatTurnHandler();
+            turnHandler.Init(this, GetComponent<EventQueue>());
+            endHandler = config.EndHandler;
+            if (endHandler == null)
+                endHandler = new CombatEndHandler();
+            endHandler.Init(this, config.OnWin, config.OnDie);
         }
     }
 }
