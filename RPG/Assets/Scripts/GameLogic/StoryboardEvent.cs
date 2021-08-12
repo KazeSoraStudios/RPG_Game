@@ -579,14 +579,13 @@ public class StoryboardEventFunctions
         };
     }
 
-    public static IStoryboardEvent MoveHeroToPosition(Map map, Vector2 positon)
+    public static IStoryboardEvent MoveCharacterToPosition(Transform character, Vector2 positon)
     {
         return new StoryboardFunctionEvent
         {
             Function = (_) =>
             {
-                var exploreState = map.gameObject.GetComponent<ExploreState>();
-                exploreState.SetHeroPosition(positon);
+                character.position = positon;
                 return EmptyEvent;
             }
         };

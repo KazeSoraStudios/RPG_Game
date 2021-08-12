@@ -116,7 +116,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5883101160653709395}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -169,7 +169,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PathIndex: 0
   animator: {fileID: 5883101160653709399}
-  Map: {fileID: 0}
   defaultState: 1
   previousDefaultState: 1
   collisionLayer:
@@ -190,9 +189,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 238b76ad976e0604983b7bb2a6fba75c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 0
-  width: 0
-  selectPadding: 16
   speed: 6
   movement: {x: 0, y: 0}
   rigidbody: {fileID: 5883101160653709398}

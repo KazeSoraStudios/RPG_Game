@@ -11,7 +11,7 @@ public class Map : MonoBehaviour
     [SerializeField] public string CombatBackground = Constants.DEFAULT_COMBAT_BACKGROUND;
     [SerializeField] public Vector3 HeroStartingPosition;
     [SerializeField] public CinemachineVirtualCamera Camera;
-    [SerializeField] Transform NPCParent;
+    [SerializeField] protected Transform NPCParent;
     [SerializeField] Tilemap Encounters;
     [SerializeField] CheckConditionTrigger Conditions;
     [SerializeField] List<NPCData> MapNPCs = new List<NPCData>();
@@ -59,7 +59,7 @@ public class Map : MonoBehaviour
             npc.transform.rotation = Quaternion.identity;
             AddNPC(npc);
             var defaultState = data.DefaultState.IsEmptyOrWhiteSpace() ? Constants.WAIT_STATE : data.DefaultState.ToUpper();
-            npc.Init(this, Constants.ENEMY_STATES, defaultState);
+            npc.Init(Constants.ENEMY_STATES, defaultState);
         }
     }
 

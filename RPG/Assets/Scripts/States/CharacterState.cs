@@ -61,9 +61,7 @@ public class PlanStrollState : CharacterState
                direction = Vector2.up;
             else if (choice == 4)
                 direction = Vector2.down;
-
-            if (Character.CanMove(direction))
-                Character.Controller.Change(Constants.UNIT_MOVE_STATE, new MoveParams(direction));
+            Character.Controller.Change(Constants.UNIT_MOVE_STATE, new MoveParams(direction));
             CountDown = Random.Range(0, 3);
         }
         return true;
@@ -93,11 +91,7 @@ public class WaitState : CharacterState
                 movement.y = 0.0f;
             else
                 movement.x = 0.0f;
-            if (!Character.CanMove(movement))
-            {
-                Character.UpdateAnimation(movement);
-                return true;
-            }
+            Character.UpdateAnimation(movement);
             //Character.Controller.SetParams(movement);
             Character.Controller.Change(Constants.MOVE_STATE, new MoveParams(movement));
         }
@@ -184,11 +178,6 @@ public class MoveState : CharacterState
         }
         int x = (int)Character.transform.position.x + (int)moveParams.MovePosition.x;
         int y = (int)Character.transform.position.y + (int)moveParams.MovePosition.y;
-        var map = Character.Map;
-        // if (map.TryEncounter(new Vector3Int(x, y, 0)))
-        // {
-
-        // }
         Character.UpdateMovement(moveParams.MovePosition);
     }
 

@@ -214,7 +214,7 @@ namespace RPG_CombatSim
             {
                 var hero = GameObject.Instantiate(obj);
                 hero.gameObject.transform.SetParent(transform, true);
-                hero.Init(null, Constants.PARTY_STATES, Constants.WAIT_STATE);
+                hero.Init(Constants.PARTY_STATES, Constants.WAIT_STATE);
                 hero.name = $"Party{i}";
                 partyPrefabs.Add(hero.GetComponent<Actor>());
             }
@@ -222,7 +222,7 @@ namespace RPG_CombatSim
             {
                 var enemy = GameObject.Instantiate(obj);
                 enemy.gameObject.transform.SetParent(transform, true);
-                enemy.Init(null, Constants.PARTY_STATES, Constants.WAIT_STATE);
+                enemy.Init(Constants.PARTY_STATES, Constants.WAIT_STATE);
                 enemy.name = $"Enemy{i}";
                 enemyPrefabs.Add(enemy.GetComponent<Actor>());
             }

@@ -102,7 +102,6 @@ public class ExploreState : MonoBehaviour, IGameState
             LoadHeroPrefab();
         else
             Hero = game.World.Party.GetActor(0).GetComponent<Character>();
-        Hero.Map = Map;
         Hero.transform.position = startPosition;
         Hero.transform.rotation = Quaternion.identity;
         Map.Camera.Follow = Hero.transform;
@@ -121,7 +120,7 @@ public class ExploreState : MonoBehaviour, IGameState
         var world = ServiceManager.Get<World>();
         var characterParent = world.PersistentCharacters;
         Hero.gameObject.transform.SetParent(characterParent, true);
-        Hero.Init(Map, Constants.PARTY_STATES, Constants.WAIT_STATE);
+        Hero.Init(Constants.PARTY_STATES, Constants.WAIT_STATE);
         var actor = Hero.GetComponent<Actor>();
         actor.Init(ServiceManager.Get<GameData>().PartyDefs["hero"]);
         world.Party.Add(actor);

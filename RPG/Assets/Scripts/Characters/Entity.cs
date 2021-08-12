@@ -4,9 +4,6 @@ namespace RPG_Character
 {
     public class Entity : MonoBehaviour
     {
-        [SerializeField] int height;
-        [SerializeField] int width;
-        [SerializeField] int selectPadding;
         [SerializeField] float speed = 1.0f;
         [SerializeField] Vector2 movement;
         [SerializeField] Rigidbody2D rigidbody;
@@ -81,7 +78,7 @@ namespace RPG_Character
         public Vector2 GetSelectPosition()
         {
             var position = transform.position;
-            var y = position.y + height * 0.5f + selectPadding;
+            var y = position.y + 1;
             return new Vector2(position.x, y);
         }
 

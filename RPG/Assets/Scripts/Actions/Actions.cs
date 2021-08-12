@@ -320,7 +320,7 @@ public class Actions
             CanFlee = true,
             BackgroundPath = config.Map.CombatBackground,
             Party = config.Party,
-            Enemies = CreateEnemyList(config.Map, config.Enemies),
+            Enemies = CreateEnemyList(config.Enemies),
             Stack = config.Stack,
             OnWin = config.OnWin,
             OnDie = config.OnLose
@@ -345,26 +345,26 @@ public class Actions
         config.Stack.Push(storyboard);
     }
 
-    private static List<Actor> CreateEnemyList(Map map, List<String> enemyList)
+    private static List<Actor> CreateEnemyList(List<String> enemyList)
     {
         var enemies = new List<Actor>();
         if (enemyList == null || enemyList.Count < 1)
         {
-            var enemy = LoadEnemy(map);
+            var enemy = LoadEnemy();
             if (enemy != null)
                 enemies.Add(enemy);
             return enemies;
         }
         foreach (var enemy in enemyList)
         {
-            var actor = LoadEnemy(map, enemy);
+            var actor = LoadEnemy(enemy);
             if (actor != null)
                 enemies.Add(actor);
         }
         return enemies;
     }
 
-    private static Actor LoadEnemy(Map map, string enemyId = Constants.DEFAULT_COMBAT_ENEMY_PREFAB)
+    private static Actor LoadEnemy(string enemyId = Constants.DEFAULT_COMBAT_ENEMY_PREFAB)
     {
         var assetManager = ServiceManager.Get<AssetManager>();
         var enemyData = ServiceManager.Get<GameData>().Enemies;
@@ -375,7 +375,7 @@ public class Actions
         var asset = assetManager.Load<Actor>(prefabPath);
         var enemy = GameObject.Instantiate(asset);
         var character = enemy.GetComponent<Character>();
-        character.Init(map, Constants.ENEMY_STATES);
+        character.Init(Constants.ENEMY_STATES);
         var actor = enemy.GetComponent<Actor>();
         actor.Init(enemyDef);
         return enemy;

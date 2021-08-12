@@ -81,7 +81,7 @@ namespace RPG_Character
                     Specials.AddRange(list);
                 }
             }
-            NextLevelExp = LevelFunction.NextLevel(Level);
+            //NextLevelExp = LevelFunction.NextLevel(Level);
         }
 
         public void Init(Enemy enemy)

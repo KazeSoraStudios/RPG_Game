@@ -10,7 +10,6 @@ namespace RPG_Character
     {
         [SerializeField] public int PathIndex = 0;
         [SerializeField] public Animator animator;
-        [SerializeField] public Map Map;
         [SerializeField] public StateMachine Controller { get; private set; }
         [SerializeField] public string defaultState = Constants.WAIT_STATE;
         [SerializeField] public string previousDefaultState = Constants.WAIT_STATE;
@@ -25,19 +24,11 @@ namespace RPG_Character
         private Vector2 movementBeforeTextbox = Vector2.zero;
         private Vector2 locationBeforeCombat = Vector2.zero;
 
-        public void Init(Map map, List<string> states, string defaultState = Constants.STAND_STATE)
+        public void Init(List<string> states, string defaultState = Constants.STAND_STATE)
         {
-            Map = map;
             this.defaultState = defaultState;
             BuildStateMachine(states);
             Entity = GetComponent<Entity>();
-        }
-
-        public bool CanMove(Vector2 targetPosition)
-        {
-            var position = (Vector2)transform.position + targetPosition;
-            //var collision = Physics2D.OverlapCircle(position, 0.2f, collisionLayer);
-            return true;//!collision;
         }
 
         public void CombatMovement(Vector2 movement, Direction direction)

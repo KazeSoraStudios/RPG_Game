@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 799903643
   m_SortingLayer: 1
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 3825356340981982277, guid: a88fcb3ae872243f188bfc35e2af1ea0,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -120,9 +120,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 238b76ad976e0604983b7bb2a6fba75c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 0
-  width: 0
-  selectPadding: 0
   speed: 1
   movement: {x: 0, y: 0}
   rigidbody: {fileID: -8667852571436737103}
@@ -134,7 +131,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536511372364972000}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -187,7 +184,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PathIndex: 0
   animator: {fileID: 536511372364972001}
-  Map: {fileID: 0}
   defaultState: wait
   previousDefaultState: wait
   collisionLayer:
