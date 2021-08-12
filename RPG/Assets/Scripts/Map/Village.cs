@@ -17,7 +17,10 @@ public class Village : Map
         var gameState = gameLogic.GameState;
         if (gameState.Areas.ContainsKey(Area.Id) && gameState.Areas[Area.Id].Events["opening_cutscene"])
             return;
-        PlayOpeningScene(gameState, gameLogic.Stack);
+        if (gameLogic.Settings.SkipCutscenes)
+            gameState.CompleteEventInArea(Area, "opening_cutscene");
+        else
+            PlayOpeningScene(gameState, gameLogic.Stack);
     }
 
     private void PlayOpeningScene(GameState gameState, StateStack stack)

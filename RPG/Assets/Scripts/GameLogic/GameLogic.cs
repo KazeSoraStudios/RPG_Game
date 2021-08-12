@@ -9,11 +9,11 @@ using RPG_GameState;
 
 public class GameLogic : MonoBehaviour
 {
-    [SerializeField] bool QuickPlay;
     [SerializeField] LogLevel LogLevel;
     [SerializeField] public GameState GameState = new GameState();
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
+    [SerializeField] public GameSettings Settings;
   
     public StateStack Stack;
 
@@ -26,7 +26,7 @@ public class GameLogic : MonoBehaviour
         var ui = GameObject.Find("UICanvas");
         if (ui == null)
         {
-            if (QuickPlay)
+            if (Settings.QuickPlay)
             {
                 var prefab = Resources.Load<GameObject>("Prefabs/UI/UI");
                 ui = Instantiate(prefab);
@@ -63,18 +63,24 @@ public class GameLogic : MonoBehaviour
         Stack = new StateStack();
         UIController.InitUI();
         LoadData();
-        if (QuickPlay)
+        if (Settings.QuickPlay)
         {
-            var map = GameObject.FindObjectOfType<Map>();
+            StartCoroutine(StartQuickPlay());
+        }
+    }
+
+    private IEnumerator StartQuickPlay()
+    {
+        yield return new WaitForSeconds(0.1f);
+        var map = GameObject.FindObjectOfType<Map>();
             if (map == null)
             {
                 LogManager.LogError("No map found for quick play.");
-                return;
+                yield break;
             }
             var exploreState = map.gameObject.AddComponent<ExploreState>();
-            exploreState.Init(map, Stack, Vector2.zero);
             Stack.Push(exploreState);
-        }
+            exploreState.Init(map, Stack, Vector2.zero);
     }
 
     public void StartNewGame()

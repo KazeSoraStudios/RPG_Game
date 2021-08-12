@@ -185,10 +185,10 @@ public class MoveState : CharacterState
         int x = (int)Character.transform.position.x + (int)moveParams.MovePosition.x;
         int y = (int)Character.transform.position.y + (int)moveParams.MovePosition.y;
         var map = Character.Map;
-        if (map.TryEncounter(new Vector3Int(x, y, 0)))
-        {
+        // if (map.TryEncounter(new Vector3Int(x, y, 0)))
+        // {
 
-        }
+        // }
         Character.UpdateMovement(moveParams.MovePosition);
     }
 
