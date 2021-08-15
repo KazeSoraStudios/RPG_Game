@@ -323,7 +323,7 @@ namespace RPG_UI
             var config = new Textbox.Config
             {
                 ImagePath = string.Empty,
-                Text = text,
+                Text = new List<string> { text },
                 AdvanceTime = float.MaxValue,
                 ShowImage = false,
                 UseSelectionBox = true,
@@ -344,7 +344,7 @@ namespace RPG_UI
                 var text = string.Format(localization, item.ItemInfo.GetName());
                 var config = new Textbox.Config
                 {
-                    Text = text,
+                    Text = new List<string> { text },
                     ShowImage = false
                 };
                 stack.PushTextbox(config, TextBoxAnchor.Center);
@@ -363,7 +363,7 @@ namespace RPG_UI
             var text = string.Format(localization, item.ItemInfo.GetName());
             var config = new Textbox.Config
             {
-                Text = text,
+                Text = new List<string> { text },
                 ShowImage = false
             };
             stack.PushTextbox(config, TextBoxAnchor.Center);

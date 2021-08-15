@@ -22,6 +22,7 @@ namespace RPG_GameData
         public Dictionary<string, Shop> Shops = new Dictionary<string, Shop>();
         public Dictionary<string, Encounter> Encounters = new Dictionary<string, Encounter>();
         public Dictionary<string, EnemyAIData> EnemyAI = new Dictionary<string, EnemyAIData>();
+        public Dictionary<string, Battle> Battles = new Dictionary<string, Battle>();
 
         void Awake()
         {
@@ -256,5 +257,16 @@ namespace RPG_GameData
         public float FadeDuration;
         public string SoundName;
         public float delay;
+    }
+
+    public class Battle
+    {
+        public bool CanFlee;
+        public string Id;
+        public string Area;
+        public string Reward;
+        public List<string> Enemies = new List<String>();
+        public List<string> BeforeText = new List<String>();
+        public List<string> AfterText = new List<String>();
     }
 }

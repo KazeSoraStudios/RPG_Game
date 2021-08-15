@@ -149,6 +149,13 @@ namespace RPG_GameData
             cellsProcessed += maxColumns;
             index = cellsProcessed;
             var audio = GameDataAudioHandler.ProcessAudio(index, numberOfCells, maxColumns - numberOfColumns, data);
+            cellsProcessed += maxColumns * numberOfCells;
+            // Get the new number of cells to process and skip the row
+            numberOfCells = int.Parse(data[cellsProcessed + 1]);
+            numberOfColumns = int.Parse(data[cellsProcessed + 2]);
+            cellsProcessed += maxColumns;
+            index = cellsProcessed;
+            var battles = GameDataBattleHandler.ProcessBattles(index, numberOfCells, maxColumns - numberOfColumns, data);
 
             GameData.Items = items;
             GameData.ItemUses = itemUses;
@@ -162,6 +169,7 @@ namespace RPG_GameData
             GameData.Shops = shops;
             GameData.Encounters = encounters;
             GameData.EnemyAI = aiData;
+            GameData.Battles = battles;
             ServiceManager.Get<LocalizationManager>().SetLocalization(loc);
             ServiceManager.Get<AudioManager>().LoadLibrary(audio);
             enabled = false;

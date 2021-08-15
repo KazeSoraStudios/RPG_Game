@@ -223,7 +223,6 @@ namespace RPG_Combat
             }
             else
             {
-                //this.mAttackAnim = gEntities.claw
                 targeter = (state) => CombatSelector.RandomPlayer(state);
                 var targetPosition = (state.GetEnemyActors()[0].transform.position - actor.transform.position) * 0.5f;
                 targetPosition.y = actor.transform.position.y;

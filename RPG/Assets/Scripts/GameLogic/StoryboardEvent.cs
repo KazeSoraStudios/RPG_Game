@@ -740,7 +740,7 @@ public class StoryboardEventFunctions
                 {
                     InitialDelay = 0.5f,
                     AdvanceTime = time,
-                    Text = ServiceManager.Get<LocalizationManager>().Localize(text)
+                    Text = new List<string> { ServiceManager.Get<LocalizationManager>().Localize(text) }
                 };
                ServiceManager.Get<GameLogic>().Stack.PushTextbox(config, anchor);
                return EmptyEvent;

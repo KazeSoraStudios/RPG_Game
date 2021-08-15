@@ -5,7 +5,6 @@ namespace RPG_Character
     public class SimpleDialogueNPC : MonoBehaviour, Trigger
     {
         public string Id;
-
         private string text = string.Empty;
         private string portrait = string.Empty;
 

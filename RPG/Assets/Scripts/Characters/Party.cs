@@ -124,6 +124,7 @@ namespace RPG_Character
         {
             foreach (var character in Members)
                 character.GetComponent<Character>().ReturnFromCombat();
+            Members[0].gameObject.SafeSetActive(true);
         }
 
         public void PrepareForSceneChange()

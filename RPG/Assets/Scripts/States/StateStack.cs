@@ -84,7 +84,7 @@ public class StateStack
         var config = new Textbox.Config
         {
             ImagePath = portrait,
-            Text = ServiceManager.Get<LocalizationManager>().Localize(text),
+            Text = new List<string> { ServiceManager.Get<LocalizationManager>().Localize(text) },
             AdvanceTime = advanceTime,
             ShowImage = showImage
         };

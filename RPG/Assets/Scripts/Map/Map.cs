@@ -37,7 +37,7 @@ public class Map : MonoBehaviour
 
     public virtual void Init()
     {
-        LogManager.LogInfo(Area.BackgroundMusic);
+        LogManager.LogDebug($"Current background music is: {Area.BackgroundMusic}");
         var background = !Area.BackgroundMusic.IsEmptyOrWhiteSpace() ? Area.BackgroundMusic : Constants.DEFAULT_BACKGROUND_MUSIC;
         ServiceManager.Get<RPG_Audio.AudioManager>().SetBackgroundAudio(background);
         LoadNpcs();
@@ -136,7 +136,7 @@ public class Map : MonoBehaviour
         var config = new Actions.StartCombatConfig
         { 
             CanFlee = true,
-            Map = this,
+            Background = CombatBackground,
             Stack = gameLogic.Stack,
             Party = gameLogic.GameState.World.Party.Members,
             Enemies  = enemies

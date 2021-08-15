@@ -73,7 +73,7 @@ namespace RPG_AI
                 Actor = currentActor,
                 CombatState = combat,
                 Spell = spell,
-                IsPlayer = true,
+                IsPlayer = false,
                 Targets = GetTargets(attackWeakestChance)
             };
             AddSpellEvent(config);

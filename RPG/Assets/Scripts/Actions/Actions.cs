@@ -294,7 +294,7 @@ public class Actions
      public class StartCombatConfig
      {
         public bool CanFlee = true;
-        public Map Map;
+        public string Background;
         public StateStack Stack;
         public Action OnWin;
         public Action OnLose;
@@ -318,7 +318,7 @@ public class Actions
         var combatConfig = new CombatGameState.Config
         {
             CanFlee = true,
-            BackgroundPath = config.Map.CombatBackground,
+            BackgroundPath = config.Background,
             Party = config.Party,
             Enemies = CreateEnemyList(config.Enemies),
             Stack = config.Stack,

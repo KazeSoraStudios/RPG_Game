@@ -202,6 +202,7 @@ namespace RPG_Character
             ResetAnimator();
             Controller.Change(Constants.EMPTY_STATE);
             Entity.UpdateMovement(Vector2.zero);
+            gameObject.SafeSetActive(true);
         }
 
         public void ReturnFromCombat()
@@ -210,6 +211,7 @@ namespace RPG_Character
             Controller.Change(defaultState);
             transform.position = locationBeforeCombat;
             animator.SetInteger("Direction", (int)directionBeforeCombat);
+            gameObject.SafeSetActive(false);
         }
 
         public void PrepareForTeleport()

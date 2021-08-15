@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -16,9 +17,9 @@ namespace RPG_UI
             public float InitialDelay = 0.2f;
             public float AdvanceTime = 2.0f;
             public string ImagePath;
-            public string Text;
             public Action OnFinish;
             public Action<int> OnSelect;
+            public List<string> Text = new List<string>();
         }
 
         [SerializeField] Image Image;
@@ -37,6 +38,7 @@ namespace RPG_UI
         private int characterIndex = 0;
         private int pageStart = 0;
         private int pageEnd = 0;
+        private int currentText = 0;
 
         private float nextCharTime;
         private float nextBlipTime;
@@ -44,12 +46,12 @@ namespace RPG_UI
         private float initialDelay = 0.0f;
         private float advanceTime = 0.0f;
 
-        private string text;
 
         private TMP_TextInfo textInfo;
         private Action onFinish;
         private Action<int> onSelect;
         private StateStack stack;
+        private List<string> text = new List<string>();
 
         public void SetUp(StateStack stack)
         {
@@ -64,9 +66,11 @@ namespace RPG_UI
             gameObject.SafeSetActive(true);
             initialDelay = config.InitialDelay;
             advanceTime = config.AdvanceTime;
-            text = config.Text;
+            text.Clear();
+            text.AddRange(config.Text);
             Text.maxVisibleCharacters = 0;
-            Text.SetText(config.Text);
+            currentText = 0;
+            Text.SetText(text[currentText]);
             Text.ForceMeshUpdate();
             textInfo = Text.textInfo;
             onFinish = config.OnFinish;
@@ -182,6 +186,20 @@ namespace RPG_UI
                 pageEnd = textInfo.pageInfo[currentPage].lastCharacterIndex;
                 Text.pageToDisplay = currentPage + 1;
                 
+            }
+            else if (currentText < text.Count - 1)
+            {
+                currentText++;
+                nextCharTime = 0.0f;
+                nextBlipTime = 0;
+                totalTime = 0.0f;
+                turnOff = false;
+                currentPage = 0;
+                Text.pageToDisplay = 0;
+                currentPage = 0;
+                characterIndex = 0;
+                pageEnd = textInfo.pageInfo[currentPage].lastCharacterIndex + 1;
+                Text.SetText(text[currentText]);
             }
             else
             {

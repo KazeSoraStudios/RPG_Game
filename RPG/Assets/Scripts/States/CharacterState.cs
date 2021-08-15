@@ -91,13 +91,12 @@ public class WaitState : CharacterState
                 movement.y = 0.0f;
             else
                 movement.x = 0.0f;
-            Character.UpdateAnimation(movement);
-            //Character.Controller.SetParams(movement);
-            Character.Controller.Change(Constants.MOVE_STATE, new MoveParams(movement));
+            Character.UpdateMovement(movement);
         }
         else
         {
-            Character.UpdateAnimation(Vector2.zero);
+            Character.UpdateMovement(movement);
+            Character.Controller.Change(Character.defaultState);
         }
         return true;
     }

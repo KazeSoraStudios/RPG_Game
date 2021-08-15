@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using RPG_UI;
 
@@ -22,7 +23,7 @@ namespace RPG_Character
         var config = new Textbox.Config
         {
             ImagePath = string.Empty,
-            Text = ServiceManager.Get<LocalizationManager>().Localize("ID_SHOP_KEEPER_WELCOME_TEXT"),
+            Text = new List<string> { ServiceManager.Get<LocalizationManager>().Localize("ID_SHOP_KEEPER_WELCOME_TEXT") },
             AdvanceTime = float.MaxValue,
             ShowImage = false,
             OnFinish = () => LoadShopState(stack)

@@ -129,7 +129,6 @@ public class GameLogic : MonoBehaviour
             var config = new Actions.StartCombatConfig
             { 
                 CanFlee = true,
-                Map = ((ExploreState)Stack.Top()).Map,
                 Stack = Stack,
                 Party = GameState.World.Party.Members,
                 Enemies  = new List<string> { "firespirit" }

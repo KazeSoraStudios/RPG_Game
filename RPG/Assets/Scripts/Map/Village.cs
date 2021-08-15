@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG_Character;
@@ -7,9 +8,11 @@ using RPG_GameState;
 public class Village : Map
 {
     [SerializeField] Sprite VillianSprite;
-    [SerializeField] Actor FireSpirit;
     [SerializeField] GameObject Grandmom;
     [SerializeField] GameObject Doll;
+
+    private Character villian;
+    private Actor FireSpirit;
 
     public override void Init()
     {
@@ -19,12 +22,16 @@ public class Village : Map
             LogManager.LogError("Village Map area is null, cannot run Village Events.");
             return;
         }
+        LoadEntities();
         var gameLogic = ServiceManager.Get<GameLogic>();
         var gameState = gameLogic.GameState;
         if (gameState.Areas.ContainsKey(Area.Id) && gameState.Areas[Area.Id].Events["opening_cutscene"])
             return;
         if (gameLogic.Settings.SkipCutscenes)
-            gameState.CompleteEventInArea(Area, "opening_cutscene");
+            {
+                gameState.CompleteEventInArea(Area, "opening_cutscene");
+                gameState.World.Party.Add(FireSpirit);
+            }
         else
             PlayOpeningScene(gameState, gameLogic.Stack);
     }
@@ -33,17 +40,7 @@ public class Village : Map
     {
         var hero = gameState.World.Party.GetActor(0).GetComponent<Character>();
         ServiceManager.Get<RPG_Audio.AudioManager>().SetOverallVolume(0.5f);
-        var villainAsset = ServiceManager.Get<AssetManager>().Load<Character>(Constants.HERO_PREFAB);
-        var fireAsset = ServiceManager.Get<AssetManager>().Load<Actor>(Constants.FIRE_SPIRIT_PREFAB);
-        var villian = Instantiate(villainAsset);
-        villian.Init(Constants.ENEMY_STATES);
-        FireSpirit = Instantiate(fireAsset);
-        FireSpirit.gameObject.SafeSetActive(false);
-        FireSpirit.transform.position = Grandmom.transform.position;
-        FireSpirit.Init(ServiceManager.Get<GameData>().PartyDefs["mage"]);
-        FireSpirit.GetComponent<Character>().Init(Constants.PARTY_STATES);
-        villian.transform.SetParent(NPCParent, false);
-        villian.GetComponent<SpriteRenderer>().sprite = VillianSprite;
+
         var events = new List<IStoryboardEvent>
         {
             
@@ -82,5 +79,21 @@ public class Village : Map
         gameState.World.LockInput();
         var storyboard = new Storyboard(stack, events);
         stack.Push(storyboard);
+    }
+
+    private void LoadEntities()
+    {
+        var villainAsset = ServiceManager.Get<AssetManager>().Load<Character>(Constants.HERO_PREFAB);
+        villian = Instantiate(villainAsset);
+        villian.Init(Constants.ENEMY_STATES);
+        villian.transform.SetParent(NPCParent, false);
+        villian.GetComponent<SpriteRenderer>().sprite = VillianSprite;
+
+        var fireAsset = ServiceManager.Get<AssetManager>().Load<Actor>(Constants.FIRE_SPIRIT_PREFAB);
+        FireSpirit = Instantiate(fireAsset);
+        FireSpirit.gameObject.SafeSetActive(false);
+        FireSpirit.transform.position = Grandmom.transform.position;
+        FireSpirit.Init(ServiceManager.Get<GameData>().PartyDefs["mage"]);
+        FireSpirit.GetComponent<Character>().Init(Constants.PARTY_STATES);
     }
 }
