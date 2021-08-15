@@ -8,6 +8,7 @@ namespace RPG_Character
     public enum Direction { North, South, East, West, NoWhere };
     public class Character : MonoBehaviour
     {
+        [SerializeField] bool IsNPC;
         [SerializeField] public int PathIndex = 0;
         [SerializeField] public Animator animator;
         [SerializeField] public StateMachine Controller { get; private set; }
@@ -23,6 +24,13 @@ namespace RPG_Character
         private Direction directionBeforeCombat = Direction.South;
         private Vector2 movementBeforeTextbox = Vector2.zero;
         private Vector2 locationBeforeCombat = Vector2.zero;
+
+        private void Start()
+        {
+            if (!IsNPC)
+                return;
+            Init(Constants.ENEMY_STATES);
+        }
 
         public void Init(List<string> states, string defaultState = Constants.STAND_STATE)
         {

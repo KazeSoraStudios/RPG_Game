@@ -2531,6 +2531,125 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1001 &323389313
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 42.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364972000, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_Name
+      value: FireSpiritNPC (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 780171673302619011, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: AreaId
+      value: village
+      objectReference: {fileID: 0}
+    - target: {fileID: 780171673302619011, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: EventId
+      value: battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 780171673302619011, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: HumanSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ec914f0e9f4324b57a81f69338cbd2fe,
+        type: 3}
+    - target: {fileID: 2555236354886283718, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: IsNPC
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7712280379020205580, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 14fd79220f91e1847bfd4f0c104ee5f3, type: 3}
+--- !u!114 &323389314 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 780171673302619011, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+    type: 3}
+  m_PrefabInstance: {fileID: 323389313}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2742e19f8a4a143ad0c7f6ebc10cf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &323389315 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2555236354886283718, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+    type: 3}
+  m_PrefabInstance: {fileID: 323389313}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b057b399b1b3a4b8b8f0c3dee78387, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &323556956
 GameObject:
   m_ObjectHideFlags: 0
@@ -2860,7 +2979,7 @@ Transform:
   - {fileID: 2068598940}
   - {fileID: 798458733}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &456789003
 GameObject:
@@ -3245,6 +3364,145 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NextMap: World
   TeleportPosition: {x: 69.5, y: -39}
+--- !u!1001 &646791803
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 39
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364971999, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364972000, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_Name
+      value: FireSpiritNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 536511372364972000, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 780171673302619011, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: AreaId
+      value: village
+      objectReference: {fileID: 0}
+    - target: {fileID: 780171673302619011, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: EventId
+      value: battle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 780171673302619011, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: HumanSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 010badcc9b1b74286ad1b0ab3e2476bb,
+        type: 3}
+    - target: {fileID: 2555236354886283718, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: IsNPC
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7712280379020205580, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: BattleId
+      value: battle2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7712280379020205580, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: Demons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7712280379020205580, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: Demons.Array.data[0]
+      value: 
+      objectReference: {fileID: 646791804}
+    - target: {fileID: 7712280379020205580, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+        type: 3}
+      propertyPath: Demons.Array.data[1]
+      value: 
+      objectReference: {fileID: 323389314}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 14fd79220f91e1847bfd4f0c104ee5f3, type: 3}
+--- !u!114 &646791804 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 780171673302619011, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+    type: 3}
+  m_PrefabInstance: {fileID: 646791803}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2742e19f8a4a143ad0c7f6ebc10cf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &646791805 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2555236354886283718, guid: 14fd79220f91e1847bfd4f0c104ee5f3,
+    type: 3}
+  m_PrefabInstance: {fileID: 646791803}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b057b399b1b3a4b8b8f0c3dee78387, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &664479265
 GameObject:
   m_ObjectHideFlags: 0
@@ -5004,6 +5262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BattleId: battle1
+  Demons: []
 --- !u!114 &798458735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5065,6 +5324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b057b399b1b3a4b8b8f0c3dee78387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsNPC: 1
   PathIndex: 0
   animator: {fileID: 798458740}
   defaultState: wait
@@ -8589,7 +8849,7 @@ PrefabInstance:
     - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4474695500408404694, guid: 2912ff7c35e46814a85b3634c8351b34,
         type: 3}
@@ -9956,6 +10216,11 @@ PrefabInstance:
       propertyPath: ShopId
       value: village
       objectReference: {fileID: 0}
+    - target: {fileID: 9091877173033026570, guid: 761e00942a7867b4b9bd3be7a86b211f,
+        type: 3}
+      propertyPath: IsNPC
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 761e00942a7867b4b9bd3be7a86b211f, type: 3}
 --- !u!4 &1559261077 stripped
@@ -9964,6 +10229,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1559261076}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1559261078 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9091877173033026570, guid: 761e00942a7867b4b9bd3be7a86b211f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1559261076}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b057b399b1b3a4b8b8f0c3dee78387, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1561179438
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10394,7 +10671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Conditions:
-  - visited_temple
+  - battle1
 --- !u!1001 &1679274563
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11299,6 +11576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b057b399b1b3a4b8b8f0c3dee78387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsNPC: 1
   PathIndex: 0
   animator: {fileID: 1861149106}
   defaultState: wait
@@ -12202,6 +12480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b057b399b1b3a4b8b8f0c3dee78387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsNPC: 0
   PathIndex: 0
   animator: {fileID: 2068598941}
   defaultState: wait
@@ -14233,12 +14512,11 @@ MonoBehaviour:
   Encounters: {fileID: 0}
   Conditions: {fileID: 1646390525}
   MapNPCs:
-  - EntityId: goblin
-    PrefabId: TestNPC
-    DefaultState: 
-    StartingPosition: {x: -2, y: 0, z: 0}
+  - {fileID: 646791805}
+  - {fileID: 323389315}
+  - {fileID: 1559261078}
+  - {fileID: 1861149103}
   VillianSprite: {fileID: 21300000, guid: 67a933a0f463a4c5d943da70b6fa18f6, type: 3}
-  FireSpirit: {fileID: 0}
   Grandmom: {fileID: 1775665941}
   Doll: {fileID: 845293705}
 --- !u!1001 &3349577790301832255
@@ -38449,7 +38727,7 @@ Transform:
   - {fileID: 293896063}
   - {fileID: 1646390523}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &4762423221915046585
 TilemapRenderer:

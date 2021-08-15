@@ -369,7 +369,10 @@ public class Actions
         var assetManager = ServiceManager.Get<AssetManager>();
         var enemyData = ServiceManager.Get<GameData>().Enemies;
         if (!enemyData.ContainsKey(enemyId))
+        {
+            LogManager.LogError($"EnemyId {enemyId} is not found in GameData Enemies");
             return null;
+        }
         var enemyDef = enemyData[enemyId];
         string prefabPath = Constants.CHARACTER_PREFAB_PATH + enemyDef.PrefabPath;
         var asset = assetManager.Load<Actor>(prefabPath);

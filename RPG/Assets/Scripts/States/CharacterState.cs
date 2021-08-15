@@ -92,11 +92,11 @@ public class WaitState : CharacterState
             else
                 movement.x = 0.0f;
             Character.UpdateMovement(movement);
+            Character.Controller.Change(Constants.MOVE_STATE, new MoveParams(movement));
         }
         else
         {
             Character.UpdateMovement(movement);
-            Character.Controller.Change(Character.defaultState);
         }
         return true;
     }
@@ -175,8 +175,6 @@ public class MoveState : CharacterState
             Character.Controller.Change(Character.defaultState);
             return;
         }
-        int x = (int)Character.transform.position.x + (int)moveParams.MovePosition.x;
-        int y = (int)Character.transform.position.y + (int)moveParams.MovePosition.y;
         Character.UpdateMovement(moveParams.MovePosition);
     }
 

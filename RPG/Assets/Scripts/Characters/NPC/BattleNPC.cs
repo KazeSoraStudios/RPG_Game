@@ -8,6 +8,7 @@ namespace RPG_Character
     public class BattleNPC : MonoBehaviour, Trigger
     {
         [SerializeField] string BattleId;
+        [SerializeField] List<YokaiHuman> Demons;
 
         private Battle battle;
 
@@ -16,10 +17,13 @@ namespace RPG_Character
             var battles = ServiceManager.Get<GameData>().Battles;
             if (!battles.ContainsKey(BattleId))
             {
-                LogManager.LogError($"BattleId {BattleId} not found in GameData Battles.");
+                LogManager.LogError($"BattleId {BattleId} not found in GameData Battles for NPC {name}.");
                 return;
             }
             battle = battles[BattleId];
+            var gameState = ServiceManager.Get<GameLogic>().GameState;
+            if (gameState.IsEventComplete(battle.Area, battle.Id))
+                enabled = false;
         }
 
         public void OnEnter(TriggerParams triggerParams)
@@ -42,6 +46,12 @@ namespace RPG_Character
             if (battle == null)
             {
                 LogManager.LogError($"{name} has a null battle.");
+                return;
+            }
+            var gameState = ServiceManager.Get<GameLogic>().GameState;
+            if (gameState.IsEventComplete(battle.Area, battle.Id))
+            {
+                this.enabled = false;
                 return;
             }
             var localization = ServiceManager.Get<LocalizationManager>();
@@ -74,6 +84,8 @@ namespace RPG_Character
 
         private void OnWin() 
         {
+            var gameState = ServiceManager.Get<GameLogic>().GameState;
+            gameState.CompleteEventInArea(battle.Area, battle.Id);
             var localization = ServiceManager.Get<LocalizationManager>();
             var localizedText = new List<string>();
             foreach (var id in battle.AfterText)
@@ -92,7 +104,10 @@ namespace RPG_Character
         private void GiveItem()
         {
             if (battle.Reward.IsEmptyOrWhiteSpace())
+            {
+                ChangeDemonsToHumans();
                 return;
+            }
             var localization = ServiceManager.Get<LocalizationManager>();
             var message = localization.Localize("ID_REWARD_ITEM_TEXT");
             var items = ServiceManager.Get<GameData>().Items;
@@ -111,9 +126,17 @@ namespace RPG_Character
                 AdvanceTime = 999999.0f,
                 ShowImage = false,
                 Text = localizedText,
+                OnFinish = ChangeDemonsToHumans
             };
             var stack = ServiceManager.Get<GameLogic>().Stack;
             stack.PushTextbox(config, TextBoxAnchor.Center);
+        }
+
+        private void ChangeDemonsToHumans()
+        {
+            foreach (var yokai in Demons)
+                yokai.ChangeToHuman();
+            this.enabled = false;
         }
     }
 }

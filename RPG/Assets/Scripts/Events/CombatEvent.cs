@@ -165,7 +165,6 @@ namespace RPG_Combat
         }
 
         private bool counter;
-        private int speed = 0;
         private FormulaResult result;
         private Character character;
         private Storyboard storyboard;

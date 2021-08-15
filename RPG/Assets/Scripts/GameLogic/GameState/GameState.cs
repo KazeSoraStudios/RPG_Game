@@ -35,13 +35,18 @@ namespace RPG_GameState
         public void FromGameStateData(GameStateData data)
         {
             World.LoadFromGameStateData(data);
+            LoadAreas(data.areas);
         }
 
-        private List<Area> CreateAreaList()
+        private List<AreaData> CreateAreaList()
         {
-            var list = new List<Area>();
+            var list = new List<AreaData>();
             foreach (var entry in Areas)
-                list.Add(entry.Value);
+                list.Add(new AreaData
+                {
+                    Id = entry.Value.Id, 
+                    Events = CreateAreaEventData(entry.Value.Events)
+                });
             return list;
         }
 
@@ -69,6 +74,49 @@ namespace RPG_GameState
             }
             events[eventId] = true;
         }
-        
+
+        public bool IsEventComplete(string areaId, string eventId)
+        {
+            return Areas.ContainsKey(areaId) && Areas[areaId].Events.ContainsKey(eventId)
+                && Areas[areaId].Events[eventId];
+        }
+        private List<AreaEventData> CreateAreaEventData(Dictionary<string, bool> events)
+        {
+            var list = new List<AreaEventData>();
+            foreach (var entry in events)
+                list.Add(new AreaEventData
+                {
+                    Id = entry.Key,
+                    Complete = entry.Value
+                });
+            return list;
+        }
+
+        private void LoadAreas(List<AreaData> areas)
+        {
+            var gameDataAreas = ServiceManager.Get<GameData>().Areas;
+            foreach (var area in areas)
+            {
+                if (!Areas.ContainsKey(area.Id))
+                {
+                    if (!gameDataAreas.ContainsKey(area.Id))
+                    {
+                        LogManager.LogError($"Area {area.Id} not found in GameData Areas");
+                        continue;
+                    }
+                    var _area = gameDataAreas[area.Id];
+                    foreach (var evt in area.Events)
+                    {
+                        if (!_area.Events.ContainsKey(evt.Id))
+                        {
+                            LogManager.LogError($"Event {evt.Id} not found in Area {area.Id} Events.");
+                            continue;
+                        }
+                        _area.Events[evt.Id] = evt.Complete;
+                    }
+                    Areas.Add(_area.Id, _area);
+                }
+            }
+        }
     }
 }

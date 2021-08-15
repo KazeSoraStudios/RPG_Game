@@ -200,7 +200,7 @@ namespace RPG_GameData
         {
             var items = new List<string>();
             items.AddRange(Items);
-            var gameState = ServiceManager.Get<GameStateManager>().GetCurrent();
+            var gameState = ServiceManager.Get<GameLogic>().GameState;
             if (gameState == null)
                 return items;
             foreach (var entry in AdditionalItems)
@@ -208,9 +208,9 @@ namespace RPG_GameData
                 var conditionInfo = entry.Key.Split(':');
                 if (conditionInfo.Length != 2)
                     continue;
-                var area = gameState.GetArea(conditionInfo[0]);
-                if (area == null)
+                if (!gameState.Areas.ContainsKey(conditionInfo[0]))
                     continue;
+                var area = gameState.Areas[conditionInfo[0]];
                 if (!area.Events.ContainsKey(conditionInfo[1]) || !area.Events[conditionInfo[1]])
                     continue;
                 items.AddRange(entry.Value);   

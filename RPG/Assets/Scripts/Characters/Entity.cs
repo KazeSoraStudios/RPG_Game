@@ -28,6 +28,8 @@ namespace RPG_Character
 
         private void FixedUpdate()
         {
+            if (rigidbody.bodyType == RigidbodyType2D.Static)
+                return;
             var move = rigidbody.position + movement * Time.fixedDeltaTime * speed;
             rigidbody.MovePosition(move);
         }

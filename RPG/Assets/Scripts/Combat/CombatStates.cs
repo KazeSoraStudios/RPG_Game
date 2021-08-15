@@ -162,7 +162,6 @@ namespace RPG_Combat
 
     public class CSEnemyHurt : CombatState
     {
-        private int knockback = 3;
         private float moveTime = 0.2f;
         private float t = 0.0f;
         private Vector2 originalPosition = Vector2.zero;

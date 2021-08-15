@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using RPG_Character;
@@ -14,10 +15,9 @@ public class Map : MonoBehaviour
     [SerializeField] protected Transform NPCParent;
     [SerializeField] Tilemap Encounters;
     [SerializeField] CheckConditionTrigger Conditions;
-    [SerializeField] List<NPCData> MapNPCs = new List<NPCData>();
+    [SerializeField] List<Character> MapNPCs = new List<Character>();
     [SerializeField] Dictionary<Vector2Int, Entity> Entities = new Dictionary<Vector2Int, Entity>();
     
-
     protected Encounter Encounter = new Encounter();
     protected Area Area = new Area();
 
@@ -40,27 +40,8 @@ public class Map : MonoBehaviour
         LogManager.LogDebug($"Current background music is: {Area.BackgroundMusic}");
         var background = !Area.BackgroundMusic.IsEmptyOrWhiteSpace() ? Area.BackgroundMusic : Constants.DEFAULT_BACKGROUND_MUSIC;
         ServiceManager.Get<RPG_Audio.AudioManager>().SetBackgroundAudio(background);
-        LoadNpcs();
         Conditions?.Init(Area);
-    }
-
-    private void LoadNpcs()
-    {
-        var assetManager = ServiceManager.Get<AssetManager>();
-        foreach (var data in MapNPCs)
-        {
-            var asset = assetManager.Load<Character>(Constants.CHARACTER_PREFAB_PATH + data.PrefabId);
-            if (asset == null)
-            {
-                continue;
-            }
-            var npc = GameObject.Instantiate(asset);
-            npc.transform.position = data.StartingPosition;
-            npc.transform.rotation = Quaternion.identity;
-            AddNPC(npc);
-            var defaultState = data.DefaultState.IsEmptyOrWhiteSpace() ? Constants.WAIT_STATE : data.DefaultState.ToUpper();
-            npc.Init(Constants.ENEMY_STATES, defaultState);
-        }
+        RegisterNPCs();
     }
 
     public void AddNPC(Character npc)
@@ -142,5 +123,11 @@ public class Map : MonoBehaviour
             Enemies  = enemies
         };
         Actions.Combat(config);
+    }
+
+    private void RegisterNPCs()
+    {
+        foreach (var npc in MapNPCs)
+            ServiceManager.Get<NPCManager>().AddNPC(MapName, npc);
     }
 }

@@ -18,7 +18,7 @@ namespace RPG_GameState
             public List<ItemData> Items = new List<ItemData>();
             public List<ItemData> KeyItems = new List<ItemData>();
             public List<QuestData> Quests = new List<QuestData>();
-            public List<Area> Areas = new List<Area>();
+            public List<AreaData> Areas = new List<AreaData>();
         }
 
         private static int gid = 0;
@@ -32,7 +32,7 @@ namespace RPG_GameState
         public List<ItemData> items = new List<ItemData>();
         public List<ItemData> keyItems = new List<ItemData>();
         public List<QuestData> quests = new List<QuestData>();
-        public List<Area> areas = new List<Area>();
+        public List<AreaData> areas = new List<AreaData>();
 
         public GameStateData() { }
 
@@ -55,6 +55,7 @@ namespace RPG_GameState
             partyMembers = config.PartyMembers;
             items = config.Items;
             quests = config.Quests;
+            areas = config.Areas;
         }
 
         public QuestData GetQuestData(string id)
@@ -62,14 +63,6 @@ namespace RPG_GameState
             foreach (var quest in quests)
                 if (quest.Id.Equals(id))
                     return quest;
-            return null;
-        }
-
-        public Area GetArea(string areaId)
-        {
-            foreach (var area in areas)
-                if (area.Id.Equals(areaId))
-                    return area;
             return null;
         }
     }
@@ -113,5 +106,19 @@ namespace RPG_GameState
         {
             return new QuestData { Id = quest.Id, IsComplete = quest.IsComplete, IsStarted = quest.IsStarted };
         }
+    }
+
+    [Serializable]
+    public class AreaData
+    {
+        public string Id;
+        public List<AreaEventData> Events = new List<AreaEventData>();
+    }
+
+    [Serializable]
+    public class AreaEventData
+    {
+        public bool Complete;
+        public string Id;
     }
 }

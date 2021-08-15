@@ -70,7 +70,6 @@ namespace RPG_Combat
                 // StoryboardEventFunctions.FadeScreenOut("black", 0.3f),
                 StoryboardEventFunctions.BlackScreen(),
                 StoryboardEventFunctions.Wait(1.0f),
-                StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.3f),
                 StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().LockInput()),
                 StoryboardEventFunctions.Function(() => 
                 {
@@ -78,6 +77,7 @@ namespace RPG_Combat
                     ServiceManager.Get<NPCManager>().ReturnFromCombat();
                     Actions.SetCameraToFollowHero();
                 }),
+                StoryboardEventFunctions.FadeScreenOut("blackscreen", 0.3f),
                 StoryboardEventFunctions.Function(() => onWin?.Invoke()),
                 StoryboardEventFunctions.Function(() => ServiceManager.Get<World>().UnlockInput())
             };
