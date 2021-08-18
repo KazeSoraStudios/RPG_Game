@@ -293,6 +293,38 @@ public class FollowPathEvent : IStoryboardEvent
     public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
 }
 
+public class MultiFollowPathEvent : IStoryboardEvent
+{
+    private List<Character> characters;
+
+    public MultiFollowPathEvent(List<Character> characters)
+    {
+        this.characters = characters;
+    }
+
+    public void Execute(float deltaTime)
+    {
+        foreach (var character in characters)
+            character.Controller.Update(deltaTime);
+    }
+
+    public bool IsBlocking()
+    {
+        return true;
+    }
+
+    public bool IsFinished()
+    {
+        foreach (var character in characters)
+            if (character.PathIndex < character.PathToMove.Count)
+                return false;
+        return true;
+    }
+
+    public bool HasEventFunction() { return false; }
+    public IStoryboardEvent Transform(Storyboard storyboard) {  return this; }
+}
+
 public class StoryboardEventFunctions
 {
     public static IStoryboardEvent EmptyEvent = new EmptyStoryboardEvent();
@@ -771,6 +803,19 @@ public class StoryboardEventFunctions
                return new FollowPathEvent(character);
            }
        };
+    }
+    
+    public static IStoryboardEvent MoveCharacters(List<Character> characters, List<Direction> path)
+    {
+        return new StoryboardFunctionEvent
+        {
+            Function = (storyboard) =>
+            {
+                for (int i = 0; i < characters.Count; i++)
+                    characters[i].FollowPath(path);
+                return new MultiFollowPathEvent(characters);
+            }
+        };
     }
 
     public static IStoryboardEvent SetCharacterDirection(Character character, Direction direction)

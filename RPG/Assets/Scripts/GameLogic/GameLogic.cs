@@ -14,6 +14,11 @@ public class GameLogic : MonoBehaviour
     [SerializeField] UIController UIController;
     [SerializeField] GameDataDownloader GameDataDownloader;
     [SerializeField] public GameSettings Settings;
+
+    #if UNITY_EDITOR
+    [SerializeField] string AreaId;
+    [SerializeField] string EventId;
+    #endif
   
     public StateStack Stack;
 
@@ -115,6 +120,11 @@ public class GameLogic : MonoBehaviour
     {
         #if UNITY_EDITOR
         LogManager.SetLogLevel(LogLevel);
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            GameState.CompleteEventInArea(AreaId, EventId);
+        }
 
         if (Input.GetKeyDown(KeyCode.G))
         {

@@ -6,6 +6,8 @@ public class Constants
     public const string CHARACTER_PREFAB_PATH = "Prefabs/Character/";
     public const string HERO_PREFAB = CHARACTER_PREFAB_PATH + "Hero";
     public const string FIRE_SPIRIT_PREFAB = CHARACTER_PREFAB_PATH + "FireSpirit";
+    public const string SKELETON_PREFAB = CHARACTER_PREFAB_PATH + "Skeleton";
+    public const string KAPPA_PREFAB = CHARACTER_PREFAB_PATH + "Kappa";
     public const string TEST_NPC_PREFAB = CHARACTER_PREFAB_PATH + "TestNPC";
     public const string TEST_MAP_PREFAB_PATH = "Prefabs/Maps/Grid";
     public const string FIRST_VILLAGE_PREFAB_PATH = "Prefabs/Maps/FirstVillage";

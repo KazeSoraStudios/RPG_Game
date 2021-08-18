@@ -5,20 +5,21 @@ using RPG_GameData;
 
 public class CheckConditionTrigger : MonoBehaviour
 {
+    [SerializeField] string AllConditionsCompleteEvent;
     [SerializeField] List<string> Conditions;
     
     private int currentCondition = 0;
-    private Area Area;
+    private string areaId;
 
     public void Init(Area area)
     {
-        this.Area = area;
+        areaId = area.Id;
         for (int i = Conditions.Count - 1; i >= 0; i--)
         {
             var condition = Conditions[i];
-            if (!Area.Events.ContainsKey(condition))
+            if (!area.Events.ContainsKey(condition))
             {
-                LogManager.LogError($"Condition [{Conditions}] is not in Area {Area.Id}, removing from Conditions");
+                LogManager.LogError($"Condition [{Conditions}] is not in Area {area.Id}, removing from Conditions");
                 Conditions.RemoveAt(i);
             }
         }
@@ -33,6 +34,8 @@ public class CheckConditionTrigger : MonoBehaviour
         {
             gameObject.SafeSetActive(false);
             LogManager.LogDebug($"All Conditions met for {name}, turning off.");
+            if (!AllConditionsCompleteEvent.IsEmptyOrWhiteSpace())
+                GameEventsManager.BroadcastMessage(AllConditionsCompleteEvent);
             return;
         }
         var gameState = ServiceManager.Get<GameLogic>().GameState;
@@ -52,8 +55,15 @@ public class CheckConditionTrigger : MonoBehaviour
 
     private int AllConditionsMet()
     {
+        var areas = ServiceManager.Get<GameLogic>().GameState.Areas;
+        if (!areas.ContainsKey(areaId))
+        {
+            LogManager.LogError($"Area {areaId} not found in GameState Areas.");
+            return -1;
+        }
+        var area = areas[areaId];
         for (int i = 0; i < Conditions.Count; i++)
-            if (!Area.Events[Conditions[i]])
+            if (!area.Events[Conditions[i]])
                 return i;
         return -1;
     }

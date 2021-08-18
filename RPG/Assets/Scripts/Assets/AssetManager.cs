@@ -34,14 +34,17 @@ public class AssetManager : MonoBehaviour
         if (prefabs.ContainsKey(prefabPath))
         {
             var prefab = prefabs[prefabPath] as T;
-            callback?.Invoke(prefab);
-            return prefab; 
+            if (prefab != null)
+            {
+                callback?.Invoke(prefab);
+                return prefab; 
+            }
         }
         var asset = Resources.Load<T>(prefabPath);
         if (asset == null)
             LogManager.LogError($"Cannot load prefab for {prefabPath}");
         callback?.Invoke(asset);
-        prefabs[prefabPath] = asset as UnityEngine.Object;
+        prefabs[prefabPath] = asset;
         return asset;
     }
 }
