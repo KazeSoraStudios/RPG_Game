@@ -68,6 +68,48 @@ TextureImporter:
   - first:
       213: -7321639145925800445
     second: OLD_FIRE_SPIRIT_21
+  - first:
+      213: 8563898136379606988
+    second: OLD_FIRE_SPIRIT_22
+  - first:
+      213: -723203125759362984
+    second: OLD_FIRE_SPIRIT_23
+  - first:
+      213: -7318484959734401626
+    second: OLD_FIRE_SPIRIT_24
+  - first:
+      213: -253326769300635472
+    second: OLD_FIRE_SPIRIT_25
+  - first:
+      213: -8648610229310754385
+    second: OLD_FIRE_SPIRIT_26
+  - first:
+      213: 2299196819561831221
+    second: OLD_FIRE_SPIRIT_27
+  - first:
+      213: 3588429665558838770
+    second: OLD_FIRE_SPIRIT_28
+  - first:
+      213: -1407469844607059585
+    second: OLD_FIRE_SPIRIT_29
+  - first:
+      213: -6347693489152398292
+    second: OLD_FIRE_SPIRIT_30
+  - first:
+      213: 4119706474568546149
+    second: OLD_FIRE_SPIRIT_31
+  - first:
+      213: 3559191924504592154
+    second: OLD_FIRE_SPIRIT_32
+  - first:
+      213: 2279246455459262931
+    second: OLD_FIRE_SPIRIT_33
+  - first:
+      213: -5262602973496371125
+    second: OLD_FIRE_SPIRIT_34
+  - first:
+      213: 6758147147922567193
+    second: OLD_FIRE_SPIRIT_35
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -626,6 +668,300 @@ TextureImporter:
       bones: []
       spriteID: 30e8f7d0dff446a90800000000000000
       internalID: -7321639145925800445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_22
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc749874bf319d670800000000000000
+      internalID: 8563898136379606988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_23
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85839acb69aa6f5f0800000000000000
+      internalID: -723203125759362984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_24
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a5fdf044b48f6a90800000000000000
+      internalID: -7318484959734401626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_25
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b00dbf35a00c7cf0800000000000000
+      internalID: -253326769300635472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_26
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa17f1991d6f9f780800000000000000
+      internalID: -8648610229310754385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_27
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 53bd0b2635368ef10800000000000000
+      internalID: 2299196819561831221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_28
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2fdbb1db4c9acc130800000000000000
+      internalID: 3588429665558838770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_29
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f793f1822a9a77ce0800000000000000
+      internalID: -1407469844607059585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_30
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2ce204376678e7a0800000000000000
+      internalID: -6347693489152398292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_31
+      rect:
+        serializedVersion: 2
+        x: 992
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 567f88326332c2930800000000000000
+      internalID: 4119706474568546149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_32
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1ff88ba23ac46130800000000000000
+      internalID: 3559191924504592154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_33
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d1b735439281af10800000000000000
+      internalID: 2279246455459262931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_34
+      rect:
+        serializedVersion: 2
+        x: 1088
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4895d26a7a77f6b0800000000000000
+      internalID: -5262602973496371125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OLD_FIRE_SPIRIT_35
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 0
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9107ebb5603c9cd50800000000000000
+      internalID: 6758147147922567193
       vertices: []
       indices: 
       edges: []
