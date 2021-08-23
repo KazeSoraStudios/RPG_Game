@@ -99,7 +99,7 @@ Animator:
   m_GameObject: {fileID: 536511372364972000}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: 66569958dccce2643a8aded68ba63448, type: 2}
+  m_Controller: {fileID: 22100000, guid: 307592b648d5ceb488a08cdde8d35df7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -182,6 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b057b399b1b3a4b8b8f0c3dee78387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsNPC: 0
   PathIndex: 0
   animator: {fileID: 536511372364972001}
   defaultState: wait
