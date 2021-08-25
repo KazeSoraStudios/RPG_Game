@@ -12,7 +12,7 @@ namespace RPG_Character
         {
             if (Id.IsEmptyOrWhiteSpace())
             {
-                LogManager.LogError($"{name} does not have an Id, cannot get text from GameData.");
+                LogManager.LogWarn($"{name} does not have an Id, cannot get text from GameData.");
                 return;
             }
             text = ServiceManager.Get<LocalizationManager>().Localize(text);
@@ -20,13 +20,13 @@ namespace RPG_Character
 
         public void SetText(string text)
         {
-            if (Id.IsEmptyOrWhiteSpace())
+            if (text.IsEmptyOrWhiteSpace())
             {
                 LogManager.LogError($"Text passed to SetText is Empty or Null.");
                 return;
             }
             var message = ServiceManager.Get<LocalizationManager>().Localize(text);
-            text = message;
+            this.text = message;
         }
 
         public void OnEnter(TriggerParams triggerParams)
@@ -47,7 +47,7 @@ namespace RPG_Character
         public void OnUse(TriggerParams triggerParams)
         {
             var stack = ServiceManager.Get<GameLogic>().Stack;
-            stack.PushTextbox(text, true, portrait);
+            stack.PushTextbox(text, false, portrait);
         }
     }
 }

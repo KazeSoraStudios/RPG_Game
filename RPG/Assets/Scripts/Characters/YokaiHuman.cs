@@ -6,7 +6,9 @@ namespace RPG_Character
     {
         [SerializeField] string AreaId;
         [SerializeField] string EventId;
+        [SerializeField] string NPCTextId;
         [SerializeField] Sprite HumanSprite;
+        [SerializeField] private RuntimeAnimatorController HumanAnimator;
 
         private SpriteRenderer spriteRenderer;
 
@@ -23,18 +25,22 @@ namespace RPG_Character
         {
             var gameState = ServiceManager.Get<GameLogic>().GameState;
             if (gameState.IsEventComplete(AreaId, EventId))
-            {
-                spriteRenderer.sprite = HumanSprite;
-                // TODO change animator
-                GetComponent<Animator>().enabled = false;
-            }
+                ChangeToHuman();
         }
 
         public void ChangeToHuman()
         {
+            gameObject.SafeSetActive(true);
             spriteRenderer.sprite = HumanSprite;
-            // TODO change animator
-            GetComponent<Animator>().enabled = false;
+            if (HumanAnimator != null)
+                GetComponent<Animator>().runtimeAnimatorController = HumanAnimator;
+            else
+                GetComponent<Animator>().enabled = false;
+            if (!NPCTextId.IsEmptyOrWhiteSpace())
+            {
+                var dialogue = gameObject.AddComponent<SimpleDialogueNPC>();
+                dialogue.SetText(NPCTextId);
+            }
         }
     }
 }

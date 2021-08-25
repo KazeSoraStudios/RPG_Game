@@ -82,8 +82,10 @@ namespace RPG_Character
             Actions.Combat(config);
         }
 
-        private void OnWin() 
+        private void OnWin()
         {
+            foreach (var demon in Demons)
+                demon.gameObject.SafeSetActive(true);
             var gameState = ServiceManager.Get<GameLogic>().GameState;
             gameState.CompleteEventInArea(battle.Area, battle.Id);
             var localization = ServiceManager.Get<LocalizationManager>();
@@ -136,7 +138,7 @@ namespace RPG_Character
         {
             foreach (var yokai in Demons)
                 yokai.ChangeToHuman();
-            this.enabled = false;
+            Destroy(GetComponent<BattleNPC>());
         }
     }
 }

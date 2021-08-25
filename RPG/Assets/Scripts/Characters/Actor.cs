@@ -328,7 +328,7 @@ namespace RPG_Character
             {
                 if (!gamedata.ContainsKey(special))
                 {
-                    LogManager.LogError($"Gamedata does not contain Special {special}. Not adding to level up.");
+                    LogManager.LogWarn($"Gamedata does not contain Special {special}. Not adding to level up.");
                     continue;
                 }
                 list.Add(gamedata[special]);

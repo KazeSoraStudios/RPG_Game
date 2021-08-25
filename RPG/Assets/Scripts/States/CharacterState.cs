@@ -105,11 +105,15 @@ public class WaitState : CharacterState
 public class UnitMoveState : CharacterState
 {
     private const string Name = "MoveState";
+    private float maxMoveTime = 1.0f;
     private Vector2 currentPosition = Vector2.zero;
     private Vector2 targetPosition = Vector2.zero;
 
-    public UnitMoveState(Character character)
-        : base(character) { }
+    public UnitMoveState(Character character, float moveTime = 1.0f)
+        : base(character)
+    {
+        maxMoveTime = moveTime;
+    }
 
     public override string GetName()
     {
@@ -138,7 +142,7 @@ public class UnitMoveState : CharacterState
         currentPosition = Vector2.Lerp(currentPosition, targetPosition, time / 0.75f);
         Character.transform.position = currentPosition;
         var distance = Vector2.Distance(currentPosition, targetPosition);
-        if (distance <= 0.02f)
+        if (distance <= 0.02f || time >= maxMoveTime)
         {
             Character.transform.position = targetPosition;
             var position = Character.transform.position;
