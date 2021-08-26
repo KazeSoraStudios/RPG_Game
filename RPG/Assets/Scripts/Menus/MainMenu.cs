@@ -6,15 +6,9 @@ using RPG_GameState;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] Button NewGameButton;
-    [SerializeField] Button ContinueButton;
+    [SerializeField] GameObject Credits;
+    [SerializeField] GameObject Buttons;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        CheckForSaveData();
-    }
-    
     public void NewGame()
     {
         ServiceManager.Get<GameLogic>().StartNewGame();
@@ -25,18 +19,30 @@ public class MainMenu : MonoBehaviour
         ServiceManager.Get<GameLogic>().LoadGame();
     }
 
-    private void CheckForSaveData()
+    public void ShowCredits()
     {
-        var gameManager = ServiceManager.Get<GameStateManager>();
-        gameManager.LoadSavedGames();
-        if (gameManager.GetNumberOfSaves() > 0)
-        {
-            gameManager.LoadGameStateData(0);
-            ContinueButton.interactable = true;
-        }
-        else
-        {
-            ContinueButton.interactable = false;
-        }
+        Credits.SafeSetActive(true);
+        Buttons.SafeSetActive(false);
     }
+
+    public void HideCredits()
+    {
+        Credits.SafeSetActive(false);
+        Buttons.SafeSetActive(true);
+    }
+
+    // private void CheckForSaveData()
+    // {
+    //     var gameManager = ServiceManager.Get<GameStateManager>();
+    //     gameManager.LoadSavedGames();
+    //     if (gameManager.GetNumberOfSaves() > 0)
+    //     {
+    //         gameManager.LoadGameStateData(0);
+    //         ContinueButton.interactable = true;
+    //     }
+    //     else
+    //     {
+    //         ContinueButton.interactable = false;
+    //     }
+    // }
 }

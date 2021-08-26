@@ -389,42 +389,6 @@ public class StoryboardEventFunctions
         };
     }
 
-
-    //public static IStoryboardEvent FadeOutChararcter(string npcId, float duration = 1)
-    //{
-    //    return new StoryboardFunctionEvent
-    //    {
-    //        Function = (storyboard) =>
-    //        {
-    //            var npcs = ServiceManager.Get<NPCManager>();
-    //            if (!npcs.HasNPC(npcId))
-    //            {
-    //                LogManager.LogError($"NPC Manager does not contain npc [{npcId}]. Returning from FadeOutCharacterEvent.");
-    //                return EmptyEvent;
-    //            }
-    //            var npc = npcs.GetNPC(npcId);
-    //            if (npc.IsHero())
-    //                npc = ((ExploreState)storyboard.States[Constants.EXPLORE_STATE]).Hero;
-    //            return new TweenEvent<Character>
-    //            {
-    //                Function = (target, value) =>
-    //                {
-    //                    if (target.GetComponent<SpriteRenderer>() is var renderer && renderer != null)
-    //                    {
-    //                        var color = renderer.color;
-    //                        color.a = value;
-    //                        renderer.color = color;
-    //                    }
-    //                },
-    //                Target = npc,
-    //                Start = 1,
-    //                Distance = 1,
-    //                Duration = 1,
-    //            };
-    //        }
-    //    };
-    //}
-
     public static IStoryboardEvent MoveCameraToTile(string state, int endX, int endY, float duration = 1.0f)
     {
        return new StoryboardFunctionEvent
@@ -504,39 +468,6 @@ public class StoryboardEventFunctions
     {
         return FadeScreen(1, 0, duration, state);
     }
-
-    // public static IStoryboardEventCaption(string text)
-    // {
-    //    return function(storyboard)
-    //        local style = ShallowClone(CaptionStyles [style])
-    //        local caption = CaptionState:Create(style, text)
-    //        storyboard:PushState(id, caption)
-
-    //        return TweenEvent:Create(
-    //                Tween:Create(0, 1, style.duration),
-    //                style,
-    //                style.ApplyFunc)
-
-    //    end
-    // }
-
-    //function SOP.FadeOutCaption(id, duration)
-    //    return function(storyboard)
-    //        local target = storyboard.mSubStack:Top()
-    //        if id then
-    //            target = storyboard.mStates [id]
-    //end
-    //        print(id, target)
-    //        local style = target.mStyle
-    //        duration = duration or style.duration
-
-    //        return TweenEvent:Create(
-    //            Tween:Create(1, 0, duration),
-    //            style,
-    //            style.ApplyFunc
-    //        )
-    //    end
-    //end
 
     public static IStoryboardEvent NoBlock(IStoryboardEvent storyboardEvent)
     {
@@ -649,7 +580,6 @@ public class StoryboardEventFunctions
         {
             Function = (storyboard) =>
             {
-                //var map = MapDB[map];
                 SceneManager.LoadScene(scene, LoadSceneMode.Additive);
                 var startingPosition = new Vector2(startingX, startingY);
                // TODO set up mangement ExploreState
@@ -658,26 +588,6 @@ public class StoryboardEventFunctions
             }
         };
     }
-
-    //function SOP.Scene(params)
-    //    return function(storyboard)
-    //        local id = params.name or params.map
-    //        local map = MapDB [params.map]()
-    //        local focus = Vector.Create(params.focusX or 1,
-    //                                    params.focusY or 1,
-    //                                    params.focusZ or 1)
-    //        local state = ExploreState:Create(nil, map, focus)
-    //        if params.hideHero then
-    //            state:HideHero()
-    //        end
-    //        storyboard:PushState(id, state)
-
-    //        -- Allows the following inclassion to be carried out
-    //        -- on the same frame.
-    //        return SOP.NoBlock(SOP.Wait(0.1))()
-    //    end
-    //end
-
 
     public static Map GetMapReference(Storyboard storyboard, int stateId)
     {

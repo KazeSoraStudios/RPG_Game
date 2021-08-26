@@ -158,17 +158,6 @@ namespace RPG_UI
             return equipMenu;
         }
 
-        //private FrontMenuState GetOptionMenu()
-        //{
-        //    if (optionMenu == null)
-        //    {
-        //        optionMenu = ServiceManager.Get<AssetManager>().Load<FrontMenuState>(Constants.OPTION_MENU_PREFAB);
-        //         uiController.AddMenuScreen(optionMenu.transform);
-        //optionMenu.gameObject.SafeSetActive(false);
-        //    }
-        //    return optionMenu;
-        //}
-
         private void RefreshConfigs(string mapName)
         {
             FrontConfig.MapName = mapName;

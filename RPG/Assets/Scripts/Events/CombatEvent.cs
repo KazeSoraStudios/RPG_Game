@@ -63,7 +63,6 @@ namespace RPG_Combat
         public override void Execute(EventQueue queue)
         {
             LogManager.LogDebug($"Executing CETurn for {actor.name}");
-            // Player first
             if (!state.IsPartyMember(actor))
             {
                 LogManager.LogError($"AI Character {actor.name} has player turn event.");
@@ -100,7 +99,6 @@ namespace RPG_Combat
         public override void Execute(EventQueue queue)
         {
             LogManager.LogDebug($"Executing CETurn for {actor.name}");
-            // Player first
             if (state.IsPartyMember(actor))
             {
                 LogManager.LogError($"Player Character {actor.name} has AI turn event.");
@@ -317,11 +315,6 @@ namespace RPG_Combat
             }
             var entityPosition = entity.transform.position;
             // TODO
-            //    local effect = AnimEntityFx:Create(x, y,
-            //                            self.mAttackAnim,
-            //                            self.mAttackAnim.frames)
-
-            //    self.mState:AddEffect(effect)
         }
 
         private void ShowResult()
@@ -519,10 +512,6 @@ namespace RPG_Combat
             HideNotice();
             var position = actor.GetComponent<Entity>().GetSelectPosition();
             // TODO create effect
-            /*local effect = AnimEntityFx:Create(pos:X(), pos:Y(),
-                            gEntities.fx_use_item,
-                            gEntities.fx_use_item.frames, 0.1)
-              self.mState:AddEffect(effect)*/
             var config = new CombatActionConfig
             {
                 Owner = actor,
@@ -627,10 +616,6 @@ namespace RPG_Combat
         {
             var position = actor.GetComponent<Character>().Entity.GetSelectPosition();
             // TODO effect
-            //local effect = AnimEntityFx:Create(pos:X(), pos:Y(),
-            //                        gEntities.fx_use_item,
-            //                        gEntities.fx_use_item.frames, 0.1)
-            //self.mState:AddEffect(effect)
             actor.ReduceManaForSpell(spell);
             var data = new RPG_UI.HpMpWidget.UpdateData 
             {

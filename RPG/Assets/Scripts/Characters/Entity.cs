@@ -51,31 +51,6 @@ namespace RPG_Character
             map.AddEntity(this);
 
         }
-        //function Entity:SetTilePos(x, y, layer, map)
-
-        //    if map:GetEntity(self.mTileX, self.mTileY, self.mLayer) == self then
-        //        map:RemoveEntity(self)
-        //    end
-
-        //    if map:GetEntity(x, y, layer, map) ~= nil then
-        //        for k, v in pairs(map:GetEntity(x, y, layer, map)) do
-        //            print(k, v)
-        //        end
-        //        assert(false)
-        //    end
-
-        //    self.mTileX = x or self.mTileX
-        //    self.mTileY = y or self.mTileY
-        //    self.mLayer = layer or self.mLayer
-
-        //    map:AddEntity(self)
-        //    local x, y = map:GetTileFoot(self.mTileX, self.mTileY)
-        //    self.mSprite:SetPosition(x, y + self.mHeight * 0.5)
-        //    self.mX = x
-        //    self.mY = y
-
-
-        //end
 
         public Vector2 GetSelectPosition()
         {

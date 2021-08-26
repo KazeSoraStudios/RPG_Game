@@ -103,8 +103,6 @@ namespace RPG_Combat
                     DeadCharacters.RemoveAt(i);
             }
 
-            // TODO effect updates
-
             if (CombatStack.Top() != StateStack.emptyState)
                 CombatStack.Update(deltaTime);
             else

@@ -104,9 +104,8 @@ public class Village : Map
             StoryboardEventFunctions.Say(battle.BeforeText[0]),
             StoryboardEventFunctions.Say(battle.BeforeText[1]),
             StoryboardEventFunctions.MoveCharacters(new List<Character> { enemies[0], enemies[1], enemies[2] }, 
-                new List<Direction> { Direction.North, Direction.North }),
+                new List<Direction> { Direction.South, Direction.South }),
             StoryboardEventFunctions.Say(battle.BeforeText[2]),
-            StoryboardEventFunctions.Say(battle.BeforeText[3]),
             StoryboardEventFunctions.Function(() =>
             {
                 var config = new Actions.StartCombatConfig
@@ -135,13 +134,12 @@ public class Village : Map
             StoryboardEventFunctions.Say(battle.AfterText[0]),
             StoryboardEventFunctions.Say(battle.AfterText[1]),
             StoryboardEventFunctions.MoveCharacters(new List<Character> { enemies[0], enemies[1], enemies[2] }, 
-                new List<Direction> { Direction.South, Direction.South }),
+                new List<Direction> { Direction.North, Direction.North }),
             StoryboardEventFunctions.Function(() =>
             {
                 foreach (var enemy in enemies)
                     enemy.gameObject.SafeSetActive(false);
             }),
-            StoryboardEventFunctions.Say(battle.AfterText[2]),
             StoryboardEventFunctions.Function(() => gameLogic.GameState.World.UnlockInput())
         };
         var storyboard = new Storyboard(stack, events);
@@ -168,19 +166,19 @@ public class Village : Map
     {
         var characters = new List<Character>();
         var skeletonAsset = ServiceManager.Get<AssetManager>().Load<Character>(Constants.SKELETON_PREFAB);
-        var skeleton = Instantiate(skeletonAsset, new Vector3(-4.0f, -13.0f, 0.0f), Quaternion.identity, NPCParent);
+        var skeleton = Instantiate(skeletonAsset, new Vector3(-3.5f, 14.0f, 0.0f), Quaternion.identity, NPCParent);
         skeleton.Init(Constants.ENEMY_STATES);
         skeleton.GetComponent<Animator>().enabled = false;
         characters.Add(skeleton);
         
         var fireSpiritAsset = ServiceManager.Get<AssetManager>().Load<Character>(Constants.FIRE_SPIRIT_PREFAB);
-        var fireSpirit = Instantiate(fireSpiritAsset, new Vector3(-5.0f, -13.0f, 0.0f), Quaternion.identity, NPCParent);
+        var fireSpirit = Instantiate(fireSpiritAsset, new Vector3(-4.5f, 14.0f, 0.0f), Quaternion.identity, NPCParent);
         fireSpirit.Init(Constants.ENEMY_STATES);
         fireSpirit.GetComponent<Animator>().enabled = false;
         characters.Add(fireSpirit);
         
         var kappaAsset = ServiceManager.Get<AssetManager>().Load<Character>(Constants.KAPPA_PREFAB);
-        var kappa = Instantiate(kappaAsset, new Vector3(-6.0f, -13.0f, 0.0f), Quaternion.identity, NPCParent);
+        var kappa = Instantiate(kappaAsset, new Vector3(-5.5f, 14.0f, 0.0f), Quaternion.identity, NPCParent);
         kappa.Init(Constants.ENEMY_STATES);
         kappa.GetComponent<Animator>().enabled = false;
         characters.Add(kappa);

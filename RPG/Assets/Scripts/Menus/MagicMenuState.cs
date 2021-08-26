@@ -111,16 +111,6 @@ namespace RPG_UI
 
         private void SetUpMenu(Actor actor)
         {
-            //foreach(var spell in actor.Spells)
-            //{
-            //    configs.Add(new ItemListCell.Config
-            //    {
-            //        Name = spell.LocalizedName(),
-            //        Amount = spell.MpCost.ToString(),
-            //        ShowIcon = false
-            //    });
-            //}
-
             var spells = ServiceManager.Get<GameData>().Spells;
             foreach (var entry in spells)
             {
